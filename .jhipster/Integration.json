@@ -1,0 +1,58 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "country",
+            "otherEntityName": "country",
+            "otherEntityField": "name"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "platform",
+            "fieldType": "Platform",
+            "fieldValues": "MSSQL,POSTGRESQL,MYSQL,ORACLE,NAVISON,SUNSYSTEMS,CSV,XML,JSON"
+        },
+        {
+            "fieldName": "driver",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "username",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "password",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "flatFolder",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "flatFile",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "schedule",
+            "fieldType": "Schedule",
+            "fieldValues": "DAILY,BIWEEKLY,WEEKLY,FORTNIGHTLY,BIMONTHLY,MONTHLY"
+        },
+        {
+            "fieldName": "active",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "mapping",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "text"
+        }
+    ],
+    "changelogDate": "20180730223134",
+    "entityTableName": "integration",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

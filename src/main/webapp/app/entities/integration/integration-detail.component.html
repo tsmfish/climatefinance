@@ -1,0 +1,64 @@
+
+<div *ngIf="integration">
+    <h2><span>Integration</span> {{integration.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Platform</span></dt>
+        <dd>
+            <span>{{integration.platform}}</span>
+        </dd>
+        <dt><span>Driver</span></dt>
+        <dd>
+            <span>{{integration.driver}}</span>
+        </dd>
+        <dt><span>Username</span></dt>
+        <dd>
+            <span>{{integration.username}}</span>
+        </dd>
+        <dt><span>Password</span></dt>
+        <dd>
+            <span>{{integration.password}}</span>
+        </dd>
+        <dt><span>Flat Folder</span></dt>
+        <dd>
+            <span>{{integration.flatFolder}}</span>
+        </dd>
+        <dt><span>Flat File</span></dt>
+        <dd>
+            <span>{{integration.flatFile}}</span>
+        </dd>
+        <dt><span>Schedule</span></dt>
+        <dd>
+            <span>{{integration.schedule}}</span>
+        </dd>
+        <dt><span>Active</span></dt>
+        <dd>
+            <span>{{integration.active}}</span>
+        </dd>
+        <dt><span>Mapping</span></dt>
+        <dd>
+            <span>{{integration.mapping}}</span>
+        </dd>
+        <dt><span>Country</span></dt>
+        <dd>
+            <div *ngIf="integration.country">
+                <a [routerLink]="['/country', integration.country?.id]">{{integration.country?.name}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'integration/'+ integration.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

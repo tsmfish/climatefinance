@@ -1,0 +1,11 @@
+version: '2'
+services:
+    climatefinance-postgresql:
+        image: postgres:9.6.5
+        # volumes:
+        #     - ~/volumes/jhipster/climatefinance/postgresql/:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_USER=climatefinance
+            - POSTGRES_PASSWORD=
+        ports:
+            - 5432:5432

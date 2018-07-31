@@ -1,0 +1,148 @@
+
+<div *ngIf="project">
+    <h2><span>Project</span> {{project.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Project Title</span></dt>
+        <dd>
+            <span>{{project.projectTitle}}</span>
+        </dd>
+        <dt><span>Project Description</span></dt>
+        <dd>
+            <span>{{project.projectDescription}}</span>
+        </dd>
+        <dt><span>Project Type</span></dt>
+        <dd>
+            <span>{{project.projectType}}</span>
+        </dd>
+        <dt><span>Funding Basis</span></dt>
+        <dd>
+            <span>{{project.fundingBasis}}</span>
+        </dd>
+        <dt><span>Total Funding Amount</span></dt>
+        <dd>
+            <span>{{project.totalFundingAmount}}</span>
+        </dd>
+        <dt><span>Total Funding Currency</span></dt>
+        <dd>
+            <span>{{project.totalFundingCurrency}}</span>
+        </dd>
+        <dt><span>Estimated Country Allocation</span></dt>
+        <dd>
+            <span>{{project.estimatedCountryAllocation}}</span>
+        </dd>
+        <dt><span>Time Frame</span></dt>
+        <dd>
+            <span>{{project.timeFrame}}</span>
+        </dd>
+        <dt><span>Principal Source</span></dt>
+        <dd>
+            <span>{{project.principalSource}}</span>
+        </dd>
+        <dt><span>Additional Source</span></dt>
+        <dd>
+            <span>{{project.additionalSource}}</span>
+        </dd>
+        <dt><span>Ministry</span></dt>
+        <dd>
+            <span>{{project.ministry}}</span>
+        </dd>
+        <dt><span>Other Stakeholders</span></dt>
+        <dd>
+            <span>{{project.otherStakeholders}}</span>
+        </dd>
+        <dt><span>Laterality</span></dt>
+        <dd>
+            <span>{{project.laterality}}</span>
+        </dd>
+        <dt><span>Appropriated</span></dt>
+        <dd>
+            <span>{{project.appropriated}}</span>
+        </dd>
+        <dt><span>Weighting Percentage</span></dt>
+        <dd>
+            <span>{{project.weightingPercentage}}</span>
+        </dd>
+        <dt><span>Inkind Percentage</span></dt>
+        <dd>
+            <span>{{project.inkindPercentage}}</span>
+        </dd>
+        <dt><span>Climate Change Adaptation</span></dt>
+        <dd>
+            <span>{{project.climateChangeAdaptation}}</span>
+        </dd>
+        <dt><span>Climate Change Mitigation</span></dt>
+        <dd>
+            <span>{{project.climateChangeMitigation}}</span>
+        </dd>
+        <dt><span>Disaster Risk Reduction</span></dt>
+        <dd>
+            <span>{{project.disasterRiskReduction}}</span>
+        </dd>
+        <dt><span>Disaster Risk Mitigation</span></dt>
+        <dd>
+            <span>{{project.disasterRiskMitigation}}</span>
+        </dd>
+        <dt><span>Total</span></dt>
+        <dd>
+            <span>{{project.total}}</span>
+        </dd>
+        <dt><span>Status</span></dt>
+        <dd>
+            <span>{{project.status}}</span>
+        </dd>
+        <dt><span>Modality</span></dt>
+        <dd>
+            <span>{{project.modality}}</span>
+        </dd>
+        <dt><span>Start Year</span></dt>
+        <dd>
+            <span>{{project.startYear | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span>End Year</span></dt>
+        <dd>
+            <span>{{project.endYear | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span>Active</span></dt>
+        <dd>
+            <span>{{project.active}}</span>
+        </dd>
+        <dt><span>Notes</span></dt>
+        <dd>
+            <span>{{project.notes}}</span>
+        </dd>
+        <dt><span>Country</span></dt>
+        <dd>
+            <div *ngIf="project.country">
+                <a [routerLink]="['/country', project.country?.id]">{{project.country?.name}}</a>
+            </div>
+        </dd>
+        <dt><span>Sector</span></dt>
+        <dd>
+            <div *ngIf="project.sector">
+                <a [routerLink]="['/sector', project.sector?.id]">{{project.sector?.name}}</a>
+            </div>
+        </dd>
+        <dt><span>Detailed Sector</span></dt>
+        <dd>
+            <div *ngIf="project.detailedSector">
+                <a [routerLink]="['/detailed-sector', project.detailedSector?.id]">{{project.detailedSector?.name}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'project/'+ project.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>
