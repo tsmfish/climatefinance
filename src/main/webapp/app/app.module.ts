@@ -18,6 +18,7 @@ import { ClimatefinanceAccountModule } from './account/account.module';
 import { ClimatefinanceEntityModule } from './entities/entity.module';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
+import {HttpClientModule} from '@angular/common/http'
 import {
     JhiMainComponent,
     NavbarComponent,
@@ -38,6 +39,7 @@ import {
         ClimatefinanceAccountModule,
         ClimatefinanceEntityModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
+        HttpClientModule
     ],
     declarations: [
         JhiMainComponent,

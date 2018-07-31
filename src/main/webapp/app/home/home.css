@@ -4,10 +4,10 @@ Main page styles
 
 .hipster {
     display: inline-block;
-    width: 347px;
-    height: 497px;
-    background: url("../../content/images/hipster.png") no-repeat center top;
-    background-size: contain;
+    width: 447px;
+    height: 547px;
+    background: url("../../content/images/climate.jpg") no-repeat center top;
+    /*background-size: contain;*/
 }
 
 /* wait autoprefixer update to allow simple generation of high pixel density media query */

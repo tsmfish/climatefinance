@@ -1,0 +1,157 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "country",
+            "otherEntityName": "country",
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "sector",
+            "otherEntityName": "sector",
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "detailedSector",
+            "otherEntityName": "detailedSector",
+            "otherEntityField": "name"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "disbursement",
+            "otherEntityName": "disbursement",
+            "otherEntityRelationshipName": "project"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "projectTitle",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 1250
+        },
+        {
+            "fieldName": "projectDescription",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "text"
+        },
+        {
+            "fieldName": "projectType",
+            "fieldType": "ProjectType",
+            "fieldValues": "CCA,CCM,DRR,DRM,ENABLING"
+        },
+        {
+            "fieldName": "fundingBasis",
+            "fieldType": "FundingBasis",
+            "fieldValues": "NATIONAL,REGIONAL"
+        },
+        {
+            "fieldName": "totalFundingAmount",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "totalFundingCurrency",
+            "fieldType": "Currency",
+            "fieldValues": "USD,EUR,NZD,AUD,XPF,SBD,VT,FJD,JPY"
+        },
+        {
+            "fieldName": "estimatedCountryAllocation",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "timeFrame",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "principalSource",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "additionalSource",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "ministry",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "otherStakeholders",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "laterality",
+            "fieldType": "Laterality",
+            "fieldValues": "BILATERAL,MULTILATERAL,OTHER"
+        },
+        {
+            "fieldName": "appropriated",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "weightingPercentage",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "inkindPercentage",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "climateChangeAdaptation",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "climateChangeMitigation",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "disasterRiskReduction",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "disasterRiskMitigation",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "total",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "Status",
+            "fieldValues": "PIPELINE,CURRENT,COMPLETED"
+        },
+        {
+            "fieldName": "modality",
+            "fieldType": "Modality",
+            "fieldValues": "ON_BUDGET,OFF_BUDGET"
+        },
+        {
+            "fieldName": "startYear",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "endYear",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "active",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "notes",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "text"
+        }
+    ],
+    "changelogDate": "20180730223129",
+    "entityTableName": "project",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

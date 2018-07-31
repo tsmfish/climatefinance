@@ -1,0 +1,92 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myIntegrationLabel">Create or edit a Integration</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!integration.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="integration.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_platform">Platform</label>
+            <select class="form-control" name="platform" [(ngModel)]="integration.platform" id="field_platform" >
+                <option value="MSSQL">MSSQL</option>
+                <option value="POSTGRESQL">POSTGRESQL</option>
+                <option value="MYSQL">MYSQL</option>
+                <option value="ORACLE">ORACLE</option>
+                <option value="NAVISON">NAVISON</option>
+                <option value="SUNSYSTEMS">SUNSYSTEMS</option>
+                <option value="CSV">CSV</option>
+                <option value="XML">XML</option>
+                <option value="JSON">JSON</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_driver">Driver</label>
+            <input type="text" class="form-control" name="driver" id="field_driver"
+                [(ngModel)]="integration.driver" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_username">Username</label>
+            <input type="text" class="form-control" name="username" id="field_username"
+                [(ngModel)]="integration.username" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_password">Password</label>
+            <input type="text" class="form-control" name="password" id="field_password"
+                [(ngModel)]="integration.password" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_flatFolder">Flat Folder</label>
+            <input type="text" class="form-control" name="flatFolder" id="field_flatFolder"
+                [(ngModel)]="integration.flatFolder" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_flatFile">Flat File</label>
+            <input type="text" class="form-control" name="flatFile" id="field_flatFile"
+                [(ngModel)]="integration.flatFile" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_schedule">Schedule</label>
+            <select class="form-control" name="schedule" [(ngModel)]="integration.schedule" id="field_schedule" >
+                <option value="DAILY">DAILY</option>
+                <option value="BIWEEKLY">BIWEEKLY</option>
+                <option value="WEEKLY">WEEKLY</option>
+                <option value="FORTNIGHTLY">FORTNIGHTLY</option>
+                <option value="BIMONTHLY">BIMONTHLY</option>
+                <option value="MONTHLY">MONTHLY</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_active">Active</label>
+            <input type="checkbox" class="form-control" name="active" id="field_active"
+                [(ngModel)]="integration.active" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_mapping">Mapping</label>
+            <textarea class="form-control" name="mapping" id="field_mapping"
+                [(ngModel)]="integration.mapping" ></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_country">Country</label>
+            <select class="form-control" id="field_country" name="country" [(ngModel)]="integration.country" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="countryOption.id === integration.country?.id ? integration.country : countryOption" *ngFor="let countryOption of countries; trackBy: trackCountryById">{{countryOption.name}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

@@ -1,41 +1,106 @@
 <div class="row">
     <div class="col-md-3">
         <span class="hipster img-fluid rounded"></span>
+
     </div>
     <div class="col-md-9">
-        <h1 class="display-4">Welcome, Java Hipster!</h1>
-        <p class="lead">This is your homepage</p>
+        <h1 class="display-4" style="color: #2b6ea1; font-size: 40px;">Pacific Climate Change Finance Tracking Tool</h1>
+        <p class="lead">Institutional Strengthening in Pacific Island Countries to Adapt to Climate Change (ISACC)
+            Project</p>
+        <hr/>
 
         <div [ngSwitch]="isAuthenticated()">
-            <div class="alert alert-success" *ngSwitchCase="true">
-                <span *ngIf="account"
-                   > You are logged in as user "{{account.login}}". </span>
+            <div *ngSwitchCase="true">
+                <span class="alert alert-success" *ngIf="account">
+                    Welcome, {{account.firstName}} {{account.lastName}}. </span>
+
+
+
+                <a href="#/project" style="margin-left: 20px;" class="btn btn-primary">Browse Projects</a>
+
+                <br/>
+                <br/>
+
+                <table class="table">
+                    <tr style="background-color: lightblue">
+                        <th>Country</th>
+                        <th>Projects</th>
+                    </tr>
+
+                    <tr *ngFor="let cc of countryCounts">
+                        <td><a style="color: #2b6ea1; font-weight: lighter;" href="#/project;search=country.name:{{cc.country.replace('Islands', '').trim()}}">{{cc.country}}</a></td>
+                        <td>{{cc.count}}</td>
+                    </tr>
+
+                    <tr style="font-weight: bold;">
+                        <td>TOTAL</td>
+                        <td>{{count}}</td>
+                    </tr>
+                </table>
+
+
+
             </div>
 
-            <div class="alert alert-warning" *ngSwitchCase="false">
-                <span>If you want to </span>
-                <a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div *ngSwitchCase="false">
+
+                <p style="text-align: justify">
+                    Climate change funding to support developing countries tackle climate change has increased over the
+                    past years and is projected to increase dramatically in the future. At the national level, tracking
+                    climate finance is important to allow policy makers to plan more effectively on how to use climate
+                    finance, particularly in making decisions about funding allocations in line with national
+                    priorities, monitoring the effectiveness of initiatives, and to verify the support that is being
+                    provided by developed countries. Better financial data can also help decision makers identify gaps
+                    and improve coordination and management and plan for investments in sectors and areas of greater
+                    vulnerability. Furthermore, better climate finance information can also assist in determining
+                    effectiveness and facilitate learning and help countries draw lessons from the use of different
+                    financial instruments and develop strategies and policies aimed at expanding finance for climate
+                    change. At the International level, it enables a more complete and accurate picture of how much
+                    funding is going to countries for climate change activities. It would also contribute towards
+                    improving accountability and transparency in terms of the financial flows related to commitments
+                    made under the UNFCCC.
+                </p>
+
+                <button type="button"
+                        (click)="login()"
+                        class="btn btn-primary">
+                    <b>Login</b>
+                </button>
+
+                <hr/>
+
+                <p>
+                    <b>Implementing agencies:</b> The Pacific Community (SPC) in partnership with Secretariat of the
+                    Pacific Environment Programme (SPREP) and the Pacific Islands Forum Secretariat (PIFS).
+                    Further information is available at <a style="color: #0f6ab4" href="http://ccprojects.gsd.spc.int/isacc">ccprojects.gsd.spc.int</a>.
+                </p>
+
+
+
+
+
             </div>
-            <div class="alert alert-warning" *ngSwitchCase="false">
-                <span>You don't have an account yet?</span>
-                <a class="alert-link" routerLink="register">Register a new account</a>
-            </div>
+
+            <hr/>
+            <img style="height: 125px" src="../../content/images/spc.png"/>
+            <img style="height: 140px" src="../../content/images/forum.png"/>
+
         </div>
 
-        <p>
-            If you have any question on JHipster:
-        </p>
 
-        <ul>
-            <li><a href="http://www.jhipster.tech/" target="_blank" rel="noopener">JHipster homepage</a></li>
-            <li><a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener">JHipster on Stack Overflow</a></li>
-            <li><a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener">JHipster bug tracker</a></li>
-            <li><a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener">JHipster public chat room</a></li>
-            <li><a href="https://twitter.com/java_hipster" target="_blank" rel="noopener">follow @java_hipster on Twitter</a></li>
-        </ul>
-
-        <p>
-            <span>If you like JHipster, don't forget to give us a star on</span> <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener">GitHub</a>!
-        </p>
     </div>
 </div>
