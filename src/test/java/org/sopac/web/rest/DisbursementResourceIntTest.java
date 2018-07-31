@@ -22,11 +22,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static org.sopac.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,8 +52,14 @@ public class DisbursementResourceIntTest {
     @Autowired
     private DisbursementRepository disbursementRepository;
 
+
+    /**
+     * This repository is mocked in the org.sopac.repository.search test package.
+     *
+     * @see org.sopac.repository.search.DisbursementSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private DisbursementSearchRepository disbursementSearchRepository;
+    private DisbursementSearchRepository mockDisbursementSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -70,7 +80,7 @@ public class DisbursementResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final DisbursementResource disbursementResource = new DisbursementResource(disbursementRepository, disbursementSearchRepository);
+        final DisbursementResource disbursementResource = new DisbursementResource(disbursementRepository, mockDisbursementSearchRepository);
         this.restDisbursementMockMvc = MockMvcBuilders.standaloneSetup(disbursementResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -93,7 +103,6 @@ public class DisbursementResourceIntTest {
 
     @Before
     public void initTest() {
-        disbursementSearchRepository.deleteAll();
         disbursement = createEntity(em);
     }
 
@@ -116,8 +125,7 @@ public class DisbursementResourceIntTest {
         assertThat(testDisbursement.getAmount()).isEqualTo(DEFAULT_AMOUNT);
 
         // Validate the Disbursement in Elasticsearch
-        Disbursement disbursementEs = disbursementSearchRepository.findOne(testDisbursement.getId());
-        assertThat(disbursementEs).isEqualToIgnoringGivenFields(testDisbursement);
+        verify(mockDisbursementSearchRepository, times(1)).save(testDisbursement);
     }
 
     @Test
@@ -137,6 +145,9 @@ public class DisbursementResourceIntTest {
         // Validate the Disbursement in the database
         List<Disbursement> disbursementList = disbursementRepository.findAll();
         assertThat(disbursementList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Disbursement in Elasticsearch
+        verify(mockDisbursementSearchRepository, times(0)).save(disbursement);
     }
 
     @Test
@@ -153,6 +164,7 @@ public class DisbursementResourceIntTest {
             .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)))
             .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())));
     }
+    
 
     @Test
     @Transactional
@@ -168,7 +180,6 @@ public class DisbursementResourceIntTest {
             .andExpect(jsonPath("$.year").value(DEFAULT_YEAR))
             .andExpect(jsonPath("$.amount").value(DEFAULT_AMOUNT.doubleValue()));
     }
-
     @Test
     @Transactional
     public void getNonExistingDisbursement() throws Exception {
@@ -182,11 +193,11 @@ public class DisbursementResourceIntTest {
     public void updateDisbursement() throws Exception {
         // Initialize the database
         disbursementRepository.saveAndFlush(disbursement);
-        disbursementSearchRepository.save(disbursement);
+
         int databaseSizeBeforeUpdate = disbursementRepository.findAll().size();
 
         // Update the disbursement
-        Disbursement updatedDisbursement = disbursementRepository.findOne(disbursement.getId());
+        Disbursement updatedDisbursement = disbursementRepository.findById(disbursement.getId()).get();
         // Disconnect from session so that the updates on updatedDisbursement are not directly saved in db
         em.detach(updatedDisbursement);
         updatedDisbursement
@@ -206,8 +217,7 @@ public class DisbursementResourceIntTest {
         assertThat(testDisbursement.getAmount()).isEqualTo(UPDATED_AMOUNT);
 
         // Validate the Disbursement in Elasticsearch
-        Disbursement disbursementEs = disbursementSearchRepository.findOne(testDisbursement.getId());
-        assertThat(disbursementEs).isEqualToIgnoringGivenFields(testDisbursement);
+        verify(mockDisbursementSearchRepository, times(1)).save(testDisbursement);
     }
 
     @Test
@@ -221,11 +231,14 @@ public class DisbursementResourceIntTest {
         restDisbursementMockMvc.perform(put("/api/disbursements")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(disbursement)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Disbursement in the database
         List<Disbursement> disbursementList = disbursementRepository.findAll();
-        assertThat(disbursementList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(disbursementList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Disbursement in Elasticsearch
+        verify(mockDisbursementSearchRepository, times(0)).save(disbursement);
     }
 
     @Test
@@ -233,7 +246,7 @@ public class DisbursementResourceIntTest {
     public void deleteDisbursement() throws Exception {
         // Initialize the database
         disbursementRepository.saveAndFlush(disbursement);
-        disbursementSearchRepository.save(disbursement);
+
         int databaseSizeBeforeDelete = disbursementRepository.findAll().size();
 
         // Get the disbursement
@@ -241,13 +254,12 @@ public class DisbursementResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean disbursementExistsInEs = disbursementSearchRepository.exists(disbursement.getId());
-        assertThat(disbursementExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Disbursement> disbursementList = disbursementRepository.findAll();
         assertThat(disbursementList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Disbursement in Elasticsearch
+        verify(mockDisbursementSearchRepository, times(1)).deleteById(disbursement.getId());
     }
 
     @Test
@@ -255,8 +267,8 @@ public class DisbursementResourceIntTest {
     public void searchDisbursement() throws Exception {
         // Initialize the database
         disbursementRepository.saveAndFlush(disbursement);
-        disbursementSearchRepository.save(disbursement);
-
+        when(mockDisbursementSearchRepository.search(queryStringQuery("id:" + disbursement.getId())))
+            .thenReturn(Collections.singletonList(disbursement));
         // Search the disbursement
         restDisbursementMockMvc.perform(get("/api/_search/disbursements?query=id:" + disbursement.getId()))
             .andExpect(status().isOk())

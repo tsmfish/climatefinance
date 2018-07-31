@@ -1,6 +1,7 @@
 package org.sopac.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -133,16 +134,18 @@ public class Project implements Serializable {
     private String notes;
 
     @ManyToOne
+    @JsonIgnoreProperties("projects")
     private Country country;
 
     @ManyToOne
+    @JsonIgnoreProperties("projects")
     private Sector sector;
 
     @ManyToOne
+    @JsonIgnoreProperties("projects")
     private DetailedSector detailedSector;
 
     @OneToMany(mappedBy = "project")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Disbursement> disbursements = new HashSet<>();
 

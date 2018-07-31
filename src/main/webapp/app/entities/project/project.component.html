@@ -1,8 +1,8 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span>Projects</span>
-        <button class="btn btn-primary float-right jh-create-entity create-project" [routerLink]="['/', { outlets: { popup: ['project-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-project" [routerLink]="['/project/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down" >
             Create new Project
             </span>
@@ -15,10 +15,10 @@
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
+                        <fa-icon [icon]="'search'"></fa-icon>
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
             </form>
@@ -29,43 +29,43 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="projectTitle"><span>Project Title</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="projectDescription"><span>Project Description</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="projectType"><span>Project Type</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="fundingBasis"><span>Funding Basis</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="totalFundingAmount"><span>Total Funding Amount</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="totalFundingCurrency"><span>Total Funding Currency</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="estimatedCountryAllocation"><span>Estimated Country Allocation</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="timeFrame"><span>Time Frame</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="principalSource"><span>Principal Source</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="additionalSource"><span>Additional Source</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="ministry"><span>Ministry</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="otherStakeholders"><span>Other Stakeholders</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="laterality"><span>Laterality</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="appropriated"><span>Appropriated</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="weightingPercentage"><span>Weighting Percentage</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="inkindPercentage"><span>Inkind Percentage</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="climateChangeAdaptation"><span>Climate Change Adaptation</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="climateChangeMitigation"><span>Climate Change Mitigation</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="disasterRiskReduction"><span>Disaster Risk Reduction</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="disasterRiskMitigation"><span>Disaster Risk Mitigation</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="total"><span>Total</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="status"><span>Status</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="modality"><span>Modality</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="startYear"><span>Start Year</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="endYear"><span>End Year</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="active"><span>Active</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="notes"><span>Notes</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="country.name"><span>Country</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="sector.name"><span>Sector</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="detailedSector.name"><span>Detailed Sector</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="projectTitle"><span>Project Title</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="projectDescription"><span>Project Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="projectType"><span>Project Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="fundingBasis"><span>Funding Basis</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="totalFundingAmount"><span>Total Funding Amount</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="totalFundingCurrency"><span>Total Funding Currency</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="estimatedCountryAllocation"><span>Estimated Country Allocation</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="timeFrame"><span>Time Frame</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="principalSource"><span>Principal Source</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="additionalSource"><span>Additional Source</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="ministry"><span>Ministry</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="otherStakeholders"><span>Other Stakeholders</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="laterality"><span>Laterality</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="appropriated"><span>Appropriated</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="weightingPercentage"><span>Weighting Percentage</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="inkindPercentage"><span>Inkind Percentage</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="climateChangeAdaptation"><span>Climate Change Adaptation</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="climateChangeMitigation"><span>Climate Change Mitigation</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="disasterRiskReduction"><span>Disaster Risk Reduction</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="disasterRiskMitigation"><span>Disaster Risk Mitigation</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="total"><span>Total</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="status"><span>Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="modality"><span>Modality</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="startYear"><span>Start Year</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="endYear"><span>End Year</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="active"><span>Active</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="notes"><span>Notes</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="country.name"><span>Country</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="sector.name"><span>Sector</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="detailedSector.name"><span>Detailed Sector</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let project of projects ;trackBy: trackId">
-                <td><a [routerLink]="['../project', project.id ]">{{project.id}}</a></td>
+                <td><a [routerLink]="['/project', project.id, 'view' ]">{{project.id}}</a></td>
                 <td>{{project.projectTitle}}</td>
                 <td>{{project.projectDescription}}</td>
                 <td>{{project.projectType}}</td>
@@ -95,33 +95,31 @@
                 <td>{{project.notes}}</td>
                 <td>
                     <div *ngIf="project.country">
-                        <a [routerLink]="['../country', project.country?.id ]" >{{project.country?.name}}</a>
+                        <a [routerLink]="['../country', project.country?.id, 'view' ]" >{{project.country?.name}}</a>
                     </div>
                 </td>
                 <td>
                     <div *ngIf="project.sector">
-                        <a [routerLink]="['../sector', project.sector?.id ]" >{{project.sector?.name}}</a>
+                        <a [routerLink]="['../sector', project.sector?.id, 'view' ]" >{{project.sector?.name}}</a>
                     </div>
                 </td>
                 <td>
                     <div *ngIf="project.detailedSector">
-                        <a [routerLink]="['../detailed-sector', project.detailedSector?.id ]" >{{project.detailedSector?.name}}</a>
+                        <a [routerLink]="['../detailed-sector', project.detailedSector?.id, 'view' ]" >{{project.detailedSector?.name}}</a>
                     </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../project', project.id ]"
+                                [routerLink]="['/project', project.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'project/'+ project.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/project', project.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline">Edit</span>
                         </button>
                         <button type="submit"
@@ -129,7 +127,7 @@
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline">Delete</span>
                         </button>
                     </div>

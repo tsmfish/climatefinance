@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Project } from './project.model';
-import { ProjectPopupService } from './project-popup.service';
+import { IProject } from 'app/shared/model/project.model';
 import { ProjectService } from './project.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { ProjectService } from './project.service';
     templateUrl: './project-delete-dialog.component.html'
 })
 export class ProjectDeleteDialogComponent {
+    project: IProject;
 
-    project: Project;
-
-    constructor(
-        private projectService: ProjectService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(private projectService: ProjectService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.projectService.delete(id).subscribe((response) => {
+        this.projectService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'projectListModification',
                 content: 'Deleted an project'
@@ -43,22 +36,30 @@ export class ProjectDeleteDialogComponent {
     template: ''
 })
 export class ProjectDeletePopupComponent implements OnInit, OnDestroy {
+    private ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private projectPopupService: ProjectPopupService
-    ) {}
+    constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.projectPopupService
-                .open(ProjectDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ project }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(ProjectDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.project = project;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

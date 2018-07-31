@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 
-import { Integration } from './integration.model';
+import { IIntegration } from 'app/shared/model/integration.model';
+import { Principal } from 'app/core';
 import { IntegrationService } from './integration.service';
-import { Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-integration',
     templateUrl: './integration.component.html'
 })
 export class IntegrationComponent implements OnInit, OnDestroy {
-integrations: Integration[];
+    integrations: IIntegration[];
     currentAccount: any;
     eventSubscriber: Subscription;
     currentSearch: string;
@@ -26,22 +26,26 @@ integrations: Integration[];
         private activatedRoute: ActivatedRoute,
         private principal: Principal
     ) {
-        this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
-            this.activatedRoute.snapshot.params['search'] : '';
+        this.currentSearch =
+            this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
+                ? this.activatedRoute.snapshot.params['search']
+                : '';
     }
 
     loadAll() {
         if (this.currentSearch) {
-            this.integrationService.search({
-                query: this.currentSearch,
-                }).subscribe(
-                    (res: HttpResponse<Integration[]>) => this.integrations = res.body,
+            this.integrationService
+                .search({
+                    query: this.currentSearch
+                })
+                .subscribe(
+                    (res: HttpResponse<IIntegration[]>) => (this.integrations = res.body),
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
             return;
-       }
+        }
         this.integrationService.query().subscribe(
-            (res: HttpResponse<Integration[]>) => {
+            (res: HttpResponse<IIntegration[]>) => {
                 this.integrations = res.body;
                 this.currentSearch = '';
             },
@@ -61,9 +65,10 @@ integrations: Integration[];
         this.currentSearch = '';
         this.loadAll();
     }
+
     ngOnInit() {
         this.loadAll();
-        this.principal.identity().then((account) => {
+        this.principal.identity().then(account => {
             this.currentAccount = account;
         });
         this.registerChangeInIntegrations();
@@ -73,7 +78,7 @@ integrations: Integration[];
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: Integration) {
+    trackId(index: number, item: IIntegration) {
         return item.id;
     }
 
@@ -84,11 +89,12 @@ integrations: Integration[];
     openFile(contentType, field) {
         return this.dataUtils.openFile(contentType, field);
     }
+
     registerChangeInIntegrations() {
-        this.eventSubscriber = this.eventManager.subscribe('integrationListModification', (response) => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('integrationListModification', response => this.loadAll());
     }
 
-    private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+    private onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
     }
 }

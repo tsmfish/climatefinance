@@ -1,8 +1,8 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span>Integrations</span>
-        <button class="btn btn-primary float-right jh-create-entity create-integration" [routerLink]="['/', { outlets: { popup: ['integration-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-integration" [routerLink]="['/integration/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down" >
             Create new Integration
             </span>
@@ -15,10 +15,10 @@
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
+                        <fa-icon [icon]="'search'"></fa-icon>
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
             </form>
@@ -45,7 +45,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let integration of integrations ;trackBy: trackId">
-                <td><a [routerLink]="['../integration', integration.id ]">{{integration.id}}</a></td>
+                <td><a [routerLink]="['/integration', integration.id, 'view' ]">{{integration.id}}</a></td>
                 <td>{{integration.platform}}</td>
                 <td>{{integration.driver}}</td>
                 <td>{{integration.username}}</td>
@@ -57,23 +57,21 @@
                 <td>{{integration.mapping}}</td>
                 <td>
                     <div *ngIf="integration.country">
-                        <a [routerLink]="['../country', integration.country?.id ]" >{{integration.country?.name}}</a>
+                        <a [routerLink]="['../country', integration.country?.id, 'view' ]" >{{integration.country?.name}}</a>
                     </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../integration', integration.id ]"
+                                [routerLink]="['/integration', integration.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'integration/'+ integration.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/integration', integration.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline">Edit</span>
                         </button>
                         <button type="submit"
@@ -81,7 +79,7 @@
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline">Delete</span>
                         </button>
                     </div>

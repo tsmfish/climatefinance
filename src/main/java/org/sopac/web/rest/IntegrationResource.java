@@ -2,7 +2,6 @@ package org.sopac.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.sopac.domain.Integration;
-
 import org.sopac.repository.IntegrationRepository;
 import org.sopac.repository.search.IntegrationSearchRepository;
 import org.sopac.web.rest.errors.BadRequestAlertException;
@@ -78,7 +77,7 @@ public class IntegrationResource {
     public ResponseEntity<Integration> updateIntegration(@RequestBody Integration integration) throws URISyntaxException {
         log.debug("REST request to update Integration : {}", integration);
         if (integration.getId() == null) {
-            return createIntegration(integration);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Integration result = integrationRepository.save(integration);
         integrationSearchRepository.save(result);
@@ -97,7 +96,7 @@ public class IntegrationResource {
     public List<Integration> getAllIntegrations() {
         log.debug("REST request to get all Integrations");
         return integrationRepository.findAll();
-        }
+    }
 
     /**
      * GET  /integrations/:id : get the "id" integration.
@@ -109,8 +108,8 @@ public class IntegrationResource {
     @Timed
     public ResponseEntity<Integration> getIntegration(@PathVariable Long id) {
         log.debug("REST request to get Integration : {}", id);
-        Integration integration = integrationRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(integration));
+        Optional<Integration> integration = integrationRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(integration);
     }
 
     /**
@@ -123,8 +122,9 @@ public class IntegrationResource {
     @Timed
     public ResponseEntity<Void> deleteIntegration(@PathVariable Long id) {
         log.debug("REST request to delete Integration : {}", id);
-        integrationRepository.delete(id);
-        integrationSearchRepository.delete(id);
+
+        integrationRepository.deleteById(id);
+        integrationSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

@@ -1,91 +1,81 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IProject } from 'app/shared/model/project.model';
 
-import { Project } from './project.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<IProject>;
+type EntityArrayResponseType = HttpResponse<IProject[]>;
 
-export type EntityResponseType = HttpResponse<Project>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProjectService {
-
-    private resourceUrl =  SERVER_API_URL + 'api/projects';
+    private resourceUrl = SERVER_API_URL + 'api/projects';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/projects';
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
+    constructor(private http: HttpClient) {}
 
-    create(project: Project): Observable<EntityResponseType> {
-        const copy = this.convert(project);
-        return this.http.post<Project>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(project: IProject): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(project);
+        return this.http
+            .post<IProject>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(project: Project): Observable<EntityResponseType> {
-        const copy = this.convert(project);
-        return this.http.put<Project>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(project: IProject): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(project);
+        return this.http
+            .put<IProject>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Project>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<IProject>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<Project[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Project[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Project[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IProject[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Project[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Project[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Project[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IProject[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Project = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<Project[]>): HttpResponse<Project[]> {
-        const jsonResponse: Project[] = res.body;
-        const body: Project[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to Project.
-     */
-    private convertItemFromServer(project: Project): Project {
-        const copy: Project = Object.assign({}, project);
-        copy.startYear = this.dateUtils
-            .convertLocalDateFromServer(project.startYear);
-        copy.endYear = this.dateUtils
-            .convertLocalDateFromServer(project.endYear);
+    private convertDateFromClient(project: IProject): IProject {
+        const copy: IProject = Object.assign({}, project, {
+            startYear: project.startYear != null && project.startYear.isValid() ? project.startYear.format(DATE_FORMAT) : null,
+            endYear: project.endYear != null && project.endYear.isValid() ? project.endYear.format(DATE_FORMAT) : null
+        });
         return copy;
     }
 
-    /**
-     * Convert a Project to a JSON which can be sent to the server.
-     */
-    private convert(project: Project): Project {
-        const copy: Project = Object.assign({}, project);
-        copy.startYear = this.dateUtils
-            .convertLocalDateToServer(project.startYear);
-        copy.endYear = this.dateUtils
-            .convertLocalDateToServer(project.endYear);
-        return copy;
+    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        res.body.startYear = res.body.startYear != null ? moment(res.body.startYear) : null;
+        res.body.endYear = res.body.endYear != null ? moment(res.body.endYear) : null;
+        return res;
+    }
+
+    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        res.body.forEach((project: IProject) => {
+            project.startYear = project.startYear != null ? moment(project.startYear) : null;
+            project.endYear = project.endYear != null ? moment(project.endYear) : null;
+        });
+        return res;
     }
 }

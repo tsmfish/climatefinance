@@ -1,49 +1,23 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ClimatefinanceSharedModule } from '../../shared';
+import { ClimatefinanceSharedModule } from 'app/shared';
 import {
-    SectorService,
-    SectorPopupService,
     SectorComponent,
     SectorDetailComponent,
-    SectorDialogComponent,
-    SectorPopupComponent,
+    SectorUpdateComponent,
     SectorDeletePopupComponent,
     SectorDeleteDialogComponent,
     sectorRoute,
-    sectorPopupRoute,
+    sectorPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...sectorRoute,
-    ...sectorPopupRoute,
-];
+const ENTITY_STATES = [...sectorRoute, ...sectorPopupRoute];
 
 @NgModule({
-    imports: [
-        ClimatefinanceSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
-    declarations: [
-        SectorComponent,
-        SectorDetailComponent,
-        SectorDialogComponent,
-        SectorDeleteDialogComponent,
-        SectorPopupComponent,
-        SectorDeletePopupComponent,
-    ],
-    entryComponents: [
-        SectorComponent,
-        SectorDialogComponent,
-        SectorPopupComponent,
-        SectorDeleteDialogComponent,
-        SectorDeletePopupComponent,
-    ],
-    providers: [
-        SectorService,
-        SectorPopupService,
-    ],
+    imports: [ClimatefinanceSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    declarations: [SectorComponent, SectorDetailComponent, SectorUpdateComponent, SectorDeleteDialogComponent, SectorDeletePopupComponent],
+    entryComponents: [SectorComponent, SectorUpdateComponent, SectorDeleteDialogComponent, SectorDeletePopupComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ClimatefinanceSectorModule {}

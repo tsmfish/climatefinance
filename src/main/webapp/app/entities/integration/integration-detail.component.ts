@@ -1,43 +1,24 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
-import { JhiEventManager, JhiDataUtils } from 'ng-jhipster';
+import { JhiDataUtils } from 'ng-jhipster';
 
-import { Integration } from './integration.model';
-import { IntegrationService } from './integration.service';
+import { IIntegration } from 'app/shared/model/integration.model';
 
 @Component({
     selector: 'jhi-integration-detail',
     templateUrl: './integration-detail.component.html'
 })
-export class IntegrationDetailComponent implements OnInit, OnDestroy {
+export class IntegrationDetailComponent implements OnInit {
+    integration: IIntegration;
 
-    integration: Integration;
-    private subscription: Subscription;
-    private eventSubscriber: Subscription;
-
-    constructor(
-        private eventManager: JhiEventManager,
-        private dataUtils: JhiDataUtils,
-        private integrationService: IntegrationService,
-        private route: ActivatedRoute
-    ) {
-    }
+    constructor(private dataUtils: JhiDataUtils, private activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
-        this.subscription = this.route.params.subscribe((params) => {
-            this.load(params['id']);
+        this.activatedRoute.data.subscribe(({ integration }) => {
+            this.integration = integration;
         });
-        this.registerChangeInIntegrations();
     }
 
-    load(id) {
-        this.integrationService.find(id)
-            .subscribe((integrationResponse: HttpResponse<Integration>) => {
-                this.integration = integrationResponse.body;
-            });
-    }
     byteSize(field) {
         return this.dataUtils.byteSize(field);
     }
@@ -47,17 +28,5 @@ export class IntegrationDetailComponent implements OnInit, OnDestroy {
     }
     previousState() {
         window.history.back();
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-        this.eventManager.destroy(this.eventSubscriber);
-    }
-
-    registerChangeInIntegrations() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'integrationListModification',
-            (response) => this.load(this.integration.id)
-        );
     }
 }

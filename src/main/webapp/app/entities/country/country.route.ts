@@ -1,10 +1,29 @@
-import { Routes } from '@angular/router';
-
-import { UserRouteAccessService } from '../../shared';
+import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
+import { UserRouteAccessService } from 'app/core';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Country } from 'app/shared/model/country.model';
+import { CountryService } from './country.service';
 import { CountryComponent } from './country.component';
 import { CountryDetailComponent } from './country-detail.component';
-import { CountryPopupComponent } from './country-dialog.component';
+import { CountryUpdateComponent } from './country-update.component';
 import { CountryDeletePopupComponent } from './country-delete-dialog.component';
+import { ICountry } from 'app/shared/model/country.model';
+
+@Injectable({ providedIn: 'root' })
+export class CountryResolve implements Resolve<ICountry> {
+    constructor(private service: CountryService) {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(map((country: HttpResponse<Country>) => country.body));
+        }
+        return of(new Country());
+    }
+}
 
 export const countryRoute: Routes = [
     {
@@ -15,9 +34,37 @@ export const countryRoute: Routes = [
             pageTitle: 'Countries'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'country/:id',
+    },
+    {
+        path: 'country/:id/view',
         component: CountryDetailComponent,
+        resolve: {
+            country: CountryResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'Countries'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'country/new',
+        component: CountryUpdateComponent,
+        resolve: {
+            country: CountryResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'Countries'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'country/:id/edit',
+        component: CountryUpdateComponent,
+        resolve: {
+            country: CountryResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'Countries'
@@ -28,28 +75,11 @@ export const countryRoute: Routes = [
 
 export const countryPopupRoute: Routes = [
     {
-        path: 'country-new',
-        component: CountryPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Countries'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'country/:id/edit',
-        component: CountryPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'Countries'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
         path: 'country/:id/delete',
         component: CountryDeletePopupComponent,
+        resolve: {
+            country: CountryResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'Countries'

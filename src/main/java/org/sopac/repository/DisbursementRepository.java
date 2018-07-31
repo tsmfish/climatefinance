@@ -1,13 +1,12 @@
 package org.sopac.repository;
 
 import org.sopac.domain.Disbursement;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the Disbursement entity.
+ * Spring Data  repository for the Disbursement entity.
  */
 @SuppressWarnings("unused")
 @Repository

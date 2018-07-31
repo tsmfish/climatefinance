@@ -1,48 +1,33 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ClimatefinanceSharedModule } from '../../shared';
+import { ClimatefinanceSharedModule } from 'app/shared';
 import {
-    DisbursementService,
-    DisbursementPopupService,
     DisbursementComponent,
     DisbursementDetailComponent,
-    DisbursementDialogComponent,
-    DisbursementPopupComponent,
+    DisbursementUpdateComponent,
     DisbursementDeletePopupComponent,
     DisbursementDeleteDialogComponent,
     disbursementRoute,
-    disbursementPopupRoute,
+    disbursementPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...disbursementRoute,
-    ...disbursementPopupRoute,
-];
+const ENTITY_STATES = [...disbursementRoute, ...disbursementPopupRoute];
 
 @NgModule({
-    imports: [
-        ClimatefinanceSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [ClimatefinanceSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         DisbursementComponent,
         DisbursementDetailComponent,
-        DisbursementDialogComponent,
+        DisbursementUpdateComponent,
         DisbursementDeleteDialogComponent,
-        DisbursementPopupComponent,
-        DisbursementDeletePopupComponent,
+        DisbursementDeletePopupComponent
     ],
     entryComponents: [
         DisbursementComponent,
-        DisbursementDialogComponent,
-        DisbursementPopupComponent,
+        DisbursementUpdateComponent,
         DisbursementDeleteDialogComponent,
-        DisbursementDeletePopupComponent,
-    ],
-    providers: [
-        DisbursementService,
-        DisbursementPopupService,
+        DisbursementDeletePopupComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

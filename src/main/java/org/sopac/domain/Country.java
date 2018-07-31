@@ -35,12 +35,10 @@ public class Country implements Serializable {
     private String code;
 
     @OneToMany(mappedBy = "country")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Project> projects = new HashSet<>();
 
     @OneToMany(mappedBy = "country")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Integration> integrations = new HashSet<>();
 

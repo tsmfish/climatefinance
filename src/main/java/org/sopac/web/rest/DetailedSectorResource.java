@@ -2,7 +2,6 @@ package org.sopac.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.sopac.domain.DetailedSector;
-
 import org.sopac.repository.DetailedSectorRepository;
 import org.sopac.repository.search.DetailedSectorSearchRepository;
 import org.sopac.web.rest.errors.BadRequestAlertException;
@@ -78,7 +77,7 @@ public class DetailedSectorResource {
     public ResponseEntity<DetailedSector> updateDetailedSector(@RequestBody DetailedSector detailedSector) throws URISyntaxException {
         log.debug("REST request to update DetailedSector : {}", detailedSector);
         if (detailedSector.getId() == null) {
-            return createDetailedSector(detailedSector);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         DetailedSector result = detailedSectorRepository.save(detailedSector);
         detailedSectorSearchRepository.save(result);
@@ -97,7 +96,7 @@ public class DetailedSectorResource {
     public List<DetailedSector> getAllDetailedSectors() {
         log.debug("REST request to get all DetailedSectors");
         return detailedSectorRepository.findAll();
-        }
+    }
 
     /**
      * GET  /detailed-sectors/:id : get the "id" detailedSector.
@@ -109,8 +108,8 @@ public class DetailedSectorResource {
     @Timed
     public ResponseEntity<DetailedSector> getDetailedSector(@PathVariable Long id) {
         log.debug("REST request to get DetailedSector : {}", id);
-        DetailedSector detailedSector = detailedSectorRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(detailedSector));
+        Optional<DetailedSector> detailedSector = detailedSectorRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(detailedSector);
     }
 
     /**
@@ -123,8 +122,9 @@ public class DetailedSectorResource {
     @Timed
     public ResponseEntity<Void> deleteDetailedSector(@PathVariable Long id) {
         log.debug("REST request to delete DetailedSector : {}", id);
-        detailedSectorRepository.delete(id);
-        detailedSectorSearchRepository.delete(id);
+
+        detailedSectorRepository.deleteById(id);
+        detailedSectorSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

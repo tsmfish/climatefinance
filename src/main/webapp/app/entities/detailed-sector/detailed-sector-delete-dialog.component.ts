@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { DetailedSector } from './detailed-sector.model';
-import { DetailedSectorPopupService } from './detailed-sector-popup.service';
+import { IDetailedSector } from 'app/shared/model/detailed-sector.model';
 import { DetailedSectorService } from './detailed-sector.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { DetailedSectorService } from './detailed-sector.service';
     templateUrl: './detailed-sector-delete-dialog.component.html'
 })
 export class DetailedSectorDeleteDialogComponent {
-
-    detailedSector: DetailedSector;
+    detailedSector: IDetailedSector;
 
     constructor(
         private detailedSectorService: DetailedSectorService,
         public activeModal: NgbActiveModal,
         private eventManager: JhiEventManager
-    ) {
-    }
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.detailedSectorService.delete(id).subscribe((response) => {
+        this.detailedSectorService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'detailedSectorListModification',
                 content: 'Deleted an detailedSector'
@@ -43,22 +40,33 @@ export class DetailedSectorDeleteDialogComponent {
     template: ''
 })
 export class DetailedSectorDeletePopupComponent implements OnInit, OnDestroy {
+    private ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private detailedSectorPopupService: DetailedSectorPopupService
-    ) {}
+    constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.detailedSectorPopupService
-                .open(DetailedSectorDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ detailedSector }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(DetailedSectorDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.detailedSector = detailedSector;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

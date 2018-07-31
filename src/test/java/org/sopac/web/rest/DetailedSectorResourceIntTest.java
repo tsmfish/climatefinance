@@ -22,11 +22,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static org.sopac.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -45,8 +49,14 @@ public class DetailedSectorResourceIntTest {
     @Autowired
     private DetailedSectorRepository detailedSectorRepository;
 
+
+    /**
+     * This repository is mocked in the org.sopac.repository.search test package.
+     *
+     * @see org.sopac.repository.search.DetailedSectorSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private DetailedSectorSearchRepository detailedSectorSearchRepository;
+    private DetailedSectorSearchRepository mockDetailedSectorSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -67,7 +77,7 @@ public class DetailedSectorResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final DetailedSectorResource detailedSectorResource = new DetailedSectorResource(detailedSectorRepository, detailedSectorSearchRepository);
+        final DetailedSectorResource detailedSectorResource = new DetailedSectorResource(detailedSectorRepository, mockDetailedSectorSearchRepository);
         this.restDetailedSectorMockMvc = MockMvcBuilders.standaloneSetup(detailedSectorResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -89,7 +99,6 @@ public class DetailedSectorResourceIntTest {
 
     @Before
     public void initTest() {
-        detailedSectorSearchRepository.deleteAll();
         detailedSector = createEntity(em);
     }
 
@@ -111,8 +120,7 @@ public class DetailedSectorResourceIntTest {
         assertThat(testDetailedSector.getName()).isEqualTo(DEFAULT_NAME);
 
         // Validate the DetailedSector in Elasticsearch
-        DetailedSector detailedSectorEs = detailedSectorSearchRepository.findOne(testDetailedSector.getId());
-        assertThat(detailedSectorEs).isEqualToIgnoringGivenFields(testDetailedSector);
+        verify(mockDetailedSectorSearchRepository, times(1)).save(testDetailedSector);
     }
 
     @Test
@@ -132,6 +140,9 @@ public class DetailedSectorResourceIntTest {
         // Validate the DetailedSector in the database
         List<DetailedSector> detailedSectorList = detailedSectorRepository.findAll();
         assertThat(detailedSectorList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the DetailedSector in Elasticsearch
+        verify(mockDetailedSectorSearchRepository, times(0)).save(detailedSector);
     }
 
     @Test
@@ -147,6 +158,7 @@ public class DetailedSectorResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(detailedSector.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
+    
 
     @Test
     @Transactional
@@ -161,7 +173,6 @@ public class DetailedSectorResourceIntTest {
             .andExpect(jsonPath("$.id").value(detailedSector.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()));
     }
-
     @Test
     @Transactional
     public void getNonExistingDetailedSector() throws Exception {
@@ -175,11 +186,11 @@ public class DetailedSectorResourceIntTest {
     public void updateDetailedSector() throws Exception {
         // Initialize the database
         detailedSectorRepository.saveAndFlush(detailedSector);
-        detailedSectorSearchRepository.save(detailedSector);
+
         int databaseSizeBeforeUpdate = detailedSectorRepository.findAll().size();
 
         // Update the detailedSector
-        DetailedSector updatedDetailedSector = detailedSectorRepository.findOne(detailedSector.getId());
+        DetailedSector updatedDetailedSector = detailedSectorRepository.findById(detailedSector.getId()).get();
         // Disconnect from session so that the updates on updatedDetailedSector are not directly saved in db
         em.detach(updatedDetailedSector);
         updatedDetailedSector
@@ -197,8 +208,7 @@ public class DetailedSectorResourceIntTest {
         assertThat(testDetailedSector.getName()).isEqualTo(UPDATED_NAME);
 
         // Validate the DetailedSector in Elasticsearch
-        DetailedSector detailedSectorEs = detailedSectorSearchRepository.findOne(testDetailedSector.getId());
-        assertThat(detailedSectorEs).isEqualToIgnoringGivenFields(testDetailedSector);
+        verify(mockDetailedSectorSearchRepository, times(1)).save(testDetailedSector);
     }
 
     @Test
@@ -212,11 +222,14 @@ public class DetailedSectorResourceIntTest {
         restDetailedSectorMockMvc.perform(put("/api/detailed-sectors")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(detailedSector)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the DetailedSector in the database
         List<DetailedSector> detailedSectorList = detailedSectorRepository.findAll();
-        assertThat(detailedSectorList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(detailedSectorList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the DetailedSector in Elasticsearch
+        verify(mockDetailedSectorSearchRepository, times(0)).save(detailedSector);
     }
 
     @Test
@@ -224,7 +237,7 @@ public class DetailedSectorResourceIntTest {
     public void deleteDetailedSector() throws Exception {
         // Initialize the database
         detailedSectorRepository.saveAndFlush(detailedSector);
-        detailedSectorSearchRepository.save(detailedSector);
+
         int databaseSizeBeforeDelete = detailedSectorRepository.findAll().size();
 
         // Get the detailedSector
@@ -232,13 +245,12 @@ public class DetailedSectorResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean detailedSectorExistsInEs = detailedSectorSearchRepository.exists(detailedSector.getId());
-        assertThat(detailedSectorExistsInEs).isFalse();
-
         // Validate the database is empty
         List<DetailedSector> detailedSectorList = detailedSectorRepository.findAll();
         assertThat(detailedSectorList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the DetailedSector in Elasticsearch
+        verify(mockDetailedSectorSearchRepository, times(1)).deleteById(detailedSector.getId());
     }
 
     @Test
@@ -246,8 +258,8 @@ public class DetailedSectorResourceIntTest {
     public void searchDetailedSector() throws Exception {
         // Initialize the database
         detailedSectorRepository.saveAndFlush(detailedSector);
-        detailedSectorSearchRepository.save(detailedSector);
-
+        when(mockDetailedSectorSearchRepository.search(queryStringQuery("id:" + detailedSector.getId())))
+            .thenReturn(Collections.singletonList(detailedSector));
         // Search the detailedSector
         restDetailedSectorMockMvc.perform(get("/api/_search/detailed-sectors?query=id:" + detailedSector.getId()))
             .andExpect(status().isOk())
