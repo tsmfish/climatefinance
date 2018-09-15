@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Disbursement } from './disbursement.model';
-import { DisbursementPopupService } from './disbursement-popup.service';
+import { IDisbursement } from 'app/shared/model/disbursement.model';
 import { DisbursementService } from './disbursement.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { DisbursementService } from './disbursement.service';
     templateUrl: './disbursement-delete-dialog.component.html'
 })
 export class DisbursementDeleteDialogComponent {
-
-    disbursement: Disbursement;
+    disbursement: IDisbursement;
 
     constructor(
         private disbursementService: DisbursementService,
         public activeModal: NgbActiveModal,
         private eventManager: JhiEventManager
-    ) {
-    }
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.disbursementService.delete(id).subscribe((response) => {
+        this.disbursementService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'disbursementListModification',
                 content: 'Deleted an disbursement'
@@ -43,22 +40,33 @@ export class DisbursementDeleteDialogComponent {
     template: ''
 })
 export class DisbursementDeletePopupComponent implements OnInit, OnDestroy {
+    private ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private disbursementPopupService: DisbursementPopupService
-    ) {}
+    constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.disbursementPopupService
-                .open(DisbursementDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ disbursement }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(DisbursementDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.disbursement = disbursement;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

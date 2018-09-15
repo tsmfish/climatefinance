@@ -1,160 +1,229 @@
-
-<div *ngIf="project">
-    <h2><span>Project</span> {{project.id}} : {{project.projectTitle}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <table class="row-md jh-entity-details">
-        <tr><th style="width: 300px;"><span>Project Title</span></th>
-        <td>
-            <span>{{project.projectTitle}}</span>
-        </td></tr>
-        <tr><th><span>Project Description</span></th>
-        <td>
-            <span>{{project.projectDescription}}</span>
-        </td></tr>
-        <tr><th><span>Project Type</span></th>
-        <td>
-            <span>{{project.projectType}}</span>
-        </td></tr>
-
-        <tr><th><span>Country</span></th>
-        <td>
-            <div *ngIf="project.country">
-                <a [routerLink]="['/country', project.country?.id]">{{project.country?.name}}</a>
-            </div>
-        </td></tr>
-        <tr><th><span>Sector</span></th>
-        <td>
-            <div *ngIf="project.sector">
-                <a [routerLink]="['/sector', project.sector?.id]">{{project.sector?.name}}</a>
-            </div>
-        </td></tr>
-        <tr><th><span>Detailed Sector</span></th>
-        <td>
-            <div *ngIf="project.detailedSector">
-                <a [routerLink]="['/detailed-sector', project.detailedSector?.id]">{{project.detailedSector?.name}}</a>
-            </div>
-        </td></tr>
-
-        <tr><th><span>Funding Basis</span></th>
-        <td>
-            <span>{{project.fundingBasis}}</span>
-        </td></tr>
-        <tr><th><span>Total Funding Amount</span></th>
-        <td>
-            <span>{{project.totalFundingAmount}}</span>
-        </td></tr>
-        <tr><th><span>Total Funding Currency</span></th>
-        <td>
-            <span>{{project.totalFundingCurrency}}</span>
-        </td></tr>
-        <tr><th><span>Estimated Country Allocation</span></th>
-        <td>
-            <span>{{project.estimatedCountryAllocation}}</span>
-        </td></tr>
-        <tr><th><span>Time Frame</span></th>
-        <td>
-            <span>{{project.timeFrame}}</span>
-        </td></tr>
-        <tr><th><span>Principal Source</span></th>
-        <td>
-            <span>{{project.principalSource}}</span>
-        </td></tr>
-        <tr><th><span>Additional Source</span></th>
-        <td>
-            <span>{{project.additionalSource}}</span>
-        </td></tr>
-        <tr><th><span>Ministry</span></th>
-        <td>
-            <span>{{project.ministry}}</span>
-        </td></tr>
-        <tr><th><span>Other Stakeholders</span></th>
-        <td>
-            <span>{{project.otherStakeholders}}</span>
-        </td></tr>
-        <tr><th><span>Laterality</span></th>
-        <td>
-            <span>{{project.laterality}}</span>
-        </td></tr>
-        <tr><th><span>Appropriated</span></th>
-        <td>
-            <span>{{project.appropriated}}</span>
-        </td></tr>
-        <tr><th><span>Weighting Percentage</span></th>
-        <td>
-            <span>{{project.weightingPercentage}}</span>
-        </td></tr>
-        <tr><th><span>Inkind Percentage</span></th>
-        <td>
-            <span>{{project.inkindPercentage}}</span>
-        </td></tr>
-        <tr><th><span>Climate Change Adaptation</span></th>
-        <td>
-            <span>{{project.climateChangeAdaptation}}</span>
-        </td></tr>
-        <tr><th><span>Climate Change Mitigation</span></th>
-        <td>
-            <span>{{project.climateChangeMitigation}}</span>
-        </td></tr>
-        <tr><th><span>Disaster Risk Reduction</span></th>
-        <td>
-            <span>{{project.disasterRiskReduction}}</span>
-        </td></tr>
-        <tr><th><span>Disaster Risk Mitigation</span></th>
-        <td>
-            <span>{{project.disasterRiskMitigation}}</span>
-        </td></tr>
-        <tr><th><span>Total</span></th>
-        <td>
-            <span>{{project.total}}</span>
-        </td></tr>
-        <tr><th><span>Status</span></th>
-        <td>
-            <span>{{project.status}}</span>
-        </td></tr>
-        <tr><th><span>Modality</span></th>
-        <td>
-            <span>{{project.modality}}</span>
-        </td></tr>
-        <tr><th><span>Start Year</span></th>
-        <td>
-            <span>{{project.startYear | date:'mediumDate'}}</span>
-        </td></tr>
-        <tr><th><span>End Year</span></th>
-        <td>
-            <span>{{project.endYear | date:'mediumDate'}}</span>
-        </td></tr>
-        <tr><th><span>Active</span></th>
-        <td>
-            <span>{{project.active}}</span>
-        </td></tr>
-        <tr><th><span>Notes</span></th>
-        <td>
-            <span>{{project.notes}}</span>
-        </td></tr>
-
-    </table>
-
-    <hr/>
+<div class="row justify-content-center">
+    <div class="col-8">
 
 
-    <button type="button"
-            (click)="previousState()"
-            class="btn btn-danger">
-        <span class="fa fa-chart-line"></span>&nbsp;<span> <b>Disbursements</b></span>
-    </button>
+        <div *ngIf="project">
+            <h2><span>Project</span> {{project.id}} : {{project.projectTitle}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <table class="row-md jh-entity-details">
+                <tr>
+                    <th style="width: 200px;"><span>Project Title</span></th>
+                    <td>
+                        <span>{{project.projectTitle}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Project Description</span></th>
+                    <td>
+                        <span><i>{{project.projectDescription}}</i></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Notes</span></th>
+                    <td>
+                        <span>{{project.notes}}</span>
+                    </td>
+                </tr>
+            </table>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
-    </button>
+            <hr/>
 
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'project/'+ project.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
-    </button>
+            <table class="row-md jh-entity-details">
+                <tr>
+                    <th style="width: 300px;"><span>Project Type</span></th>
+                    <td style="width: 300px;">
+                        <span>{{project.projectType}}</span>
+                    </td>
+
+                    <th style="width: 300px;"><span>Country</span></th>
+                    <td style="width: 300px;">
+                        <div *ngIf="project.country">
+                            <a [routerLink]="['/country', project.country?.id, 'view']">{{project.country?.name}}</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Sector</span></th>
+                    <td>
+                        <div *ngIf="project.sector">
+                            <a [routerLink]="['/sector', project.sector?.id, 'view']">{{project.sector?.name}}</a>
+                        </div>
+                    </td>
+
+                    <th><span>Detailed Sector</span></th>
+                    <td>
+                        <div *ngIf="project.detailedSector">
+                            <a [routerLink]="['/detailed-sector', project.detailedSector?.id, 'view']">{{project.detailedSector?.name}}</a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th><span>Funding Basis</span></th>
+                    <td>
+                        <span>{{project.fundingBasis}}</span>
+                    </td>
+
+                    <th><span>Total Funding Amount</span></th>
+                    <td>
+                        <span>{{project.totalFundingAmount}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Total Funding Currency</span></th>
+                    <td>
+                        <span>{{project.totalFundingCurrency}}</span>
+                    </td>
+
+                    <th><span>Estimated Country Allocation</span></th>
+                    <td>
+                        <span>{{project.estimatedCountryAllocation}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Time Frame</span></th>
+                    <td>
+                        <span>{{project.timeFrame}}</span>
+                    </td>
+
+                    <th><span>Principal Source</span></th>
+                    <td>
+                        <span>{{project.principalSource}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Additional Source</span></th>
+                    <td>
+                        <span>{{project.additionalSource}}</span>
+                    </td>
+
+                    <th><span>Ministry</span></th>
+                    <td>
+                        <span>{{project.ministry}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Other Stakeholders</span></th>
+                    <td>
+                        <span>{{project.otherStakeholders}}</span>
+                    </td>
+
+                    <th><span>Laterality</span></th>
+                    <td>
+                        <span>{{project.laterality}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Appropriated</span></th>
+                    <td>
+                        <span>{{project.appropriated}}</span>
+                    </td>
+
+                    <th><span>Weighting Percentage</span></th>
+                    <td>
+                        <span>{{project.weightingPercentage}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Inkind Percentage</span></th>
+                    <td>
+                        <span>{{project.inkindPercentage}}</span>
+                    </td>
+
+                    <th><span>Climate Change Adaptation</span></th>
+                    <td>
+                        <span>{{project.climateChangeAdaptation}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Climate Change Mitigation</span></th>
+                    <td>
+                        <span>{{project.climateChangeMitigation}}</span>
+                    </td>
+
+                    <th><span>Disaster Risk Reduction</span></th>
+                    <td>
+                        <span>{{project.disasterRiskReduction}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Disaster Risk Mitigation</span></th>
+                    <td>
+                        <span>{{project.disasterRiskMitigation}}</span>
+                    </td>
+
+                    <th><span>Total</span></th>
+                    <td>
+                        <span>{{project.total}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Status</span></th>
+                    <td>
+                        <span>{{project.status}}</span>
+                    </td>
+
+                    <th><span>Modality</span></th>
+                    <td>
+                        <span>{{project.modality}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Start Year</span></th>
+                    <td>
+                        <span>{{project.startYear | date:'mediumDate'}}</span>
+                    </td>
+
+                    <th><span>End Year</span></th>
+                    <td>
+                        <span>{{project.endYear | date:'mediumDate'}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span>Active</span></th>
+                    <td>
+                        <span>{{project.active}}</span>
+                    </td>
+
+                    <th><span>*</span></th>
+                    <td>
+                        <span></span>
+                    </td>
+                </tr>
+
+
+            </table>
+
+            <hr/>
+
+
+            <a type="button"
+                    href="#/disbursement;search=project.id:{{project.id}}"
+                    class="btn btn-danger">
+                <b>Disbursements</b></span>
+            </a>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+
+            <button type="button"
+                    [routerLink]="['/project', project.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+
+            <a type="button"
+               href="/report?id={{project.id}}"
+               class="btn btn-warning">
+                <b>Report</b></span>
+            </a>
+
+        </div>
+
+    </div>
 </div>

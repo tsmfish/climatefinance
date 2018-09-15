@@ -1,49 +1,29 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ClimatefinanceSharedModule } from '../../shared';
+import { ClimatefinanceSharedModule } from 'app/shared';
 import {
-    IntegrationService,
-    IntegrationPopupService,
     IntegrationComponent,
     IntegrationDetailComponent,
-    IntegrationDialogComponent,
-    IntegrationPopupComponent,
+    IntegrationUpdateComponent,
     IntegrationDeletePopupComponent,
     IntegrationDeleteDialogComponent,
     integrationRoute,
-    integrationPopupRoute,
+    integrationPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...integrationRoute,
-    ...integrationPopupRoute,
-];
+const ENTITY_STATES = [...integrationRoute, ...integrationPopupRoute];
 
 @NgModule({
-    imports: [
-        ClimatefinanceSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [ClimatefinanceSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         IntegrationComponent,
         IntegrationDetailComponent,
-        IntegrationDialogComponent,
+        IntegrationUpdateComponent,
         IntegrationDeleteDialogComponent,
-        IntegrationPopupComponent,
-        IntegrationDeletePopupComponent,
+        IntegrationDeletePopupComponent
     ],
-    entryComponents: [
-        IntegrationComponent,
-        IntegrationDialogComponent,
-        IntegrationPopupComponent,
-        IntegrationDeleteDialogComponent,
-        IntegrationDeletePopupComponent,
-    ],
-    providers: [
-        IntegrationService,
-        IntegrationPopupService,
-    ],
+    entryComponents: [IntegrationComponent, IntegrationUpdateComponent, IntegrationDeleteDialogComponent, IntegrationDeletePopupComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ClimatefinanceIntegrationModule {}

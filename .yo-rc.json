@@ -3,7 +3,7 @@
     "promptValues": {
       "packageName": "org.sopac"
     },
-    "jhipsterVersion": "4.14.3",
+    "jhipsterVersion": "5.1.0",
     "baseName": "climatefinance",
     "packageName": "org.sopac",
     "packageFolder": "org/sopac",

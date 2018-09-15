@@ -1,15 +1,14 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { ClimatefinanceTestModule } from '../../../test.module';
-import { SectorDeleteDialogComponent } from '../../../../../../main/webapp/app/entities/sector/sector-delete-dialog.component';
-import { SectorService } from '../../../../../../main/webapp/app/entities/sector/sector.service';
+import { SectorDeleteDialogComponent } from 'app/entities/sector/sector-delete-dialog.component';
+import { SectorService } from 'app/entities/sector/sector.service';
 
 describe('Component Tests', () => {
-
     describe('Sector Management Delete Component', () => {
         let comp: SectorDeleteDialogComponent;
         let fixture: ComponentFixture<SectorDeleteDialogComponent>;
@@ -17,19 +16,13 @@ describe('Component Tests', () => {
         let mockEventManager: any;
         let mockActiveModal: any;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [ClimatefinanceTestModule],
-                declarations: [SectorDeleteDialogComponent],
-                providers: [
-                    SectorService
-                ]
+                declarations: [SectorDeleteDialogComponent]
             })
-            .overrideTemplate(SectorDeleteDialogComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(SectorDeleteDialogComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(SectorDeleteDialogComponent);
             comp = fixture.componentInstance;
             service = fixture.debugElement.injector.get(SectorService);
@@ -38,11 +31,13 @@ describe('Component Tests', () => {
         });
 
         describe('confirmDelete', () => {
-            it('Should call delete service on confirmDelete',
-                inject([],
+            it(
+                'Should call delete service on confirmDelete',
+                inject(
+                    [],
                     fakeAsync(() => {
                         // GIVEN
-                        spyOn(service, 'delete').and.returnValue(Observable.of({}));
+                        spyOn(service, 'delete').and.returnValue(of({}));
 
                         // WHEN
                         comp.confirmDelete(123);
@@ -57,5 +52,4 @@ describe('Component Tests', () => {
             );
         });
     });
-
 });

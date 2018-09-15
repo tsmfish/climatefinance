@@ -22,11 +22,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static org.sopac.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -45,8 +49,14 @@ public class SectorResourceIntTest {
     @Autowired
     private SectorRepository sectorRepository;
 
+
+    /**
+     * This repository is mocked in the org.sopac.repository.search test package.
+     *
+     * @see org.sopac.repository.search.SectorSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private SectorSearchRepository sectorSearchRepository;
+    private SectorSearchRepository mockSectorSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -67,7 +77,7 @@ public class SectorResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final SectorResource sectorResource = new SectorResource(sectorRepository, sectorSearchRepository);
+        final SectorResource sectorResource = new SectorResource(sectorRepository, mockSectorSearchRepository);
         this.restSectorMockMvc = MockMvcBuilders.standaloneSetup(sectorResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -89,7 +99,6 @@ public class SectorResourceIntTest {
 
     @Before
     public void initTest() {
-        sectorSearchRepository.deleteAll();
         sector = createEntity(em);
     }
 
@@ -111,8 +120,7 @@ public class SectorResourceIntTest {
         assertThat(testSector.getName()).isEqualTo(DEFAULT_NAME);
 
         // Validate the Sector in Elasticsearch
-        Sector sectorEs = sectorSearchRepository.findOne(testSector.getId());
-        assertThat(sectorEs).isEqualToIgnoringGivenFields(testSector);
+        verify(mockSectorSearchRepository, times(1)).save(testSector);
     }
 
     @Test
@@ -132,6 +140,9 @@ public class SectorResourceIntTest {
         // Validate the Sector in the database
         List<Sector> sectorList = sectorRepository.findAll();
         assertThat(sectorList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Sector in Elasticsearch
+        verify(mockSectorSearchRepository, times(0)).save(sector);
     }
 
     @Test
@@ -147,6 +158,7 @@ public class SectorResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(sector.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
+    
 
     @Test
     @Transactional
@@ -161,7 +173,6 @@ public class SectorResourceIntTest {
             .andExpect(jsonPath("$.id").value(sector.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()));
     }
-
     @Test
     @Transactional
     public void getNonExistingSector() throws Exception {
@@ -175,11 +186,11 @@ public class SectorResourceIntTest {
     public void updateSector() throws Exception {
         // Initialize the database
         sectorRepository.saveAndFlush(sector);
-        sectorSearchRepository.save(sector);
+
         int databaseSizeBeforeUpdate = sectorRepository.findAll().size();
 
         // Update the sector
-        Sector updatedSector = sectorRepository.findOne(sector.getId());
+        Sector updatedSector = sectorRepository.findById(sector.getId()).get();
         // Disconnect from session so that the updates on updatedSector are not directly saved in db
         em.detach(updatedSector);
         updatedSector
@@ -197,8 +208,7 @@ public class SectorResourceIntTest {
         assertThat(testSector.getName()).isEqualTo(UPDATED_NAME);
 
         // Validate the Sector in Elasticsearch
-        Sector sectorEs = sectorSearchRepository.findOne(testSector.getId());
-        assertThat(sectorEs).isEqualToIgnoringGivenFields(testSector);
+        verify(mockSectorSearchRepository, times(1)).save(testSector);
     }
 
     @Test
@@ -212,11 +222,14 @@ public class SectorResourceIntTest {
         restSectorMockMvc.perform(put("/api/sectors")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(sector)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Sector in the database
         List<Sector> sectorList = sectorRepository.findAll();
-        assertThat(sectorList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(sectorList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Sector in Elasticsearch
+        verify(mockSectorSearchRepository, times(0)).save(sector);
     }
 
     @Test
@@ -224,7 +237,7 @@ public class SectorResourceIntTest {
     public void deleteSector() throws Exception {
         // Initialize the database
         sectorRepository.saveAndFlush(sector);
-        sectorSearchRepository.save(sector);
+
         int databaseSizeBeforeDelete = sectorRepository.findAll().size();
 
         // Get the sector
@@ -232,13 +245,12 @@ public class SectorResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean sectorExistsInEs = sectorSearchRepository.exists(sector.getId());
-        assertThat(sectorExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Sector> sectorList = sectorRepository.findAll();
         assertThat(sectorList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Sector in Elasticsearch
+        verify(mockSectorSearchRepository, times(1)).deleteById(sector.getId());
     }
 
     @Test
@@ -246,8 +258,8 @@ public class SectorResourceIntTest {
     public void searchSector() throws Exception {
         // Initialize the database
         sectorRepository.saveAndFlush(sector);
-        sectorSearchRepository.save(sector);
-
+        when(mockSectorSearchRepository.search(queryStringQuery("id:" + sector.getId())))
+            .thenReturn(Collections.singletonList(sector));
         // Search the sector
         restSectorMockMvc.perform(get("/api/_search/sectors?query=id:" + sector.getId()))
             .andExpect(status().isOk())

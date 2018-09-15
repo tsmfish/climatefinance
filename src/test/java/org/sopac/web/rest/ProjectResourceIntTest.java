@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -25,11 +27,15 @@ import org.springframework.util.Base64Utils;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static org.sopac.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -132,8 +138,14 @@ public class ProjectResourceIntTest {
     @Autowired
     private ProjectRepository projectRepository;
 
+
+    /**
+     * This repository is mocked in the org.sopac.repository.search test package.
+     *
+     * @see org.sopac.repository.search.ProjectSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private ProjectSearchRepository projectSearchRepository;
+    private ProjectSearchRepository mockProjectSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -154,7 +166,7 @@ public class ProjectResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ProjectResource projectResource = new ProjectResource(projectRepository, projectSearchRepository);
+        final ProjectResource projectResource = new ProjectResource(projectRepository, mockProjectSearchRepository);
         this.restProjectMockMvc = MockMvcBuilders.standaloneSetup(projectResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -202,7 +214,6 @@ public class ProjectResourceIntTest {
 
     @Before
     public void initTest() {
-        projectSearchRepository.deleteAll();
         project = createEntity(em);
     }
 
@@ -250,8 +261,7 @@ public class ProjectResourceIntTest {
         assertThat(testProject.getNotes()).isEqualTo(DEFAULT_NOTES);
 
         // Validate the Project in Elasticsearch
-        Project projectEs = projectSearchRepository.findOne(testProject.getId());
-        assertThat(projectEs).isEqualToIgnoringGivenFields(testProject);
+        verify(mockProjectSearchRepository, times(1)).save(testProject);
     }
 
     @Test
@@ -271,6 +281,9 @@ public class ProjectResourceIntTest {
         // Validate the Project in the database
         List<Project> projectList = projectRepository.findAll();
         assertThat(projectList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Project in Elasticsearch
+        verify(mockProjectSearchRepository, times(0)).save(project);
     }
 
     @Test
@@ -312,6 +325,7 @@ public class ProjectResourceIntTest {
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())))
             .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES.toString())));
     }
+    
 
     @Test
     @Transactional
@@ -352,7 +366,6 @@ public class ProjectResourceIntTest {
             .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()))
             .andExpect(jsonPath("$.notes").value(DEFAULT_NOTES.toString()));
     }
-
     @Test
     @Transactional
     public void getNonExistingProject() throws Exception {
@@ -366,11 +379,11 @@ public class ProjectResourceIntTest {
     public void updateProject() throws Exception {
         // Initialize the database
         projectRepository.saveAndFlush(project);
-        projectSearchRepository.save(project);
+
         int databaseSizeBeforeUpdate = projectRepository.findAll().size();
 
         // Update the project
-        Project updatedProject = projectRepository.findOne(project.getId());
+        Project updatedProject = projectRepository.findById(project.getId()).get();
         // Disconnect from session so that the updates on updatedProject are not directly saved in db
         em.detach(updatedProject);
         updatedProject
@@ -440,8 +453,7 @@ public class ProjectResourceIntTest {
         assertThat(testProject.getNotes()).isEqualTo(UPDATED_NOTES);
 
         // Validate the Project in Elasticsearch
-        Project projectEs = projectSearchRepository.findOne(testProject.getId());
-        assertThat(projectEs).isEqualToIgnoringGivenFields(testProject);
+        verify(mockProjectSearchRepository, times(1)).save(testProject);
     }
 
     @Test
@@ -455,11 +467,14 @@ public class ProjectResourceIntTest {
         restProjectMockMvc.perform(put("/api/projects")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(project)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Project in the database
         List<Project> projectList = projectRepository.findAll();
-        assertThat(projectList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(projectList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Project in Elasticsearch
+        verify(mockProjectSearchRepository, times(0)).save(project);
     }
 
     @Test
@@ -467,7 +482,7 @@ public class ProjectResourceIntTest {
     public void deleteProject() throws Exception {
         // Initialize the database
         projectRepository.saveAndFlush(project);
-        projectSearchRepository.save(project);
+
         int databaseSizeBeforeDelete = projectRepository.findAll().size();
 
         // Get the project
@@ -475,13 +490,12 @@ public class ProjectResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean projectExistsInEs = projectSearchRepository.exists(project.getId());
-        assertThat(projectExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Project> projectList = projectRepository.findAll();
         assertThat(projectList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Project in Elasticsearch
+        verify(mockProjectSearchRepository, times(1)).deleteById(project.getId());
     }
 
     @Test
@@ -489,8 +503,8 @@ public class ProjectResourceIntTest {
     public void searchProject() throws Exception {
         // Initialize the database
         projectRepository.saveAndFlush(project);
-        projectSearchRepository.save(project);
-
+        when(mockProjectSearchRepository.search(queryStringQuery("id:" + project.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(project), PageRequest.of(0, 1), 1));
         // Search the project
         restProjectMockMvc.perform(get("/api/_search/projects?query=id:" + project.getId()))
             .andExpect(status().isOk())

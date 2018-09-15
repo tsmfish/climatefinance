@@ -1,9 +1,10 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span>Disbursements</span>
-        <button class="btn btn-primary float-right jh-create-entity create-disbursement" [routerLink]="['/', { outlets: { popup: ['disbursement-new'] } }]">
-            <span class="fa fa-plus"></span>
-            <span class="hidden-sm-down" >
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-disbursement"
+                [routerLink]="['/disbursement/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span class="hidden-sm-down">
             Create new Disbursement
             </span>
         </button>
@@ -13,12 +14,13 @@
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch"
+                           name="currentSearch" placeholder="Query">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
+                        <fa-icon [icon]="'search'"></fa-icon>
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
             </form>
@@ -29,37 +31,37 @@
         <table class="table table-striped">
             <thead>
             <tr>
-            <th><span>ID</span></th>
-            <th><span>Year</span></th>
-            <th><span>Amount</span></th>
-            <th><span>Project</span></th>
-            <th></th>
+                <th><span>ID</span></th>
+                <th><span>Project</span></th>
+                <th><span>Year</span></th>
+                <th><span>Amount</span></th>
+
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let disbursement of disbursements ;trackBy: trackId">
-                <td><a [routerLink]="['../disbursement', disbursement.id ]">{{disbursement.id}}</a></td>
-                <td>{{disbursement.year}}</td>
-                <td>{{disbursement.amount}}</td>
+                <td><a [routerLink]="['/disbursement', disbursement.id, 'view' ]">{{disbursement.id}}</a></td>
                 <td>
                     <div *ngIf="disbursement.project">
-                        <a [routerLink]="['../project', disbursement.project?.id ]" >{{disbursement.project?.projectTitle}}</a>
+                        <a [routerLink]="['../project', disbursement.project?.id, 'view' ]">{{disbursement.project?.projectTitle}}</a>
                     </div>
                 </td>
+                <td>{{disbursement.year}}</td>
+                <td>{{disbursement.amount}}</td>
+
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../disbursement', disbursement.id ]"
+                                [routerLink]="['/disbursement', disbursement.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'disbursement/'+ disbursement.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/disbursement', disbursement.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline">Edit</span>
                         </button>
                         <button type="submit"
@@ -67,7 +69,7 @@
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline">Delete</span>
                         </button>
                     </div>

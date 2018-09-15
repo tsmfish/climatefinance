@@ -1,48 +1,33 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ClimatefinanceSharedModule } from '../../shared';
+import { ClimatefinanceSharedModule } from 'app/shared';
 import {
-    DetailedSectorService,
-    DetailedSectorPopupService,
     DetailedSectorComponent,
     DetailedSectorDetailComponent,
-    DetailedSectorDialogComponent,
-    DetailedSectorPopupComponent,
+    DetailedSectorUpdateComponent,
     DetailedSectorDeletePopupComponent,
     DetailedSectorDeleteDialogComponent,
     detailedSectorRoute,
-    detailedSectorPopupRoute,
+    detailedSectorPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...detailedSectorRoute,
-    ...detailedSectorPopupRoute,
-];
+const ENTITY_STATES = [...detailedSectorRoute, ...detailedSectorPopupRoute];
 
 @NgModule({
-    imports: [
-        ClimatefinanceSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [ClimatefinanceSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         DetailedSectorComponent,
         DetailedSectorDetailComponent,
-        DetailedSectorDialogComponent,
+        DetailedSectorUpdateComponent,
         DetailedSectorDeleteDialogComponent,
-        DetailedSectorPopupComponent,
-        DetailedSectorDeletePopupComponent,
+        DetailedSectorDeletePopupComponent
     ],
     entryComponents: [
         DetailedSectorComponent,
-        DetailedSectorDialogComponent,
-        DetailedSectorPopupComponent,
+        DetailedSectorUpdateComponent,
         DetailedSectorDeleteDialogComponent,
-        DetailedSectorDeletePopupComponent,
-    ],
-    providers: [
-        DetailedSectorService,
-        DetailedSectorPopupService,
+        DetailedSectorDeletePopupComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

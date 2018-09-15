@@ -1,0 +1,7 @@
+#yarn build
+./gradlew -Pprod clean bootWar
+mv build/libs/climatefinance-0.0.1-SNAPSHOT.war climatefinance.war
+
+#/etc/rc.local
+#/home/ubuntu/elasticsearch/bin/elasticsearch -d #manual start required
+SERVER_PORT=8080 java -jar climatefinance.war --spring.profiles.active=prod,swagger

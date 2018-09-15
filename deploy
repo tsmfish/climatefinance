@@ -1,0 +1,19 @@
+#ssh -C -i ~/Dropbox/gsd.pem ubuntu@13.211.162.119 rm /var/lib/tomcat7/webapps/climatefinance.war
+
+#sudo -u postgres psql -d climatefinance -c "VACUUM (FULL, ANALYSE)"
+#sudo -u postgres pg_dump -Fc climatefinance > climatefinance.db
+#scp -C -i ~/Dropbox/gsd.pem climatefinance.db ubuntu@13.211.162.119:/tmp/
+#rm climatefinance.db
+#pg_restore -d climatefinance /tmp/climatefinance.db
+
+yarn build
+./gradlew -Pprod clean bootWar
+mv build/libs/climatefinance-0.0.1-SNAPSHOT.war climatefinance.war
+scp -C -i ~/Dropbox/gsd.pem climatefinance.war ubuntu@13.211.162.119:/home/ubuntu/
+#rm climatefinance.war
+echo Deployment Finished.
+
+#/etc/rc.local
+#/home/ubuntu/elasticsearch/bin/elasticsearch -d #manual start required
+#SERVER_PORT=80 java -jar /home/ubuntu/climatefinance.war --spring.profiles.active=prod,swagger
+

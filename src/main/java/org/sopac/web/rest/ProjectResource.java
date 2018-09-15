@@ -2,7 +2,6 @@ package org.sopac.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.sopac.domain.Project;
-
 import org.sopac.repository.ProjectRepository;
 import org.sopac.repository.search.ProjectSearchRepository;
 import org.sopac.web.rest.errors.BadRequestAlertException;
@@ -84,7 +83,7 @@ public class ProjectResource {
     public ResponseEntity<Project> updateProject(@Valid @RequestBody Project project) throws URISyntaxException {
         log.debug("REST request to update Project : {}", project);
         if (project.getId() == null) {
-            return createProject(project);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Project result = projectRepository.save(project);
         projectSearchRepository.save(result);
@@ -118,8 +117,8 @@ public class ProjectResource {
     @Timed
     public ResponseEntity<Project> getProject(@PathVariable Long id) {
         log.debug("REST request to get Project : {}", id);
-        Project project = projectRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(project));
+        Optional<Project> project = projectRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(project);
     }
 
     /**
@@ -132,8 +131,9 @@ public class ProjectResource {
     @Timed
     public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
         log.debug("REST request to delete Project : {}", id);
-        projectRepository.delete(id);
-        projectSearchRepository.delete(id);
+
+        projectRepository.deleteById(id);
+        projectSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

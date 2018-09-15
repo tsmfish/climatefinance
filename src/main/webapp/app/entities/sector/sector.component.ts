@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { Sector } from './sector.model';
+import { ISector } from 'app/shared/model/sector.model';
+import { Principal } from 'app/core';
 import { SectorService } from './sector.service';
-import { Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-sector',
     templateUrl: './sector.component.html'
 })
 export class SectorComponent implements OnInit, OnDestroy {
-sectors: Sector[];
+    sectors: ISector[];
     currentAccount: any;
     eventSubscriber: Subscription;
     currentSearch: string;
@@ -25,22 +25,26 @@ sectors: Sector[];
         private activatedRoute: ActivatedRoute,
         private principal: Principal
     ) {
-        this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
-            this.activatedRoute.snapshot.params['search'] : '';
+        this.currentSearch =
+            this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
+                ? this.activatedRoute.snapshot.params['search']
+                : '';
     }
 
     loadAll() {
         if (this.currentSearch) {
-            this.sectorService.search({
-                query: this.currentSearch,
-                }).subscribe(
-                    (res: HttpResponse<Sector[]>) => this.sectors = res.body,
+            this.sectorService
+                .search({
+                    query: this.currentSearch
+                })
+                .subscribe(
+                    (res: HttpResponse<ISector[]>) => (this.sectors = res.body),
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
             return;
-       }
+        }
         this.sectorService.query().subscribe(
-            (res: HttpResponse<Sector[]>) => {
+            (res: HttpResponse<ISector[]>) => {
                 this.sectors = res.body;
                 this.currentSearch = '';
             },
@@ -60,9 +64,10 @@ sectors: Sector[];
         this.currentSearch = '';
         this.loadAll();
     }
+
     ngOnInit() {
         this.loadAll();
-        this.principal.identity().then((account) => {
+        this.principal.identity().then(account => {
             this.currentAccount = account;
         });
         this.registerChangeInSectors();
@@ -72,14 +77,15 @@ sectors: Sector[];
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: Sector) {
+    trackId(index: number, item: ISector) {
         return item.id;
     }
+
     registerChangeInSectors() {
-        this.eventSubscriber = this.eventManager.subscribe('sectorListModification', (response) => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('sectorListModification', response => this.loadAll());
     }
 
-    private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+    private onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
     }
 }

@@ -1,0 +1,27 @@
+ //"^6.1.1",
+
+Climate Change Finance Tracking Tool
+climatefinance.gem.spc.int
+
+
+Some charts/queries examples below.
+
+i. Funding Sources – Targeting the sources of finance and the distribution among recipient countries, including a classification between multilateral and bilateral sources.
+ii. Sectoral Distribution – looking at the spread of financing across different sectors. Guidance can be drawn from the CCDRM finance assessments already undertaken where the broad sectoral classifications include renewable energy and energy efficiency, water, agriculture and food security, forestry and REDD+, fisheries, conservation and biodiversity, transport and infrastructure, health, education, etc.
+iii. Disaggregation between climate change adaptation, climate change mitigation and where possible DRR/DRM.
+iv. Mode of delivery/Funding Modality – targeting proportion of delivery through project/programme (off budget) versus direct budget support (on budget) through use of country systems.
+v. Comparison of committed funds and disbursed funds.
+vi. Form of financing support – targeting the type of support provided through the financing whether in the form of capital, technical assistance or consumables and equipment.
+vii. Across timeframes (Different years)
+
+*Add startYear, endYear.
+Export PDF, XLS (Project Listing, Project Show)
+
+
+*Modality: OnBudget, OffBudget
+*Remove "Reflected In Budget"
+
+Total +
+Disbursment Entity By Year (ManyToOne -> Projects)
+
+Pie Chart, with Percentage and Dollar Value (Total)

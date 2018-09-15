@@ -1,81 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { Disbursement } from './disbursement.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IDisbursement } from 'app/shared/model/disbursement.model';
 
-export type EntityResponseType = HttpResponse<Disbursement>;
+type EntityResponseType = HttpResponse<IDisbursement>;
+type EntityArrayResponseType = HttpResponse<IDisbursement[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DisbursementService {
-
-    private resourceUrl =  SERVER_API_URL + 'api/disbursements';
+    private resourceUrl = SERVER_API_URL + 'api/disbursements';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/disbursements';
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
-    create(disbursement: Disbursement): Observable<EntityResponseType> {
-        const copy = this.convert(disbursement);
-        return this.http.post<Disbursement>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(disbursement: IDisbursement): Observable<EntityResponseType> {
+        return this.http.post<IDisbursement>(this.resourceUrl, disbursement, { observe: 'response' });
     }
 
-    update(disbursement: Disbursement): Observable<EntityResponseType> {
-        const copy = this.convert(disbursement);
-        return this.http.put<Disbursement>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(disbursement: IDisbursement): Observable<EntityResponseType> {
+        return this.http.put<IDisbursement>(this.resourceUrl, disbursement, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Disbursement>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<IDisbursement>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<Disbursement[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Disbursement[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Disbursement[]>) => this.convertArrayResponse(res));
+        return this.http.get<IDisbursement[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Disbursement[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Disbursement[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Disbursement[]>) => this.convertArrayResponse(res));
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Disbursement = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<Disbursement[]>): HttpResponse<Disbursement[]> {
-        const jsonResponse: Disbursement[] = res.body;
-        const body: Disbursement[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to Disbursement.
-     */
-    private convertItemFromServer(disbursement: Disbursement): Disbursement {
-        const copy: Disbursement = Object.assign({}, disbursement);
-        return copy;
-    }
-
-    /**
-     * Convert a Disbursement to a JSON which can be sent to the server.
-     */
-    private convert(disbursement: Disbursement): Disbursement {
-        const copy: Disbursement = Object.assign({}, disbursement);
-        return copy;
+        return this.http.get<IDisbursement[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 }

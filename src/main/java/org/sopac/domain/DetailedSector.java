@@ -32,7 +32,6 @@ public class DetailedSector implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "detailedSector")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Project> projects = new HashSet<>();
 

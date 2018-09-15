@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="project" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a71113bd-95da-43f5-8454-e72a5a698512">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="climatefinance"/>
+	<parameter name="Parameter1" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[1429]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[SELECT project.*,
+	c.name AS country,
+	s.name AS sector,
+	ds.name AS detailedSector
+FROM project
+	inner join country c ON 
+	 project.country_id = c.id 
+	left outer join sector s ON 
+	 project.sector_id = s.id 
+	left outer join detailed_sector ds ON 
+	 project.detailed_sector_id = ds.id 
+WHERE 
+	 project.id = $P{Parameter1}]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="project_title" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="project_title"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="project_description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="project_description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="project_type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="project_type"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="funding_basis" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="funding_basis"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="total_funding_amount" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="total_funding_amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="total_funding_currency" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="total_funding_currency"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="estimated_country_allocation" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="estimated_country_allocation"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="time_frame" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="time_frame"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="principal_source" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="principal_source"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="additional_source" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="additional_source"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="ministry" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ministry"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="other_stakeholders" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="other_stakeholders"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="laterality" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="laterality"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="appropriated" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="appropriated"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="weighting_percentage" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="weighting_percentage"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="inkind_percentage" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="inkind_percentage"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="climate_change_adaptation" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="climate_change_adaptation"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="climate_change_mitigation" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="climate_change_mitigation"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="disaster_risk_reduction" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="disaster_risk_reduction"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="disaster_risk_mitigation" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="disaster_risk_mitigation"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="total" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="total"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="modality" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="modality"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="start_year" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="start_year"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="end_year" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="end_year"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="active" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="active"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="notes" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="notes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="country_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="country_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="sector_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="sector_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="detailed_sector_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="detailed_sector_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="project"/>
+	</field>
+	<field name="country" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="country"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="country"/>
+	</field>
+	<field name="sector" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="sector"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="sector"/>
+	</field>
+	<field name="detailedsector" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="detailedsector"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="detailed_sector"/>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="65">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="80" backcolor="#006699" uuid="56312bb4-200b-4716-9ea4-2088b3b8dba6"/>
+				<staticText>
+					<reportElement x="20" y="20" width="490" height="43" forecolor="#FFFFFF" uuid="74e0d8c3-3cc1-4a7b-aaaf-e34b98e136dc"/>
+					<textElement>
+						<font size="18" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Pacific Climate Finance Tracking Tool]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="20" y="43" width="180" height="20" forecolor="#FFFFFF" uuid="ded7a09d-e73f-4797-aaf4-2c202019eefd"/>
+					<textElement textAlignment="Left">
+						<font size="12" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Individual Project]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="7"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61">
+			<line>
+				<reportElement x="-20" y="50" width="595" height="1" forecolor="#666666" uuid="797b2b49-d95d-4833-b043-2a80d9a7e600"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="30" width="535" height="20" uuid="b7b8b588-5b10-4c51-92e0-1cd9f3f7a869">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d60632cc-1a80-4a0b-8fc8-66caabc1b411"/>
+				</reportElement>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{project_title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="8" width="100" height="30" uuid="68f6e7aa-b4f0-42d3-b6ef-f9142535467b"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="200">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<textField>
+				<reportElement x="0" y="0" width="555" height="35" uuid="4695c779-e580-432f-92eb-f44f478f9fb6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a7732479-2118-409e-85a2-1b2c84aa5677"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{project_type}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="35" width="555" height="33" uuid="8901955d-06d8-4a59-9ceb-31dcb91824e6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f6781769-ee86-46bd-9a55-77de3e50aa93"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{funding_basis}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="68" width="555" height="33" uuid="275edf12-9391-4ce4-b91b-3e55e6ad738a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="414737d8-56fe-4cf0-8dc5-f239033e6c35"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{project_description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="101" width="555" height="33" uuid="6131ae34-724a-4308-b26d-d08e5b95e742">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a9b856de-b4ca-4b1b-862c-38685237ae51"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{country}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="134" width="555" height="33" uuid="d8de29bc-23ae-49a3-86cd-c2545183fe69">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f26385aa-6125-413d-ba21-7dd53d233ea2"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{sector}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="167" width="555" height="33" uuid="94134ca0-8e28-4131-8bba-98aeefe71832">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c89deccc-9aaf-4c0e-8b5e-c207552efd9a"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{detailedsector}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="2c38e467-351e-41b8-b3f0-e16d2a707202"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="f7e131ec-cf9c-481a-ab7c-5b3ca01c7960"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13" uuid="9b456817-d771-41ea-bf22-1bcb4822dfab"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

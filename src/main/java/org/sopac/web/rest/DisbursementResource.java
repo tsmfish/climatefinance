@@ -2,7 +2,6 @@ package org.sopac.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.sopac.domain.Disbursement;
-
 import org.sopac.repository.DisbursementRepository;
 import org.sopac.repository.search.DisbursementSearchRepository;
 import org.sopac.web.rest.errors.BadRequestAlertException;
@@ -78,7 +77,7 @@ public class DisbursementResource {
     public ResponseEntity<Disbursement> updateDisbursement(@RequestBody Disbursement disbursement) throws URISyntaxException {
         log.debug("REST request to update Disbursement : {}", disbursement);
         if (disbursement.getId() == null) {
-            return createDisbursement(disbursement);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Disbursement result = disbursementRepository.save(disbursement);
         disbursementSearchRepository.save(result);
@@ -97,7 +96,7 @@ public class DisbursementResource {
     public List<Disbursement> getAllDisbursements() {
         log.debug("REST request to get all Disbursements");
         return disbursementRepository.findAll();
-        }
+    }
 
     /**
      * GET  /disbursements/:id : get the "id" disbursement.
@@ -109,8 +108,8 @@ public class DisbursementResource {
     @Timed
     public ResponseEntity<Disbursement> getDisbursement(@PathVariable Long id) {
         log.debug("REST request to get Disbursement : {}", id);
-        Disbursement disbursement = disbursementRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(disbursement));
+        Optional<Disbursement> disbursement = disbursementRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(disbursement);
     }
 
     /**
@@ -123,8 +122,9 @@ public class DisbursementResource {
     @Timed
     public ResponseEntity<Void> deleteDisbursement(@PathVariable Long id) {
         log.debug("REST request to delete Disbursement : {}", id);
-        disbursementRepository.delete(id);
-        disbursementSearchRepository.delete(id);
+
+        disbursementRepository.deleteById(id);
+        disbursementSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

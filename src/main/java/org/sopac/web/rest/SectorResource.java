@@ -2,7 +2,6 @@ package org.sopac.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import org.sopac.domain.Sector;
-
 import org.sopac.repository.SectorRepository;
 import org.sopac.repository.search.SectorSearchRepository;
 import org.sopac.web.rest.errors.BadRequestAlertException;
@@ -78,7 +77,7 @@ public class SectorResource {
     public ResponseEntity<Sector> updateSector(@RequestBody Sector sector) throws URISyntaxException {
         log.debug("REST request to update Sector : {}", sector);
         if (sector.getId() == null) {
-            return createSector(sector);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Sector result = sectorRepository.save(sector);
         sectorSearchRepository.save(result);
@@ -97,7 +96,7 @@ public class SectorResource {
     public List<Sector> getAllSectors() {
         log.debug("REST request to get all Sectors");
         return sectorRepository.findAll();
-        }
+    }
 
     /**
      * GET  /sectors/:id : get the "id" sector.
@@ -109,8 +108,8 @@ public class SectorResource {
     @Timed
     public ResponseEntity<Sector> getSector(@PathVariable Long id) {
         log.debug("REST request to get Sector : {}", id);
-        Sector sector = sectorRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(sector));
+        Optional<Sector> sector = sectorRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(sector);
     }
 
     /**
@@ -123,8 +122,9 @@ public class SectorResource {
     @Timed
     public ResponseEntity<Void> deleteSector(@PathVariable Long id) {
         log.debug("REST request to delete Sector : {}", id);
-        sectorRepository.delete(id);
-        sectorSearchRepository.delete(id);
+
+        sectorRepository.deleteById(id);
+        sectorSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

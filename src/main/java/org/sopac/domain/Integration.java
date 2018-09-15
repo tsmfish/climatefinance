@@ -1,5 +1,6 @@
 package org.sopac.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -60,6 +61,7 @@ public class Integration implements Serializable {
     private String mapping;
 
     @ManyToOne
+    @JsonIgnoreProperties("integrations")
     private Country country;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

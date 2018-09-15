@@ -23,11 +23,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static org.sopac.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -72,8 +76,14 @@ public class IntegrationResourceIntTest {
     @Autowired
     private IntegrationRepository integrationRepository;
 
+
+    /**
+     * This repository is mocked in the org.sopac.repository.search test package.
+     *
+     * @see org.sopac.repository.search.IntegrationSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private IntegrationSearchRepository integrationSearchRepository;
+    private IntegrationSearchRepository mockIntegrationSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -94,7 +104,7 @@ public class IntegrationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final IntegrationResource integrationResource = new IntegrationResource(integrationRepository, integrationSearchRepository);
+        final IntegrationResource integrationResource = new IntegrationResource(integrationRepository, mockIntegrationSearchRepository);
         this.restIntegrationMockMvc = MockMvcBuilders.standaloneSetup(integrationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -124,7 +134,6 @@ public class IntegrationResourceIntTest {
 
     @Before
     public void initTest() {
-        integrationSearchRepository.deleteAll();
         integration = createEntity(em);
     }
 
@@ -154,8 +163,7 @@ public class IntegrationResourceIntTest {
         assertThat(testIntegration.getMapping()).isEqualTo(DEFAULT_MAPPING);
 
         // Validate the Integration in Elasticsearch
-        Integration integrationEs = integrationSearchRepository.findOne(testIntegration.getId());
-        assertThat(integrationEs).isEqualToIgnoringGivenFields(testIntegration);
+        verify(mockIntegrationSearchRepository, times(1)).save(testIntegration);
     }
 
     @Test
@@ -175,6 +183,9 @@ public class IntegrationResourceIntTest {
         // Validate the Integration in the database
         List<Integration> integrationList = integrationRepository.findAll();
         assertThat(integrationList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Integration in Elasticsearch
+        verify(mockIntegrationSearchRepository, times(0)).save(integration);
     }
 
     @Test
@@ -198,6 +209,7 @@ public class IntegrationResourceIntTest {
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())))
             .andExpect(jsonPath("$.[*].mapping").value(hasItem(DEFAULT_MAPPING.toString())));
     }
+    
 
     @Test
     @Transactional
@@ -220,7 +232,6 @@ public class IntegrationResourceIntTest {
             .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()))
             .andExpect(jsonPath("$.mapping").value(DEFAULT_MAPPING.toString()));
     }
-
     @Test
     @Transactional
     public void getNonExistingIntegration() throws Exception {
@@ -234,11 +245,11 @@ public class IntegrationResourceIntTest {
     public void updateIntegration() throws Exception {
         // Initialize the database
         integrationRepository.saveAndFlush(integration);
-        integrationSearchRepository.save(integration);
+
         int databaseSizeBeforeUpdate = integrationRepository.findAll().size();
 
         // Update the integration
-        Integration updatedIntegration = integrationRepository.findOne(integration.getId());
+        Integration updatedIntegration = integrationRepository.findById(integration.getId()).get();
         // Disconnect from session so that the updates on updatedIntegration are not directly saved in db
         em.detach(updatedIntegration);
         updatedIntegration
@@ -272,8 +283,7 @@ public class IntegrationResourceIntTest {
         assertThat(testIntegration.getMapping()).isEqualTo(UPDATED_MAPPING);
 
         // Validate the Integration in Elasticsearch
-        Integration integrationEs = integrationSearchRepository.findOne(testIntegration.getId());
-        assertThat(integrationEs).isEqualToIgnoringGivenFields(testIntegration);
+        verify(mockIntegrationSearchRepository, times(1)).save(testIntegration);
     }
 
     @Test
@@ -287,11 +297,14 @@ public class IntegrationResourceIntTest {
         restIntegrationMockMvc.perform(put("/api/integrations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(integration)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Integration in the database
         List<Integration> integrationList = integrationRepository.findAll();
-        assertThat(integrationList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(integrationList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Integration in Elasticsearch
+        verify(mockIntegrationSearchRepository, times(0)).save(integration);
     }
 
     @Test
@@ -299,7 +312,7 @@ public class IntegrationResourceIntTest {
     public void deleteIntegration() throws Exception {
         // Initialize the database
         integrationRepository.saveAndFlush(integration);
-        integrationSearchRepository.save(integration);
+
         int databaseSizeBeforeDelete = integrationRepository.findAll().size();
 
         // Get the integration
@@ -307,13 +320,12 @@ public class IntegrationResourceIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean integrationExistsInEs = integrationSearchRepository.exists(integration.getId());
-        assertThat(integrationExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Integration> integrationList = integrationRepository.findAll();
         assertThat(integrationList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Integration in Elasticsearch
+        verify(mockIntegrationSearchRepository, times(1)).deleteById(integration.getId());
     }
 
     @Test
@@ -321,8 +333,8 @@ public class IntegrationResourceIntTest {
     public void searchIntegration() throws Exception {
         // Initialize the database
         integrationRepository.saveAndFlush(integration);
-        integrationSearchRepository.save(integration);
-
+        when(mockIntegrationSearchRepository.search(queryStringQuery("id:" + integration.getId())))
+            .thenReturn(Collections.singletonList(integration));
         // Search the integration
         restIntegrationMockMvc.perform(get("/api/_search/integrations?query=id:" + integration.getId()))
             .andExpect(status().isOk())

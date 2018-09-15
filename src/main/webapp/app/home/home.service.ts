@@ -1,45 +1,41 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
-import {SERVER_API_URL} from '../app.constants';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { SERVER_API_URL } from '../app.constants';
 import 'rxjs/add/operator/toPromise';
-import {CountryCount} from './countrycount';
-import {GenericCount} from './genericcount';
-import {Validcountry} from './validcountry';
+import { CountryCount } from './countrycount';
+import { GenericCount } from './genericcount';
+import { Validcountry } from './validcountry';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 
-import {catchError, map, tap} from 'rxjs/operators';
-
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable()
 export class HomeService {
-
     private restUrl = SERVER_API_URL + 'api/custom';
 
-    constructor(private http: HttpClient) {
-    }
+    constructor(private http: HttpClient) {}
 
     getCount(): Observable<String> {
-        return this.http.get<String>(this.restUrl + '/count')
+        return this.http.get<String>(this.restUrl + '/count');
     }
 
     getCountryCount(): Observable<CountryCount[]> {
-        return this.http.get<CountryCount[]>(this.restUrl + '/countrycount')
-            .pipe(
-                catchError(this.handleError('getCountryCount', []))
-            );
+        return this.http.get<CountryCount[]>(this.restUrl + '/countrycount').pipe(catchError(this.handleError('getCountryCount', [])));
+    }
+
+    getCountryCountChart(): Observable<GenericCount[]> {
+        return this.http
+            .get<GenericCount[]>(this.restUrl + '/countrycountchart')
+            .pipe(catchError(this.handleError('getCountryCountChart', [])));
     }
 
     getValidCountries(): Observable<Validcountry[]> {
-        return this.http.get<Validcountry[]>(this.restUrl + '/validcountries')
-            .pipe(
-                catchError(this.handleError('getValidCountries', []))
-            );
+        return this.http.get<Validcountry[]>(this.restUrl + '/validcountries').pipe(catchError(this.handleError('getValidCountries', [])));
     }
 
     private handleError<T>(operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
-
             // TODO: send the error to remote logging infrastructure
             console.error(error); // log to console instead
 
@@ -51,28 +47,17 @@ export class HomeService {
         };
     }
 
-
     getSectorCount(): Observable<GenericCount[]> {
-        return this.http.get<GenericCount[]>(this.restUrl + '/sectorcount')
-            .pipe(
-                catchError(this.handleError('getSectorCount', []))
-            );
+        return this.http.get<GenericCount[]>(this.restUrl + '/sectorcount').pipe(catchError(this.handleError('getSectorCount', [])));
     }
 
     getSectorCountByCountry(countryId): Observable<GenericCount[]> {
-        return this.http.get<GenericCount[]>(this.restUrl + '/sectorcountbycountry?countryId=' + countryId)
-            .pipe(
-                catchError(this.handleError('getGenericCount', []))
-            );
+        return this.http
+            .get<GenericCount[]>(this.restUrl + '/sectorcountbycountry?countryId=' + countryId)
+            .pipe(catchError(this.handleError('getGenericCount', [])));
     }
-
 
     getSourceCount(): Observable<GenericCount[]> {
-        return this.http.get<GenericCount[]>(this.restUrl + '/sourcecount')
-            .pipe(
-                catchError(this.handleError('getSourceCount', []))
-            );
+        return this.http.get<GenericCount[]>(this.restUrl + '/sourcecount').pipe(catchError(this.handleError('getSourceCount', [])));
     }
-
-
 }

@@ -8,16 +8,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopac.domain.Country;
-import org.sopac.domain.DetailedSector;
-import org.sopac.domain.Project;
-import org.sopac.domain.Sector;
+import org.sopac.domain.*;
 import org.sopac.domain.enumeration.*;
 import org.sopac.domain.enumeration.Currency;
-import org.sopac.repository.CountryRepository;
-import org.sopac.repository.DetailedSectorRepository;
-import org.sopac.repository.ProjectRepository;
-import org.sopac.repository.SectorRepository;
+import org.sopac.repository.*;
+import org.sopac.repository.search.DisbursementSearchRepository;
 import org.sopac.repository.search.ProjectSearchRepository;
 import org.sopac.security.AuthoritiesConstants;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -56,14 +51,27 @@ public class CustomResource {
 
     private final ProjectSearchRepository projectSearchRepository;
 
-    public CustomResource(CountryRepository countryRepository, SectorRepository sectorRepository, DetailedSectorRepository detailedSectorRepository, ProjectRepository projectRepository, ProjectSearchRepository projectSearchRepository) {
+    private final DisbursementRepository disbursementRepository;
+
+    private final DisbursementSearchRepository disbursementSearchRepository;
+
+    public CustomResource(CountryRepository countryRepository, SectorRepository sectorRepository, DetailedSectorRepository detailedSectorRepository, ProjectRepository projectRepository, ProjectSearchRepository projectSearchRepository, DisbursementRepository disbursementRepository, DisbursementSearchRepository disbursementSearchRepository) {
         this.countryRepository = countryRepository;
         this.sectorRepository = sectorRepository;
         this.detailedSectorRepository = detailedSectorRepository;
         this.projectRepository = projectRepository;
         this.projectSearchRepository = projectSearchRepository;
+        this.disbursementRepository = disbursementRepository;
+        this.disbursementSearchRepository = disbursementSearchRepository;
     }
 
+
+    @GetMapping("/reindex")
+    public boolean reIndex() {
+        projectRepository.findAll().forEach(p -> projectSearchRepository.index(p));
+        disbursementRepository.findAll().forEach(d -> disbursementSearchRepository.index(d));
+        return true;
+    }
 
     @GetMapping("/sourcecount")
     public String sourceCount() {
@@ -100,7 +108,6 @@ public class CustomResource {
         }
         return "null";
     }
-
 
     @GetMapping("/typecount")
     public String typeCount() {
@@ -187,7 +194,7 @@ public class CustomResource {
             }
 
             ArrayList<ValidCountry> validCountries = new ArrayList<>();
-            countries.forEach((id, c)->{
+            countries.forEach((id, c) -> {
                 ValidCountry vc = new ValidCountry();
                 vc.id = id;
                 vc.country = c;
@@ -196,6 +203,270 @@ public class CustomResource {
             });
 
             return mapper.writeValueAsString(validCountries);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    @GetMapping("/countrycount")
+    public String countryCount() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<CountryCount> list = new ArrayList<>();
+
+            Set<String> countrySet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                countrySet.add(p.getCountry().getName());
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String c : countrySet) {
+                m.put(c, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                String c = p.getCountry().getName();
+                m.compute(c, (k, v) -> v + 1);
+            }
+
+            for (String country : m.keySet()) {
+                CountryCount cc = new CountryCount();
+                cc.country = country;
+                cc.count = m.get(country);
+                list.add(cc);
+            }
+
+            return mapper.writeValueAsString(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    //project status
+    @GetMapping("/projectstatuscount")
+    public String projectStatusCount() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<GenericCount> list = new ArrayList<>();
+
+            Set<String> set = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getStatus() != null) {
+                    set.add(p.getStatus().name());
+                }
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String p : set) {
+                m.put(p, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getStatus() != null) {
+                    String t = p.getStatus().name();
+                    m.compute(t, (k, v) -> v + 1);
+                }
+            }
+
+            for (String p : m.keySet()) {
+                GenericCount gc = new GenericCount();
+                gc.name = p;
+                gc.value = m.get(p);
+                list.add(gc);
+            }
+
+            return mapper.writeValueAsString(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    //detailed sector
+    @GetMapping("/detailedsectorcount")
+    public String detailedSectorCount() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<GenericCount> list = new ArrayList<>();
+
+            Set<String> set = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getDetailedSector() != null) {
+                    set.add(p.getDetailedSector().getName());
+                    //System.out.println("P -> " + p.getProjectType().name());
+                }
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String p : set) {
+                m.put(p, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getDetailedSector() != null) {
+                    String t = p.getDetailedSector().getName();
+                    m.compute(t, (k, v) -> v + 1);
+                }
+            }
+
+            for (String p : m.keySet()) {
+                GenericCount gc = new GenericCount();
+                gc.name = p;
+                gc.value = m.get(p);
+                list.add(gc);
+            }
+
+            return mapper.writeValueAsString(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+
+    @GetMapping("/projecttypecount")
+    public String projectTypeCount() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<GenericCount> list = new ArrayList<>();
+
+            Set<String> set = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getProjectType() != null) {
+                    set.add(p.getProjectType().name());
+                    //System.out.println("P -> " + p.getProjectType().name());
+                }
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String p : set) {
+                m.put(p, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getProjectType() != null) {
+                    String t = p.getProjectType().name();
+                    m.compute(t, (k, v) -> v + 1);
+                }
+            }
+
+            for (String p : m.keySet()) {
+                GenericCount gc = new GenericCount();
+                gc.name = p;
+                gc.value = m.get(p);
+                list.add(gc);
+            }
+
+            return mapper.writeValueAsString(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+
+    @GetMapping("/countrycountchart")
+    public String countryCountChart() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<GenericCount> list = new ArrayList<>();
+
+            Set<String> countrySet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                countrySet.add(p.getCountry().getName());
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String c : countrySet) {
+                m.put(c, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                String c = p.getCountry().getName();
+                m.compute(c, (k, v) -> v + 1);
+            }
+
+            for (String country : m.keySet()) {
+                GenericCount cc = new GenericCount();
+                cc.name = country;
+                cc.value = m.get(country);
+                list.add(cc);
+            }
+
+            return mapper.writeValueAsString(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    @GetMapping("/count")
+    public String count() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String count = String.valueOf(projectRepository.count());
+            return mapper.writeValueAsString(count);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+
+    //BY COUNTRY
+
+    @GetMapping("/countrycountchartbycountry")
+    public String countryCountChartByCountry(long countryId) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<GenericCount> list = new ArrayList<>();
+
+            Set<String> countrySet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId)
+                    countrySet.add(p.getCountry().getName());
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String c : countrySet) {
+                m.put(c, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId) {
+                    String c = p.getCountry().getName();
+                    m.compute(c, (k, v) -> v + 1);
+                }
+            }
+
+            for (String country : m.keySet()) {
+                GenericCount cc = new GenericCount();
+                cc.name = country;
+                cc.value = m.get(country);
+                list.add(cc);
+            }
+
+            return mapper.writeValueAsString(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    @GetMapping("/countbycountry")
+    public String countByCountry(long countryId) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            //String count = String.valueOf(projectRepository.count());
+
+            int c = 0;
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId) c++;
+            }
+            String count = String.valueOf(c);
+            return mapper.writeValueAsString(count);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -243,33 +514,39 @@ public class CustomResource {
         return "null";
     }
 
-
-    @GetMapping("/countrycount")
-    public String countryCount() {
+    @GetMapping("/projecttypecountbycountry")
+    public String projectTypeCountByCountry(long countryId) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            ArrayList<CountryCount> list = new ArrayList<>();
+            ArrayList<GenericCount> list = new ArrayList<>();
 
-            Set<String> countrySet = new HashSet();
+            Set<String> set = new HashSet();
             for (Project p : projectRepository.findAll()) {
-                countrySet.add(p.getCountry().getName());
+                if (p.getProjectType() != null) {
+                    if (p.getCountry().getId() == countryId)
+                        set.add(p.getProjectType().name());
+                }
             }
 
             Map<String, Integer> m = new HashMap<>();
-            for (String c : countrySet) {
-                m.put(c, 0);
+            for (String p : set) {
+                m.put(p, 0);
             }
 
             for (Project p : projectRepository.findAll()) {
-                String c = p.getCountry().getName();
-                m.compute(c, (k, v) -> v + 1);
+                if (p.getProjectType() != null) {
+                    if (p.getCountry().getId() == countryId) {
+                        String t = p.getProjectType().name();
+                        m.compute(t, (k, v) -> v + 1);
+                    }
+                }
             }
 
-            for (String country : m.keySet()) {
-                CountryCount cc = new CountryCount();
-                cc.country = country;
-                cc.count = m.get(country);
-                list.add(cc);
+            for (String p : m.keySet()) {
+                GenericCount gc = new GenericCount();
+                gc.name = p;
+                gc.value = m.get(p);
+                list.add(gc);
             }
 
             return mapper.writeValueAsString(list);
@@ -279,18 +556,129 @@ public class CustomResource {
         return "null";
     }
 
-
-    @GetMapping("/count")
-    public String count() {
+    @GetMapping("/detailedsectorcountbycountry")
+    public String detailedSectorCountByCountry(long countryId) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            String count = String.valueOf(projectRepository.count());
-            return mapper.writeValueAsString(count);
+            ArrayList<GenericCount> list = new ArrayList<>();
+
+            Set<String> set = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getDetailedSector() != null) {
+                    if (p.getCountry().getId() == countryId)
+                        set.add(p.getDetailedSector().getName());
+                }
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String p : set) {
+                m.put(p, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getDetailedSector() != null) {
+                    if (p.getCountry().getId() == countryId) {
+                        String t = p.getDetailedSector().getName();
+                        m.compute(t, (k, v) -> v + 1);
+                    }
+                }
+            }
+
+            for (String p : m.keySet()) {
+                GenericCount gc = new GenericCount();
+                gc.name = p;
+                gc.value = m.get(p);
+                list.add(gc);
+            }
+
+            return mapper.writeValueAsString(list);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return "null";
     }
+
+    @GetMapping("/projectstatuscountbycountry")
+    public String projectStatusCountByCountry(long countryId) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<GenericCount> list = new ArrayList<>();
+
+            Set<String> set = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getStatus() != null) {
+                    if (p.getCountry().getId() == countryId)
+                        set.add(p.getStatus().name());
+                }
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String p : set) {
+                m.put(p, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getStatus() != null) {
+                    if (p.getCountry().getId() == countryId) {
+                        String t = p.getStatus().name();
+                        m.compute(t, (k, v) -> v + 1);
+                    }
+                }
+            }
+
+            for (String p : m.keySet()) {
+                GenericCount gc = new GenericCount();
+                gc.name = p;
+                gc.value = m.get(p);
+                list.add(gc);
+            }
+
+            return mapper.writeValueAsString(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    @GetMapping("/sourcecountbycountry")
+    public String sourceCount(long countryId) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<GenericCount> list = new ArrayList<>();
+
+            Set<String> genericSet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId)
+                    genericSet.add(p.getPrincipalSource());
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String c : genericSet) {
+                m.put(c, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId) {
+                    String c = p.getPrincipalSource();
+                    m.compute(c, (k, v) -> v + 1);
+                }
+            }
+
+            for (String generic : m.keySet()) {
+                GenericCount gc = new GenericCount();
+                gc.name = generic;
+                gc.value = m.get(generic);
+                if (generic != null)
+                    list.add(gc);
+            }
+            return mapper.writeValueAsString(list);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
 
     /**
      * GET init
@@ -308,7 +696,7 @@ public class CustomResource {
         countries.put("WS", "Samoa");
         countries.put("MH", "Marshall Islands");
 
-        String[] sectors = {"Agriculture", "Community", "Disaster Risk", "Education", "Energy", "Environment", "Forestry", "Governance", "Health", "ICT", "Infrastructure", "Social", "Transport", "Tourism", "Utility", "Other"};
+        String[] sectors = {"Agriculture", "Community", "Disaster Risk", "Education", "Energy", "Environment", "Forestry", "Fisheries", "Governance", "Health", "ICT", "Infrastructure", "Social", "Transport", "Tourism", "Utility", "Other"};
 
         String[] detailedSectors = {"Conservation Biodiversity", "Disaster Risk Reduction", "Disaster Risk Mitigation", "Enabling Environment", "Renewable Energy", "Food Security", "ICT", "Livelihood Options", "Oceans and Marine", "Transport", "Waste Management", "Water and Sanitation", "Other"};
 
@@ -364,18 +752,106 @@ public class CustomResource {
 
                     for (Cell c : r) {
                         if (c_index == 0) p.setProjectTitle(c.getStringCellValue());
-                        if (c_index == 1) p.setProjectDescription(c.getStringCellValue());
+                        if (c_index == 1) {
+                            if (c.getStringCellValue() != null) p.setProjectDescription(c.getStringCellValue());
+                        }
                         if (p.getProjectDescription() == null || p.getProjectDescription().equals(""))
                             p.setProjectDescription(p.getProjectTitle());
 
-                        if (c_index == 2) p.setWeightingPercentage(c.getStringCellValue());
+                        if (c_index == 2) {
+                            if (c.getStringCellValue() != null)
+                                p.setWeightingPercentage(c.getStringCellValue());
+                        }
+
+                        if (c_index == 3) {
+                            p.setProjectType(ProjectType.CCA);
+                            if (c.getStringCellValue().equals("CCM")) p.setProjectType(ProjectType.CCM);
+                            if (c.getStringCellValue().equals("DRR")) p.setProjectType(ProjectType.DRR);
+                            if (c.getStringCellValue().equals("DRM")) p.setProjectType(ProjectType.DRM);
+                            if (c.getStringCellValue().toLowerCase().equals("enabling"))
+                                p.setProjectType(ProjectType.ENABLING);
+                        }
 
                         if (c_index == 5) {
-                            String st = c.getStringCellValue().toLowerCase();
-                            for (Sector s : sectorRepository.findAll()) {
-                                if (st.contains(s.getName().toLowerCase())) p.setSector(s);
+                            if (c.getStringCellValue() != null) {
+                                String st = c.getStringCellValue().toLowerCase().trim();
+                                for (Sector s : sectorRepository.findAll()) {
+                                    if (st.contains(s.getName().toLowerCase())) p.setSector(s);
+                                    if (s.getName().toLowerCase().contains(st.toLowerCase())) p.setSector(s);
+                                }
                             }
                         }
+
+                        if (c_index == 6) {
+                            if (c.getStringCellValue() != null) p.setMinistry(c.getStringCellValue());
+                        }
+
+                        if (c_index == 8) {
+                            if (c.getStringCellValue() != null) p.setPrincipalSource(c.getStringCellValue());
+                        }
+
+
+                        if (c_index == 10) {
+                            p.setLaterality(Laterality.BILATERAL);
+                            if (c.getStringCellValue().toLowerCase().startsWith("multi"))
+                                p.setLaterality(Laterality.MULTILATERAL);
+
+                        }
+
+                        if (c_index == 11) {
+                            if (c.getStringCellValue() != null) p.setAdditionalSource(c.getStringCellValue());
+                        }
+
+                        if (c_index == 13) {
+                            p.setFundingBasis(FundingBasis.NATIONAL);
+                            if (c.getStringCellValue().toLowerCase().startsWith("region"))
+                                p.setFundingBasis(FundingBasis.REGIONAL);
+
+                        }
+
+                        if (c_index == 14) {
+                            if (c.getStringCellValue() != null) p.setTimeFrame(c.getStringCellValue());
+                        }
+
+                        if (c_index == 15) {
+                            p.setModality(Modality.OFF_BUDGET);
+                            if (c.getStringCellValue().toLowerCase().trim().equals("yes"))
+                                p.setModality(Modality.ON_BUDGET);
+                        }
+
+                        p.setAppropriated(false);
+
+
+                        p.setTotalFundingCurrency(Currency.SBD);
+
+                        if (c_index == 17) {
+                            if (c.getStringCellValue() != null) p.setNotes(c.getStringCellValue());
+                        }
+
+                        //System.out.println(p.getProjectTitle());
+
+                        //total cost
+                        if (c_index == 19) {
+                            if (c.getStringCellValue() != null) {
+                                String amt = c.getStringCellValue().trim();
+                                if (amt.length() != 0) {
+                                    try {
+                                        p.setTotal(Double.valueOf(amt));
+                                        p.setTotalFundingAmount(Double.valueOf(amt));
+                                    } catch (Exception ex) {
+                                    }
+                                }
+                            }
+                        }
+
+                        if (c_index == 21) {
+                            String notes = "";
+                            if (p.getNotes() != null) notes = p.getNotes();
+                            notes = notes + ". " + c.getStringCellValue();
+                            p.setNotes(notes);
+                        }
+
+                        p.setStatus(Status.CURRENT);
 
                         c_index++;
                     }
@@ -475,7 +951,38 @@ public class CustomResource {
                         if (p.getProjectDescription() == null || p.getProjectDescription().equals(""))
                             p.setProjectDescription(p.getProjectTitle());
 
+                        if (c_index == 2) {
+                            p.setFundingBasis(FundingBasis.NATIONAL);
+                            if (c.getStringCellValue().startsWith("Regional")) p.setFundingBasis(FundingBasis.REGIONAL);
+                        }
+
+                        p.setTotalFundingCurrency(Currency.USD);
+
+                        if (c_index == 4) {
+                            Double amt = Double.parseDouble(c.getStringCellValue().trim().replaceAll("\"", ""));
+                            p.setTotal(amt);
+                            p.setTotalFundingAmount(amt);
+                        }
+
+                        if (c_index == 5) {
+                            p.setTimeFrame(c.getStringCellValue());
+                        }
+
                         if (c_index == 7) p.setPrincipalSource(c.getStringCellValue());
+
+                        if (c_index == 8) p.setAdditionalSource(c.getStringCellValue());
+
+                        if (c_index == 9) {
+                            p.setLaterality(Laterality.BILATERAL);
+                            if (c.getStringCellValue().startsWith("Multi")) p.setLaterality(Laterality.MULTILATERAL);
+                        }
+
+                        p.setProjectType(ProjectType.CCA);
+
+                        if (c_index == 10) {
+                            p.setMinistry(c.getStringCellValue());
+                        }
+
 
                         if (c_index == 12) {
                             String st = c.getStringCellValue().toLowerCase();
@@ -490,6 +997,30 @@ public class CustomResource {
                                 if (st.contains(s.getName().toLowerCase())) p.setDetailedSector(s);
                             }
                         }
+
+                        if (c_index == 14) {
+                            p.setWeightingPercentage(c.getStringCellValue());
+                        }
+
+                        if (c_index == 15) {
+                            p.setInkindPercentage(c.getStringCellValue());
+                        }
+
+                        if (c_index == 20) {
+                            p.setModality(Modality.ON_BUDGET);
+                            if (c.getStringCellValue().trim().equals("No")) p.setModality(Modality.OFF_BUDGET);
+                        }
+
+                        if (c_index == 23) {
+                            p.setStatus(Status.CURRENT);
+                            if (c.getStringCellValue().trim().equals("Completed")) p.setStatus(Status.COMPLETED);
+                            if (c.getStringCellValue().trim().equals("Pipeline")) p.setStatus(Status.PIPELINE);
+                        }
+
+                        if (c_index == 24) {
+                            p.setNotes(c.getStringCellValue());
+                        }
+
 
                         c_index++;
                     }
@@ -761,6 +1292,7 @@ public class CustomResource {
                             p.setEstimatedCountryAllocation(Double.valueOf(c.getStringCellValue().replaceAll(",", "").trim()));
                         }
 
+                        p.setTimeFrame("2014-2016");
 
                         c_index++;
                     }
@@ -789,7 +1321,55 @@ public class CustomResource {
                 p.setProjectType(ProjectType.CCA);
                 projectRepository.save(p);
             }
+
+            if (p.getPrincipalSource() != null) {
+                if (p.getPrincipalSource().startsWith("1_World")) {
+                    p.setPrincipalSource("World Bank");
+                    projectRepository.save(p);
+                }
+
+                if (p.getPrincipalSource().startsWith("2_Australia")) {
+                    p.setPrincipalSource("Australia");
+                    projectRepository.save(p);
+                }
+
+                if (p.getPrincipalSource().startsWith("1_ADB")) {
+                    p.setPrincipalSource("ADB");
+                    projectRepository.save(p);
+                }
+
+                if (p.getPrincipalSource().startsWith("2 New")) {
+                    p.setPrincipalSource("New Zealand");
+                    projectRepository.save(p);
+                }
+
+                if (p.getPrincipalSource().startsWith("ADB")) {
+                    p.setPrincipalSource("ADB");
+                    projectRepository.save(p);
+                }
+
+                if (p.getPrincipalSource().startsWith("Australia")) {
+                    p.setPrincipalSource("Australia");
+                    projectRepository.save(p);
+                }
+                if (p.getPrincipalSource().startsWith("\"")) {
+                    p.setPrincipalSource(p.getPrincipalSource().replaceAll("\"", ""));
+                    projectRepository.save(p);
+                }
+            }
+
         }
+
+        //setup empty disbursements
+        disbursementRepository.deleteAll();
+        for (Project p : projectRepository.findAll()) {
+            Disbursement d = new Disbursement();
+            d.setAmount(0.00);
+            d.setYear(2018);
+            d.setProject(p);
+            disbursementRepository.save(d);
+        }
+
 
         return "cleaned";
     }
