@@ -6,6 +6,7 @@ import { ChartService } from 'app/charts/charts.service';
 import { Router } from '@angular/router';
 import { Observable } from '../../../../../node_modules/rxjs/Observable';
 import { catchError } from 'rxjs/operators';
+import { ValueCount } from 'app/home/valuecount';
 
 @Component({
     selector: 'jhi-charts',
@@ -23,6 +24,10 @@ export class ChartsComponent implements OnInit {
     projectTypeCount: GenericCount[];
     projectStatusCount: GenericCount[];
     validCountries: Validcountry[];
+    sectorValue: ValueCount[];
+    sourceValue: ValueCount[];
+    countryValueChart: ValueCount[];
+    ministryCount: GenericCount[];
 
     //pie chart
     viewPie: any[] = [800, 400];
@@ -40,9 +45,9 @@ export class ChartsComponent implements OnInit {
     showYAxis = true;
     gradient = false;
     showXAxisLabel = true;
-    xAxisLabel = 'Country';
+    xAxisLabel = 'Number Of Projects';
     showYAxisLabel = true;
-    yAxisLabel = 'Population';
+    yAxisLabel = 'Funding Source';
 
     //number chart
     scheme = 'cool';
@@ -62,6 +67,9 @@ export class ChartsComponent implements OnInit {
         this.getValidCountries();
         this.getDetailedSectorCount();
         this.getProjectStatusCount();
+        this.getSectorValue();
+        this.getCountryValueChart();
+        this.getMinistryCount();
     }
 
     filterCountry(countryId: any) {
@@ -75,10 +83,14 @@ export class ChartsComponent implements OnInit {
             this.getProjectTypeCount();
             this.getDetailedSectorCount();
             this.getProjectStatusCount();
+            this.getSectorValue();
+            this.getCountryValueChart();
+            this.getMinistryCount();
         } else {
             this.service.getCountByCountry(countryId).subscribe(count => (this.count = count));
             this.service.getCountryCountChartByCountry(countryId).subscribe(countryCount => (this.countryCount = countryCount));
             this.service.getSectorCountByCountry(countryId).subscribe(sectorCount => (this.sectorCount = sectorCount));
+            this.service.getMinistryCountByCountry(countryId).subscribe(ministryCount => (this.ministryCount = ministryCount));
             this.service
                 .getDetailedSectorCountByCountry(countryId)
                 .subscribe(detailedSectorCount => (this.detailedSectorCount = detailedSectorCount));
@@ -87,6 +99,11 @@ export class ChartsComponent implements OnInit {
             this.service
                 .getProjectStatusCountByCountry(countryId)
                 .subscribe(projectStatusCount => (this.projectStatusCount = projectStatusCount));
+            this.service.getSectorValueByCountry(countryId).subscribe(sectorValue => (this.sectorValue = sectorValue));
+            this.service.getSourceValueByCountry(countryId).subscribe(sourceValue => (this.sourceValue = sourceValue));
+            this.service
+                .getCountryValueChartByCountry(countryId)
+                .subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
         }
     }
 
@@ -98,8 +115,24 @@ export class ChartsComponent implements OnInit {
         this.service.getCountryCountChart().subscribe(countryCount => (this.countryCount = countryCount));
     }
 
+    getCountryValueChart(): void {
+        this.service.getCountryValueChart().subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
+    }
+
     getSectorCount(): void {
         this.service.getSectorCount().subscribe(sectorCount => (this.sectorCount = sectorCount));
+    }
+
+    getMinistryCount(): void {
+        this.service.getMinistryCount().subscribe(ministryCount => (this.ministryCount = ministryCount));
+    }
+
+    getSectorValue(): void {
+        this.service.getSectorValue().subscribe(sectorValue => (this.sectorValue = sectorValue));
+    }
+
+    getSourceValue(): void {
+        this.service.getSourceValue().subscribe(sourceValue => (this.sourceValue = sourceValue));
     }
 
     getDetailedSectorCount(): void {
@@ -126,6 +159,11 @@ export class ChartsComponent implements OnInit {
     onSelectCountry(data) {
         //alert(data.name);
         this.router.navigateByUrl('/project;search=country.name:' + data.name);
+    }
+
+    onSelectMinistry(data) {
+        //alert(data.name);
+        this.router.navigateByUrl('/project;search=ministry:' + data.name);
     }
 
     onSelectSector(data) {

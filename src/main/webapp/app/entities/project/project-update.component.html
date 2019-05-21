@@ -199,6 +199,7 @@
                         <option [ngValue]="sectorOption.id === project.sector?.id ? project.sector : sectorOption" *ngFor="let sectorOption of sectors; trackBy: trackSectorById">{{sectorOption.name}}</option>
                     </select>
                 </div>
+                <!--
                 <div class="form-group">
                     <label class="form-control-label" for="field_detailedSector">Detailed Sector</label>
                     <select class="form-control" id="field_detailedSector" name="detailedSector" [(ngModel)]="project.detailedSector" >
@@ -206,6 +207,7 @@
                         <option [ngValue]="detailedSectorOption.id === project.detailedSector?.id ? project.detailedSector : detailedSectorOption" *ngFor="let detailedSectorOption of detailedsectors; trackBy: trackDetailedSectorById">{{detailedSectorOption.name}}</option>
                     </select>
                 </div>
+                -->
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

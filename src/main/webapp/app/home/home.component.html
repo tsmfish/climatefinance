@@ -1,11 +1,14 @@
 <div class="row">
     <div class="col-md-3">
+        <img class="img-fluid" src="../../content/images/sb.png"/>
+        <br/><br/>
         <span class="hipster img-fluid rounded"></span>
+
     </div>
 
     <div class="col-md-9">
-        <h1 class="display-4" style="color: #2b6ea1; font-size: 40px;">Pacific Climate Change Finance Tracking Tool</h1>
-        <p class="lead">Institutional Strengthening in Pacific Island Countries to Adapt to Climate Change (ISACC)
+        <h1 class="display-4" style="color: #2b6ea1; font-size: 40px;">SIG Climate Change Finance Tracking Tool</h1>
+        <p class="lead">Institutional Strengthening in Solomon Islands to Adapt to Climate Change (ISACC)
             Project</p>
         <hr/>
 
@@ -30,21 +33,21 @@
 
                 <br/>
 
-                <table style="width: 840px !important;" class="table" *ngIf="countryCount">
+                <table style="width: 840px !important;" class="table" *ngIf="countryValueChart">
                     <tr style="background-color: lightblue">
                         <th>Country</th>
-                        <th>Projects</th>
+                        <th>Total Projects Value</th>
                     </tr>
 
-                    <tr *ngFor="let cc of countryCount">
+                    <tr *ngFor="let vc of countryValueChart">
                         <td><a style="color: #2b6ea1; font-weight: lighter;"
-                               href="#/project;search=country.name:{{cc.country.replace('Islands', '').trim()}}">{{cc.country}}</a>
+                               href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
                         </td>
-                        <td>{{cc.count}}</td>
+                        <td>USD {{vc.value.toPrecision(6)}} million</td>
                     </tr>
 
                     <tr style="font-weight: bold;">
-                        <td>TOTAL</td>
+                        <td>TOTAL PROJECTS</td>
                         <td>{{count}}</td>
                     </tr>
                 </table>
@@ -91,17 +94,20 @@
             </div>
 
             <hr/>
-            <img style="height: 80px" src="../../content/images/spc.png"/>
-            <img style="height: 80px" src="../../content/images/forum.png"/>
 
-            <img style="height: 80px" src="../../content/images/giz.png"/>
-            <img style="height: 80px" src="../../content/images/ausaid.png"/>
-            <img style="height: 80px" src="../../content/images/sprep.png"/>
-            <img style="height: 80px" src="../../content/images/usp.png"/>
-            <img style="height: 80px" src="../../content/images/pftac.png"/>
+            <div style="width: 840px;" align="left" class="img-thumbnail">
 
-            <img style="height: 60px" src="../../content/images/usaid.png"/>
-            <!--<img style="height: 70px" src="../../content/images/oxfam.png"/>-->
+                <img style="height: 78px;" src="../../content/images/usaid.png"/>
+                <img style="height: 80px" src="../../content/images/spc.png"/>
+                <img style="height: 80px" src="../../content/images/forum.png"/>
+
+                <img style="height: 80px" src="../../content/images/giz.png"/>
+                <img style="height: 80px" src="../../content/images/ausaid.png"/>
+                <img style="height: 80px" src="../../content/images/sprep.png"/>
+                <img style="height: 80px" src="../../content/images/usp.png"/>
+                <img style="height: 80px" src="../../content/images/pftac.png"/>
+
+            </div>
 
 
         </div>

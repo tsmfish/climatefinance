@@ -53,6 +53,16 @@ export class ProjectUpdateComponent implements OnInit {
         this.sectorService.query().subscribe(
             (res: HttpResponse<ISector[]>) => {
                 this.sectors = res.body;
+                if (this.project.country != null) {
+                    if (this.project.country.code === 'VU') {
+                        this.sectors = this.sectors.filter(s =>
+                            [1004, 1005, 1006, 1007, 1009, 1010, 1011, 1012, 1013, 1015].includes(s.id)
+                        );
+                    }
+                    if (this.project.country.code === 'SB') {
+                        this.sectors = this.sectors.filter(s => [1001, 1002, 1003, 1007, 1008, 1014, 2551, 2552, 2553].includes(s.id));
+                    }
+                }
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );

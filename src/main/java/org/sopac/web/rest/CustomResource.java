@@ -1,6 +1,7 @@
 package org.sopac.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import com.monitorjbl.xlsx.StreamingReader;
 
@@ -181,6 +183,209 @@ public class CustomResource {
         }
         return "null";
     }
+
+
+    @GetMapping("/sectorvalue")
+    public String sectorValue() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<ValueCount> list = new ArrayList<>();
+
+            Set<String> sectorSet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getSector() != null)
+                    sectorSet.add(p.getSector().getName());
+            }
+
+            Map<String, Double> m = new HashMap<>();
+            for (String c : sectorSet) {
+                m.put(c, 0.0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getSector() != null) {
+                    String c = p.getSector().getName();
+                    if (p.getTotal() != null) m.compute(c, (k, v) -> v + (p.getTotal() / 1000000));
+                }
+            }
+
+            for (String sector : m.keySet()) {
+                ValueCount vc = new ValueCount();
+                vc.name = sector;
+                vc.value = m.get(sector);
+                list.add(vc);
+            }
+            return mapper.writeValueAsString(list);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    @GetMapping("/ministrycount")
+    public String ministryCount() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<ValueCount> list = new ArrayList<>();
+
+            Set<String> ministrySet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getMinistry() != null)
+                    ministrySet.add(p.getMinistry());
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String c : ministrySet) {
+                m.put(c, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getMinistry() != null) {
+                    String c = p.getMinistry();
+                    m.compute(c, (k, v) -> v + 1);
+                }
+            }
+
+            for (String ministry : m.keySet()) {
+                ValueCount vc = new ValueCount();
+                vc.name = ministry;
+                vc.value = m.get(ministry);
+                list.add(vc);
+            }
+            return mapper.writeValueAsString(list);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    @GetMapping("/ministrycountbycountry")
+    public String ministryCountByCountry(long countryId) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<ValueCount> list = new ArrayList<>();
+
+            Set<String> ministrySet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId) {
+                    if (p.getMinistry() != null) {
+                        ministrySet.add(p.getMinistry());
+                    }
+                }
+            }
+
+            Map<String, Integer> m = new HashMap<>();
+            for (String c : ministrySet) {
+                m.put(c, 0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId) {
+                    if (p.getMinistry() != null) {
+                        String c = p.getMinistry();
+                        m.compute(c, (k, v) -> v + 1);
+                    }
+                }
+            }
+
+            for (String ministry : m.keySet()) {
+                ValueCount vc = new ValueCount();
+                vc.name = ministry;
+                vc.value = m.get(ministry);
+                list.add(vc);
+            }
+            return mapper.writeValueAsString(list);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+
+    @GetMapping("/sourcevalue")
+    public String sourceValue() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<ValueCount> list = new ArrayList<>();
+
+            SortedSet<String> sourceSet = new TreeSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getPrincipalSource() != null)
+                    sourceSet.add(p.getPrincipalSource());
+            }
+
+
+            SortedMap<String, Double> m = new TreeMap<>();
+            for (String c : sourceSet) {
+                m.put(c, 0.0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getPrincipalSource() != null) {
+                    String c = p.getPrincipalSource();
+                    if (p.getTotal() != null) m.compute(c, (k, v) -> v + (p.getTotal() / 1000000));
+                }
+            }
+
+            for (String source : m.keySet()) {
+                ValueCount vc = new ValueCount();
+                vc.name = source;
+                vc.value = m.get(source);
+                list.add(vc);
+            }
+            return mapper.writeValueAsString(list);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    @GetMapping("/sourcevaluebycountry")
+    public String sourceValueByCountry(long countryId) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<ValueCount> list = new ArrayList<>();
+
+            SortedSet<String> sourceSet = new TreeSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId) {
+                    if (p.getPrincipalSource() != null)
+                        sourceSet.add(p.getPrincipalSource());
+                }
+            }
+
+            SortedMap<String, Double> m = new TreeMap<>();
+            for (String c : sourceSet) {
+                m.put(c, 0.0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId) {
+                    if (p.getPrincipalSource() != null) {
+                        String c = p.getPrincipalSource();
+                        if (p.getTotal() != null) m.compute(c, (k, v) -> v + (p.getTotal() / 1000000));
+                    }
+                }
+            }
+
+            for (String source : m.keySet()) {
+                ValueCount vc = new ValueCount();
+                vc.name = source;
+                vc.value = m.get(source);
+                list.add(vc);
+            }
+            return mapper.writeValueAsString(list);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
 
     @GetMapping("/validcountries")
     public String getValidCountries() {
@@ -367,6 +572,108 @@ public class CustomResource {
     }
 
 
+    @GetMapping("/currencyconvert")
+    public String currencyConvert() {
+        //total funding amount -> total
+        Map<String, Double> rates = new HashMap<String, Double>();
+        rates.put("SBD", 0.125020);
+        rates.put("VT", 0.00874521);
+        rates.put("EUR", 1.13322);
+        rates.put("JPY", 0.00904694);
+        rates.put("AUD", 0.710004);
+        rates.put("USD", 1.0);
+        rates.put("FJD", 0.468496);
+
+        for (Project p : projectRepository.findAll()) {
+            if (p.getTotalFundingAmount() != null && p.getTotalFundingCurrency() != null) {
+                System.out.println(p.getTotalFundingCurrency().name());
+                double total = p.getTotalFundingAmount() * rates.get(p.getTotalFundingCurrency().name());
+                p.setTotal(total);
+                projectRepository.save(p);
+            }
+        }
+        return "null";
+    }
+
+
+    @GetMapping("/countryvaluechart")
+    public String countryValueChart() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<ValueCount> list = new ArrayList<>();
+
+            Set<String> countrySet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                countrySet.add(p.getCountry().getName());
+            }
+
+            Map<String, Double> m = new HashMap<>();
+
+            for (String c : countrySet) {
+                //add dollar value
+                double dollarValue = 0;
+                for (Project p : projectRepository.findAll()) {
+                    if (p.getCountry().getName().equals(c)) {
+                        if (p.getTotal() != null) dollarValue = dollarValue + p.getTotal();
+                    }
+                }
+                m.put(c, dollarValue / 1000000); //millions
+            }
+
+            for (String country : m.keySet()) {
+                ValueCount cc = new ValueCount();
+                cc.name = country;
+                cc.value = m.get(country);
+                list.add(cc);
+            }
+
+            return mapper.writeValueAsString(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    @GetMapping("/countryvaluechartbycountry")
+    public String countryValueChartByCountry(long countryId) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<ValueCount> list = new ArrayList<>();
+
+            Set<String> countrySet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId)
+                    countrySet.add(p.getCountry().getName());
+            }
+
+            Map<String, Double> m = new HashMap<>();
+
+            for (String c : countrySet) {
+                //add dollar value
+                double dollarValue = 0;
+                for (Project p : projectRepository.findAll()) {
+                    if (p.getCountry().getName().equals(c)) {
+                        if (p.getTotal() != null) dollarValue = dollarValue + p.getTotal();
+                    }
+                }
+                m.put(c, dollarValue / 1000000); //millions
+            }
+
+            for (String country : m.keySet()) {
+                ValueCount cc = new ValueCount();
+                cc.name = country;
+                cc.value = m.get(country);
+                list.add(cc);
+            }
+
+            return mapper.writeValueAsString(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+
     @GetMapping("/countrycountchart")
     public String countryCountChart() {
         try {
@@ -379,9 +686,26 @@ public class CustomResource {
             }
 
             Map<String, Integer> m = new HashMap<>();
+
             for (String c : countrySet) {
                 m.put(c, 0);
             }
+
+            /*
+            for (String c : countrySet) {
+                //add dollar value
+                double dollarValue = 0;
+                int count = 0;
+                for (Project p : projectRepository.findAll()) {
+                    if (p.getCountry().getName().equals(c)) {
+                        if (p.getTotal() != null) dollarValue = dollarValue + p.getTotal();
+                        count++;
+                    }
+                }
+
+                m.put(c + " : USD" + String.valueOf(dollarValue), count);
+            }
+            */
 
             for (Project p : projectRepository.findAll()) {
                 String c = p.getCountry().getName();
@@ -505,6 +829,47 @@ public class CustomResource {
                 sc.name = sector;
                 sc.value = m.get(sector);
                 list.add(sc);
+            }
+            return mapper.writeValueAsString(list);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "null";
+    }
+
+    @GetMapping("/sectorvaluebycountry")
+    public String sectorValueByCountry(long countryId) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<ValueCount> list = new ArrayList<>();
+
+            Set<String> sectorSet = new HashSet();
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId) {
+                    if (p.getSector() != null) sectorSet.add(p.getSector().getName());
+                }
+            }
+
+            Map<String, Double> m = new HashMap<>();
+            for (String c : sectorSet) {
+                m.put(c, 0.0);
+            }
+
+            for (Project p : projectRepository.findAll()) {
+                if (p.getCountry().getId() == countryId) {
+                    if (p.getSector() != null) {
+                        String c = p.getSector().getName();
+                        if (p.getTotal() != null) m.compute(c, (k, v) -> v + (p.getTotal() / 1000000));
+                    }
+                }
+            }
+
+            for (String sector : m.keySet()) {
+                ValueCount vc = new ValueCount();
+                vc.name = sector;
+                vc.value = m.get(sector);
+                list.add(vc);
             }
             return mapper.writeValueAsString(list);
 
@@ -953,7 +1318,8 @@ public class CustomResource {
 
                         if (c_index == 2) {
                             p.setFundingBasis(FundingBasis.NATIONAL);
-                            if (c.getStringCellValue().startsWith("Regional")) p.setFundingBasis(FundingBasis.REGIONAL);
+                            if (c.getStringCellValue().startsWith("Regional"))
+                                p.setFundingBasis(FundingBasis.REGIONAL);
                         }
 
                         p.setTotalFundingCurrency(Currency.USD);
@@ -974,7 +1340,8 @@ public class CustomResource {
 
                         if (c_index == 9) {
                             p.setLaterality(Laterality.BILATERAL);
-                            if (c.getStringCellValue().startsWith("Multi")) p.setLaterality(Laterality.MULTILATERAL);
+                            if (c.getStringCellValue().startsWith("Multi"))
+                                p.setLaterality(Laterality.MULTILATERAL);
                         }
 
                         p.setProjectType(ProjectType.CCA);
@@ -1013,7 +1380,8 @@ public class CustomResource {
 
                         if (c_index == 23) {
                             p.setStatus(Status.CURRENT);
-                            if (c.getStringCellValue().trim().equals("Completed")) p.setStatus(Status.COMPLETED);
+                            if (c.getStringCellValue().trim().equals("Completed"))
+                                p.setStatus(Status.COMPLETED);
                             if (c.getStringCellValue().trim().equals("Pipeline")) p.setStatus(Status.PIPELINE);
                         }
 
@@ -1081,10 +1449,14 @@ public class CustomResource {
                                 if (!StringUtils.isNumeric(tmp.substring(0, 1))) {
                                     tmp = tmp.substring(0, 3).trim();
                                     //System.err.println("CUR:" + tmp);
-                                    if (tmp.toLowerCase().equals("jpy")) p.setTotalFundingCurrency(Currency.JPY);
-                                    if (tmp.toLowerCase().equals("eur")) p.setTotalFundingCurrency(Currency.EUR);
-                                    if (tmp.toLowerCase().equals("aud")) p.setTotalFundingCurrency(Currency.AUD);
-                                    if (tmp.toLowerCase().equals("fjd")) p.setTotalFundingCurrency(Currency.FJD);
+                                    if (tmp.toLowerCase().equals("jpy"))
+                                        p.setTotalFundingCurrency(Currency.JPY);
+                                    if (tmp.toLowerCase().equals("eur"))
+                                        p.setTotalFundingCurrency(Currency.EUR);
+                                    if (tmp.toLowerCase().equals("aud"))
+                                        p.setTotalFundingCurrency(Currency.AUD);
+                                    if (tmp.toLowerCase().equals("fjd"))
+                                        p.setTotalFundingCurrency(Currency.FJD);
                                 }
                             }
                         }
@@ -1275,7 +1647,8 @@ public class CustomResource {
                         }
                         if (c_index == 13) {
                             p.setAppropriated(true);
-                            if (c.getStringCellValue().toLowerCase().trim().equals("no")) p.setAppropriated(false);
+                            if (c.getStringCellValue().toLowerCase().trim().equals("no"))
+                                p.setAppropriated(false);
 
                         }
                         if (c_index == 14) {
@@ -1315,7 +1688,107 @@ public class CustomResource {
      */
     @GetMapping("/clean")
     public String clean() {
+        for (Project p : projectRepository.findAll()) {
+            if (p.getMinistry() == null) {
+                p.setMinistry("Unknown");
+            } else {
+                if (p.getMinistry().trim().equals("")) {
+                    p.setMinistry("Unknown");
+                }
+            }
+            //projectRepository.save(p);
+        }
 
+        for (Project p : projectRepository.findAll()) {
+            String ministry = p.getMinistry();
+            ministry = ministry + " (" + p.getCountry().getCode() + ")";
+            p.setMinistry(ministry);
+            projectRepository.save(p);
+        }
+
+
+
+        return "cleaned.";
+    }
+
+
+    public String clean_old() {
+
+        //assign detailed sectors
+        Map m = new HashMap<String, String>();
+        m.put("Agriculture", "Food Security");
+        m.put("Community", "Livelihood Options");
+        m.put("Disaster Risk", "Disaster Risk Reduction");
+        m.put("Education", "Enabling Environment");
+        m.put("Energy", "Renewable Energy");
+        m.put("Environment", "Conservation Biodiversity");
+        m.put("Forestry", "Conservation Biodiversity");
+        m.put("Fisheries", "Conservation Biodiversity");
+        m.put("Governance", "");
+        m.put("Health", "Livelihood Options");
+        m.put("ICT", "ICT");
+        m.put("Infrastructure", "Transport");
+        m.put("Social", "Other");
+        m.put("Transport", "Transport");
+        m.put("Tourism", "Livelihood Options");
+        m.put("Utility", "Renewable Energy");
+        m.put("Other", "Other");
+        m.put("Water", "Water and Sanitation");
+        m.put("Waste Management", "Water and Sanitation");
+        m.put("Communications", "ICT");
+
+
+        for (Project p : projectRepository.findAll()) {
+            //if (p.getStatus() == null) {
+            int random = (int) (Math.random() * 3 + 1);
+            if (random == 1) p.setStatus(Status.COMPLETED);
+            if (random == 2) p.setStatus(Status.CURRENT);
+            if (random == 3) p.setStatus(Status.PIPELINE);
+            projectRepository.save(p);
+            //}
+
+
+            if (p.getDetailedSector() == null) {
+                if (p.getSector() != null) {
+                    String ds_name = m.get(p.getSector().getName()).toString();
+                    for (DetailedSector ds : detailedSectorRepository.findAll()) {
+                        if (ds.getName().equals(ds_name)) {
+                            p.setDetailedSector(ds);
+                            projectRepository.save(p);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //setup empty disbursements
+        disbursementRepository.deleteAll();
+        for (Project p : projectRepository.findAll()) {
+            IntStream.range(2014, 2018).forEach(year -> {
+                Disbursement d = new Disbursement();
+                d.setAmount(0.00);
+                d.setYear(year);
+                d.setProject(p);
+                disbursementRepository.save(d);
+            });
+        }
+
+
+
+        /*
+        int total = 0;
+        for (Project p : projectRepository.findAll()) {
+            if (p.getTotal() == null) {
+                p.setTotal(p.getTotalFundingAmount());
+                total++;
+                projectRepository.save(p);
+            }
+        }
+        */
+
+
+        /*
         for (Project p : projectRepository.findAll()) {
             if (p.getProjectType() == null || p.getProjectType().equals("")) {
                 p.setProjectType(ProjectType.CCA);
@@ -1359,19 +1832,11 @@ public class CustomResource {
             }
 
         }
-
-        //setup empty disbursements
-        disbursementRepository.deleteAll();
-        for (Project p : projectRepository.findAll()) {
-            Disbursement d = new Disbursement();
-            d.setAmount(0.00);
-            d.setYear(2018);
-            d.setProject(p);
-            disbursementRepository.save(d);
-        }
+        */
 
 
-        return "cleaned";
+        return "cleaned"; // : " + String.valueOf(total);
+
     }
 
 }

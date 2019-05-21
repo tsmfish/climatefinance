@@ -10,7 +10,7 @@ yarn build
 ./gradlew -Pprod clean bootWar
 mv build/libs/climatefinance-0.0.1-SNAPSHOT.war climatefinance.war
 scp -C -i ~/Dropbox/gsd.pem climatefinance.war ubuntu@13.211.162.119:/home/ubuntu/
-#rm climatefinance.war
+rm climatefinance.war
 echo Deployment Finished.
 
 #/etc/rc.local

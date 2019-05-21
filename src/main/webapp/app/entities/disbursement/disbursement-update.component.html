@@ -9,6 +9,15 @@
                     <input type="text" class="form-control" id="id" name="id"
                         [(ngModel)]="disbursement.id" readonly />
                 </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_project">Project</label>
+                    <select class="form-control" id="field_project" name="project" [(ngModel)]="disbursement.project" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="projectOption.id === disbursement.project?.id ? disbursement.project : projectOption" *ngFor="let projectOption of projects; trackBy: trackProjectById">{{projectOption.projectTitle}}</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_year">Year</label>
                     <input type="number" class="form-control" name="year" id="field_year"
@@ -20,13 +29,7 @@
                         [(ngModel)]="disbursement.amount" />
                 </div>
 
-                <div class="form-group">
-                    <label class="form-control-label" for="field_project">Project</label>
-                    <select class="form-control" id="field_project" name="project" [(ngModel)]="disbursement.project" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="projectOption.id === disbursement.project?.id ? disbursement.project : projectOption" *ngFor="let projectOption of projects; trackBy: trackProjectById">{{projectOption.projectTitle}}</option>
-                    </select>
-                </div>
+
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

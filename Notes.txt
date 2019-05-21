@@ -1,9 +1,52 @@
+
+New Charts:
+No. Projects By Ministry
+
+Remove all data but SB and VU on climatefinance.gem.spc.int
+
  //"^6.1.1",
 
 Climate Change Finance Tracking Tool
 climatefinance.gem.spc.int
 
 
+Solomon Islands Deployment:
+IP: 192.168.5.200
+Port: 22
+Username : svc_ftracksys
+Password : ftracksys@dmin
+svc_ftracksys@192.168.5.200
+http://climatefinance.sig.gov.sb
+sig-admin, ictsu2019!@
+
+Vanuatu Deployment:
+IP: 10.255.134.20
+Port: 999
+Root admin: rootndmo
+Root Password: ndmo@20!7
+
+delete from disbursement where project_id in (select id from project where country_id=951);
+delete from project where country_id=951;
+delete from disbursement where project_id in (select id from project where country_id=952);
+delete from project where country_id=952;
+delete from disbursement where project_id in (select id from project where country_id=953);
+delete from project where country_id=953;
+delete from disbursement where project_id in (select id from project where country_id=955);
+delete from project where country_id=955;
+delete from disbursement where project_id in (select id from project where country_id=956);
+delete from project where country_id=956;
+delete from disbursement where project_id in (select id from project where country_id=958);
+delete from project where country_id=958;
+
+//delete from disbursement where project_id in (select id from project where country_id=954);
+//delete from project where country_id=954;
+
+delete from disbursement where project_id=1504;
+
+
+update project set status='COMPLETED';
+
+-------
 Some charts/queries examples below.
 
 i. Funding Sources – Targeting the sources of finance and the distribution among recipient countries, including a classification between multilateral and bilateral sources.

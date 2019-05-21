@@ -27,20 +27,6 @@
 
 
         <div class="row">
-            <div class="col-md-6">
-                <h2>Country Distribution</h2>
-                <ngx-charts-pie-grid *ngIf="countryCount"
-                                     [view]="viewPie"
-                                     [scheme]="colorScheme"
-                                     [results]="countryCount"
-                                     [legend]="showLegend"
-                                     [explodeSlices]="explodeSlices"
-                                     [labels]="showLabels"
-                                     [doughnut]="doughnut"
-                                     [gradient]="gradient"
-                                     (select)="onSelectCountry($event);">
-                </ngx-charts-pie-grid>
-            </div>
 
             <div class="col-md-6">
                 <h2>Sectors</h2>
@@ -55,8 +41,25 @@
                                       [gradient]="gradient"
                                       (select)="onSelectSector($event);">
                 </ngx-charts-pie-chart>
-
             </div>
+
+
+            <div class="col-md-6">
+                <h2>Implementing Ministries</h2>
+                <ngx-charts-pie-chart *ngIf="ministryCount"
+                                     [view]="viewPie"
+                                     [scheme]="colorScheme"
+                                     [results]="ministryCount"
+                                     [legend]="showLegend"
+                                     [explodeSlices]="explodeSlices"
+                                     [labels]="showLabels"
+                                     [doughnut]="doughnut"
+                                     [gradient]="gradient"
+                                     (select)="onSelectMinistry($event);">
+                </ngx-charts-pie-chart>
+            </div>
+
+
         </div>
 
         <div class="row">
@@ -75,6 +78,46 @@
                 </ngx-charts-pie-chart>
             </div>
 
+
+            <div class="col-md-6">
+                <!--
+                <h2>Detailed Sectors</h2>
+                <ngx-charts-pie-chart *ngIf="detailedSectorCount"
+                                      [view]="viewPie"
+                                      [scheme]="colorScheme"
+                                      [results]="detailedSectorCount"
+                                      [legend]="showLegend"
+                                      [explodeSlices]="explodeSlices"
+                                      [labels]="showLabels"
+                                      [doughnut]="doughnut"
+                                      [gradient]="gradient"
+                                      (select)="onSelectDetailedSector($event);">
+                </ngx-charts-pie-chart>
+                -->
+
+            </div>
+
+
+        </div>
+
+        <div class="row">
+
+            <!--
+            <div class="col-md-6">
+                <h2>Project Status</h2>
+                <ngx-charts-bar-horizontal *ngIf="projectStatusCount"
+                                           [view]="viewPie"
+                                           [xAxis]="showXAxis"
+                                           [yAxis]="showYAxis"
+                                           [legend]="showLegend"
+                                           [results]="projectStatusCount"
+                                           (select)="onSelectProjectStatus($event)">
+                </ngx-charts-bar-horizontal>
+
+            </div>
+            -->
+
+            <!--
             <div class="col-md-6">
                 <h2>Countries</h2>
                 <ngx-charts-bar-vertical *ngIf="countryCount"
@@ -88,37 +131,8 @@
                 </ngx-charts-bar-vertical>
 
             </div>
-        </div>
+            -->
 
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Detailed Sectors</h2>
-                <ngx-charts-pie-chart *ngIf="detailedSectorCount"
-                                      [view]="viewPie"
-                                      [scheme]="colorScheme"
-                                      [results]="detailedSectorCount"
-                                      [legend]="showLegend"
-                                      [explodeSlices]="explodeSlices"
-                                      [labels]="showLabels"
-                                      [doughnut]="doughnut"
-                                      [gradient]="gradient"
-                                      (select)="onSelectDetailedSector($event);">
-                </ngx-charts-pie-chart>
-
-            </div>
-
-            <div class="col-md-6">
-                <h2>Status</h2>
-                <ngx-charts-bar-horizontal *ngIf="projectStatusCount"
-                                           [view]="viewPie"
-                                           [xAxis]="showXAxis"
-                                           [yAxis]="showYAxis"
-                                           [legend]="showLegend"
-                                           [results]="projectStatusCount"
-                                           (select)="onSelectProjectStatus($event)">
-                </ngx-charts-bar-horizontal>
-
-            </div>
         </div>
 
         <div class="row">
@@ -140,6 +154,79 @@
         </div>
 
 
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Total Value Per Sector</h2>
+                <table class="table" *ngIf="sectorValue">
+                    <tr style="background-color: lightblue">
+                        <th>Sector</th>
+                        <th>Total Projects Value</th>
+                    </tr>
+
+                    <tr *ngFor="let vc of sectorValue">
+                        <td><a style="color: #2b6ea1; font-weight: lighter;"
+                               href="#/project;search=sector.name:{{vc.name}}">{{vc.name}}</a>
+                        </td>
+                        <td>USD {{vc.value.toPrecision(6)}} million</td>
+                    </tr>
+
+                    <tr style="font-weight: bold;">
+                        <td>TOTAL PROJECTS</td>
+                        <td>{{count}}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <h2>Total Value Per Country</h2>
+                <table class="table" *ngIf="countryValueChart">
+                    <tr style="background-color: lightblue">
+                        <th>Country</th>
+                        <th>Total Projects Value</th>
+                    </tr>
+
+                    <tr *ngFor="let vc of countryValueChart">
+                        <td><a style="color: #2b6ea1; font-weight: lighter;"
+                               href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
+                        </td>
+                        <td>USD {{vc.value.toPrecision(6)}} million</td>
+                    </tr>
+
+                    <tr style="font-weight: bold;">
+                        <td>TOTAL PROJECTS</td>
+                        <td>{{count}}</td>
+                    </tr>
+                </table>
+
+                <br/>
+
+                <h2>Total Value Per Principal Source</h2>
+                <table class="table" *ngIf="sourceCount">
+                    <tr style="background-color: lightblue">
+                        <th>Principal Source</th>
+                        <th>Total Projects Value</th>
+                    </tr>
+
+                    <tr *ngFor="let vc of sourceCount">
+                        <td><a style="color: #2b6ea1; font-weight: lighter;"
+                               href="#/project;search=principalSource:{{vc.name.trim()}}">{{vc.name}}</a>
+                        </td>
+                        <td>USD {{vc.value.toPrecision(6)}} million</td>
+                    </tr>
+
+                    <tr style="font-weight: bold;">
+                        <td>TOTAL PROJECTS</td>
+                        <td>{{count}}</td>
+                    </tr>
+                </table>
+
+
+            </div>
+
+        </div>
+
+
     </div>
+
 
 </div>

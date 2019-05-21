@@ -7,6 +7,7 @@ import { GenericCount } from './genericcount';
 import { CountryCount } from './countrycount';
 import { LoginModalService, Principal, Account } from 'app/core';
 import { Router } from '@angular/router';
+import { ValueCount } from 'app/home/valuecount';
 
 @Component({
     selector: 'jhi-home',
@@ -20,6 +21,7 @@ export class HomeComponent implements OnInit {
     count: String;
     countryCount: CountryCount[];
     countryCountChart: GenericCount[];
+    countryValueChart: ValueCount[];
 
     //number chart
     scheme = 'cool';
@@ -43,6 +45,7 @@ export class HomeComponent implements OnInit {
         this.getCount();
         this.getCountryCount();
         this.getCountryCountChart();
+        this.getCountryValueChart();
     }
 
     getCount(): void {
@@ -57,6 +60,10 @@ export class HomeComponent implements OnInit {
         this.service.getCountryCountChart().subscribe(countryCountChart => (this.countryCountChart = countryCountChart));
     }
 
+    getCountryValueChart(): void {
+        this.service.getCountryValueChart().subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
+    }
+
     registerAuthenticationSuccess() {
         this.eventManager.subscribe('authenticationSuccess', message => {
             this.principal.identity().then(account => {
@@ -65,6 +72,7 @@ export class HomeComponent implements OnInit {
                 this.getCount();
                 this.getCountryCount();
                 this.getCountryCountChart();
+                this.getCountryValueChart();
             });
         });
     }

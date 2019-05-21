@@ -40,6 +40,12 @@ export class ProjectService {
     }
 
     query(req?: any): Observable<EntityArrayResponseType> {
+        req = {
+            page: 0,
+            size: 200,
+            sort: ['projectTitle']
+        };
+
         const options = createRequestOption(req);
         return this.http
             .get<IProject[]>(this.resourceUrl, { params: options, observe: 'response' })

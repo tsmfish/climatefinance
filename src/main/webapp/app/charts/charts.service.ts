@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 
 import { catchError, map, tap } from 'rxjs/operators';
+import { ValueCount } from 'app/home/valuecount';
 
 @Injectable()
 export class ChartService {
@@ -34,6 +35,14 @@ export class ChartService {
         return this.http.get<GenericCount[]>(this.restUrl + '/sectorcount').pipe(catchError(this.handleError('getSectorCount', [])));
     }
 
+    getMinistryCount(): Observable<GenericCount[]> {
+        return this.http.get<GenericCount[]>(this.restUrl + '/ministrycount').pipe(catchError(this.handleError('getMinistryCount', [])));
+    }
+
+    getSectorValue(): Observable<ValueCount[]> {
+        return this.http.get<ValueCount[]>(this.restUrl + '/sectorvalue').pipe(catchError(this.handleError('getSectorValue', [])));
+    }
+
     getProjectStatusCount(): Observable<GenericCount[]> {
         return this.http.get<GenericCount[]>(this.restUrl + '/projectstatuscount').pipe(catchError(this.handleError('getSectorCount', [])));
     }
@@ -54,6 +63,16 @@ export class ChartService {
             .pipe(catchError(this.handleError('getProjectTypeCount', [])));
     }
 
+    getCountryValueChart(): Observable<ValueCount[]> {
+        return this.http
+            .get<ValueCount[]>(this.restUrl + '/countryvaluechart')
+            .pipe(catchError(this.handleError('getCountryValueChart', [])));
+    }
+
+    getSourceValue(): Observable<ValueCount[]> {
+        return this.http.get<ValueCount[]>(this.restUrl + '/sourcevalue').pipe(catchError(this.handleError('getSourceValue', [])));
+    }
+
     //by country
     getSectorCountByCountry(countryId): Observable<GenericCount[]> {
         return this.http
@@ -61,10 +80,34 @@ export class ChartService {
             .pipe(catchError(this.handleError('getSectorCountByCountry', [])));
     }
 
+    getMinistryCountByCountry(countryId): Observable<GenericCount[]> {
+        return this.http
+            .get<GenericCount[]>(this.restUrl + '/ministrycountbycountry?countryId=' + countryId)
+            .pipe(catchError(this.handleError('getMinistryCountByCountry', [])));
+    }
+
+    getSectorValueByCountry(countryId): Observable<ValueCount[]> {
+        return this.http
+            .get<ValueCount[]>(this.restUrl + '/sectorvaluebycountry?countryId=' + countryId)
+            .pipe(catchError(this.handleError('getSectorValueByCountry', [])));
+    }
+
+    getSourceValueByCountry(countryId): Observable<ValueCount[]> {
+        return this.http
+            .get<ValueCount[]>(this.restUrl + '/sourcevaluebycountry?countryId=' + countryId)
+            .pipe(catchError(this.handleError('getSourceValueByCountry', [])));
+    }
+
     getCountryCountChartByCountry(countryId): Observable<GenericCount[]> {
         return this.http
             .get<GenericCount[]>(this.restUrl + '/countrycountchartbycountry?countryId=' + countryId)
             .pipe(catchError(this.handleError('getCountryCountChartByCountry', [])));
+    }
+
+    getCountryValueChartByCountry(countryId): Observable<ValueCount[]> {
+        return this.http
+            .get<ValueCount[]>(this.restUrl + '/countryvaluechartbycountry?countryId=' + countryId)
+            .pipe(catchError(this.handleError('getCountryValueChartByCountry', [])));
     }
 
     getCountByCountry(countryId): Observable<String> {

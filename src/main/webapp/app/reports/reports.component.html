@@ -12,53 +12,38 @@
 
             <br/>
 
-            <table cellpadding="5" cellspacing="5">
-                <tr valign="middle">
-                    <td valign="top" style="width: 160px; margin-left: 20px !important;"><b>Filter by Country</b></td>
-                    <td valign="middle">
-                        <form>
-                            <label class="radio-inline" style="margin-left: 20px"><input type="radio" name="optradio"
-                                                                                         checked>Regional</label>
-                            <label class="radio-inline" style="margin-left: 20px"><input type="radio" name="optradio">Vanuatu</label>
-                            <label class="radio-inline" style="margin-left: 20px"><input type="radio" name="optradio">Marshall
-                                Islands</label>
-                            <label class="radio-inline" style="margin-left: 20px"><input type="radio" name="optradio">Palau</label>
-                            <label class="radio-inline" style="margin-left: 20px"><input type="radio" name="optradio">Tonga</label>
-                            <label class="radio-inline" style="margin-left: 20px"><input type="radio" name="optradio">Solomon
-                                Islands</label>
-                        </form>
-                    </td>
-                </tr>
+            <div align="center">
+
+                <select style="font-weight: bolder;" class="form-control" (change)="filterCountry($event.target.value)">
+                    <option style="font-weight: bolder;" value="*">Filter By Country</option>
+                    <option value="*">---------------------------------------</option>
+                    <option value="*">Regional</option>
+                    <option style="font-weight: bolder;" *ngFor="let vc of validCountries" value={{vc.id}}>
+                        {{vc.country}}
+                    </option>
+                </select>
+
+                <br/>
 
 
-                <tr valign="middle">
-                    <td valign="top" style="margin-left: 20px !important;"><b>Export Type</b></td>
-                    <td valign="middle">
+            </div>
 
-                        <form>
-
-                            <label class="radio-inline" style="margin-left: 20px"><input type="radio" name="optradio"
-                                                                                         checked>Excel</label>
-                            <label class="radio-inline" style="margin-left: 43px"><input type="radio"
-                                                                                         name="optradio">PDF</label>
-                        </form>
-                    </td>
-                </tr>
-            </table>
-
-            <br/>
 
         </div>
 
 
         <ul class="list-group">
             <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects With Disbursements</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By Sector</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By Principal Funding Source</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By Type</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By Status</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By Funding Modality</a></li>
+            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
+                Sector</a></li>
+            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
+                Principal Funding Source</a></li>
+            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
+                Type</a></li>
+            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
+                Status</a></li>
+            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
+                Funding Modality</a></li>
         </ul>
 
     </div>

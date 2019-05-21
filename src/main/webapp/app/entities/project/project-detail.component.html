@@ -51,12 +51,14 @@
                         </div>
                     </td>
 
+                    <!--
                     <th><span>Detailed Sector</span></th>
                     <td>
                         <div *ngIf="project.detailedSector">
                             <a [routerLink]="['/detailed-sector', project.detailedSector?.id, 'view']">{{project.detailedSector?.name}}</a>
                         </div>
                     </td>
+                    -->
                 </tr>
 
                 <tr>
@@ -153,7 +155,7 @@
                         <span>{{project.disasterRiskMitigation}}</span>
                     </td>
 
-                    <th><span>Total</span></th>
+                    <th><span>Total (USD)</span></th>
                     <td>
                         <span>{{project.total}}</span>
                     </td>

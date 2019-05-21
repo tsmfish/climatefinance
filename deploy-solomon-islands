@@ -1,0 +1,12 @@
+echo Deploying SIG Instance...
+yarn build
+./gradlew -Pprod clean bootWar
+mv build/libs/climatefinance-0.0.1-SNAPSHOT.war climatefinance.war
+sshpass -p 'ftracksys@dmin' scp -C climatefinance.war svc_ftracksys@192.168.5.200:/home/svc_ftracksys/
+rm climatefinance.war
+echo Deployment Finished.
+
+#/etc/rc.local
+#/home/ubuntu/elasticsearch/bin/elasticsearch -d #manual start required
+#SERVER_PORT=80 java -jar /home/ubuntu/climatefinance.war --spring.profiles.active=prod,swagger
+

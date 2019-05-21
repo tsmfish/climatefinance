@@ -3,11 +3,11 @@
     <h2>
         {{currentSearch.replace("country.name:", "")}} <span>Projects (Total: {{totalItems}})</span>
         <button class="btn btn-primary float-right jh-create-entity create-project"
-                [routerLink]="['/', { outlets: { popup: ['project-new'] } }]">
+                [routerLink]="['/project/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
 
             <span class="hidden-sm-down">
-            Create new Project
+            Register New Project
             </span>
         </button>
     </h2>
@@ -47,7 +47,7 @@
 
                 <th jhiSortBy="laterality"><span>Laterality</span> <span class="fa fa-sort"></span></th>
 
-                <th jhiSortBy="total"><span>Total</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="total"><span>Total (USD)</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="status"><span>Status</span> <span class="fa fa-sort"></span></th>
 
 
@@ -80,7 +80,7 @@
 
                 <td>{{project.laterality}}</td>
 
-                <td>{{project.total}}</td>
+                <td>{{project.total / 1000000}} million</td>
                 <td>{{project.status}}</td>
 
 

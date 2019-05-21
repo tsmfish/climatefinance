@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Validcountry } from 'app/home/validcountry';
+import { ChartService } from 'app/charts/charts.service';
 
 @Component({
     selector: 'jhi-reports',
@@ -8,9 +10,17 @@ import { Component, OnInit } from '@angular/core';
 export class ReportsComponent implements OnInit {
     message: string;
 
-    constructor() {
+    constructor(private service: ChartService) {
         this.message = 'Under Development';
     }
 
-    ngOnInit() {}
+    validCountries: Validcountry[];
+
+    ngOnInit() {
+        this.getValidCountries();
+    }
+
+    getValidCountries(): void {
+        this.service.getValidCountries().subscribe(validCountries => (this.validCountries = validCountries));
+    }
 }

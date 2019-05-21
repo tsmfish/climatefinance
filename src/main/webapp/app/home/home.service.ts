@@ -4,6 +4,7 @@ import { SERVER_API_URL } from '../app.constants';
 import 'rxjs/add/operator/toPromise';
 import { CountryCount } from './countrycount';
 import { GenericCount } from './genericcount';
+import { ValueCount } from './valuecount';
 import { Validcountry } from './validcountry';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
@@ -28,6 +29,12 @@ export class HomeService {
         return this.http
             .get<GenericCount[]>(this.restUrl + '/countrycountchart')
             .pipe(catchError(this.handleError('getCountryCountChart', [])));
+    }
+
+    getCountryValueChart(): Observable<ValueCount[]> {
+        return this.http
+            .get<ValueCount[]>(this.restUrl + '/countryvaluechart')
+            .pipe(catchError(this.handleError('getCountryValueChart', [])));
     }
 
     getValidCountries(): Observable<Validcountry[]> {
