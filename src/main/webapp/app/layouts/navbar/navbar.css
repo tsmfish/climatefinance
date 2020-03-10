@@ -38,6 +38,7 @@ Navbar
 
 .jh-navbar a.nav-link {
     font-weight: 400;
+    white-space: nowrap;
 }
 
 .jh-navbar .jh-navbar-toggler {
@@ -54,6 +55,9 @@ Navbar
     .jh-navbar-toggler {
         display: none;
     }
+    .nav-item .text {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 992px) {
@@ -65,6 +69,7 @@ Navbar
 .navbar-title {
     display: inline-block;
     vertical-align: middle;
+    white-space: normal;
 }
 
 /* ==========================================================================
