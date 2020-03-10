@@ -31,15 +31,15 @@
             <div class="col-md-6">
                 <h2>Sectors</h2>
                 <ngx-charts-pie-chart *ngIf="sectorCount"
-                                      [view]="viewPie"
-                                      [scheme]="colorScheme"
-                                      [results]="sectorCount"
-                                      [legend]="showLegend"
-                                      [explodeSlices]="explodeSlices"
-                                      [labels]="showLabels"
-                                      [doughnut]="doughnut"
-                                      [gradient]="gradient"
-                                      (select)="onSelectSector($event);">
+                    [view]="viewPie"
+                    [scheme]="colorScheme"
+                    [results]="sectorCount"
+                    [legend]="showLegend"
+                    [explodeSlices]="explodeSlices"
+                    [labels]="showLabels"
+                    [doughnut]="doughnut"
+                    [gradient]="gradient"
+                    (select)="onSelectSector($event);">
                 </ngx-charts-pie-chart>
             </div>
 
@@ -47,15 +47,15 @@
             <div class="col-md-6">
                 <h2>Implementing Ministries</h2>
                 <ngx-charts-pie-chart *ngIf="ministryCount"
-                                     [view]="viewPie"
-                                     [scheme]="colorScheme"
-                                     [results]="ministryCount"
-                                     [legend]="showLegend"
-                                     [explodeSlices]="explodeSlices"
-                                     [labels]="showLabels"
-                                     [doughnut]="doughnut"
-                                     [gradient]="gradient"
-                                     (select)="onSelectMinistry($event);">
+                    [view]="viewPie"
+                    [scheme]="colorScheme"
+                    [results]="ministryCount"
+                    [legend]="showLegend"
+                    [explodeSlices]="explodeSlices"
+                    [labels]="showLabels"
+                    [doughnut]="doughnut"
+                    [gradient]="gradient"
+                    (select)="onSelectMinistry($event);">
                 </ngx-charts-pie-chart>
             </div>
 
@@ -66,33 +66,33 @@
             <div class="col-md-6">
                 <h2>Project Types</h2>
                 <ngx-charts-pie-chart *ngIf="projectTypeCount"
-                                      [view]="viewPie"
-                                      [scheme]="colorScheme"
-                                      [results]="projectTypeCount"
-                                      [legend]="showLegend"
-                                      [explodeSlices]="explodeSlices"
-                                      [labels]="showLabels"
-                                      [doughnut]="doughnut"
-                                      [gradient]="gradient"
-                                      (select)="onSelectProjectType($event);">
+                    [view]="viewPie"
+                    [scheme]="colorScheme"
+                    [results]="projectTypeCount"
+                    [legend]="showLegend"
+                    [explodeSlices]="explodeSlices"
+                    [labels]="showLabels"
+                    [doughnut]="doughnut"
+                    [gradient]="gradient"
+                    (select)="onSelectProjectType($event);">
                 </ngx-charts-pie-chart>
             </div>
 
 
             <div class="col-md-6">
                 <!--
-                <h2>Detailed Sectors</h2>
-                <ngx-charts-pie-chart *ngIf="detailedSectorCount"
-                                      [view]="viewPie"
-                                      [scheme]="colorScheme"
-                                      [results]="detailedSectorCount"
-                                      [legend]="showLegend"
-                                      [explodeSlices]="explodeSlices"
-                                      [labels]="showLabels"
-                                      [doughnut]="doughnut"
-                                      [gradient]="gradient"
-                                      (select)="onSelectDetailedSector($event);">
-                </ngx-charts-pie-chart>
+                     <h2>Detailed Sectors</h2>
+                     <ngx-charts-pie-chart *ngIf="detailedSectorCount"
+                     [view]="viewPie"
+                     [scheme]="colorScheme"
+                     [results]="detailedSectorCount"
+                     [legend]="showLegend"
+                     [explodeSlices]="explodeSlices"
+                     [labels]="showLabels"
+                     [doughnut]="doughnut"
+                     [gradient]="gradient"
+                     (select)="onSelectDetailedSector($event);">
+                     </ngx-charts-pie-chart>
                 -->
 
             </div>
@@ -103,34 +103,34 @@
         <div class="row">
 
             <!--
-            <div class="col-md-6">
-                <h2>Project Status</h2>
-                <ngx-charts-bar-horizontal *ngIf="projectStatusCount"
-                                           [view]="viewPie"
-                                           [xAxis]="showXAxis"
-                                           [yAxis]="showYAxis"
-                                           [legend]="showLegend"
-                                           [results]="projectStatusCount"
-                                           (select)="onSelectProjectStatus($event)">
-                </ngx-charts-bar-horizontal>
+                 <div class="col-md-6">
+                 <h2>Project Status</h2>
+                 <ngx-charts-bar-horizontal *ngIf="projectStatusCount"
+                 [view]="viewPie"
+                 [xAxis]="showXAxis"
+                 [yAxis]="showYAxis"
+                 [legend]="showLegend"
+                 [results]="projectStatusCount"
+                 (select)="onSelectProjectStatus($event)">
+                 </ngx-charts-bar-horizontal>
 
-            </div>
+                 </div>
             -->
 
             <!--
-            <div class="col-md-6">
-                <h2>Countries</h2>
-                <ngx-charts-bar-vertical *ngIf="countryCount"
-                                         [results]="countryCount"
-                                         [xAxis]="showXAxis"
-                                         [yAxis]="showYAxis"
-                                         [showXAxisLabel]="showXAxisLabel"
-                                         [showYAxisLabel]="showYAxisLabel"
-                                         [legend]="showLegend"
-                                         (select)="onSelectCountry($event);">
-                </ngx-charts-bar-vertical>
+                 <div class="col-md-6">
+                 <h2>Countries</h2>
+                 <ngx-charts-bar-vertical *ngIf="countryCount"
+                 [results]="countryCount"
+                 [xAxis]="showXAxis"
+                 [yAxis]="showYAxis"
+                 [showXAxisLabel]="showXAxisLabel"
+                 [showYAxisLabel]="showYAxisLabel"
+                 [legend]="showLegend"
+                 (select)="onSelectCountry($event);">
+                 </ngx-charts-bar-vertical>
 
-            </div>
+                 </div>
             -->
 
         </div>
@@ -138,18 +138,18 @@
         <div class="row">
             <h2>Principal Funding Sources</h2>
             <ngx-charts-bar-horizontal *ngIf="sourceCount"
-                                       [view]="viewBar"
-                                       [scheme]="colorScheme"
-                                       [results]="sourceCount"
-                                       [gradient]="gradient"
-                                       [xAxis]="showXAxis"
-                                       [yAxis]="showYAxis"
-                                       [legend]="showLegend"
-                                       [showXAxisLabel]="showXAxisLabel"
-                                       [showYAxisLabel]="showYAxisLabel"
-                                       [xAxisLabel]="xAxisLabel"
-                                       [yAxisLabel]="yAxisLabel"
-                                       (select)="onSelectSource($event)">
+                [view]="viewBar"
+                [scheme]="colorScheme"
+                [results]="sourceCount"
+                [gradient]="gradient"
+                [xAxis]="showXAxis"
+                [yAxis]="showYAxis"
+                [legend]="showLegend"
+                [showXAxisLabel]="showXAxisLabel"
+                [showYAxisLabel]="showYAxisLabel"
+                [xAxisLabel]="xAxisLabel"
+                [yAxisLabel]="yAxisLabel"
+                (select)="onSelectSource($event)">
             </ngx-charts-bar-horizontal>
         </div>
 
@@ -165,9 +165,9 @@
 
                     <tr *ngFor="let vc of sectorValue">
                         <td><a style="color: #2b6ea1; font-weight: lighter;"
-                               href="#/project;search=sector.name:{{vc.name}}">{{vc.name}}</a>
+                                href="#/project;search=sector.name:{{vc.name}}">{{vc.name}}</a>
                         </td>
-                        <td>USD {{vc.value.toPrecision(6)}} million</td>
+                        <td>USD {{vc.value|number:'.0-2'}} million</td>
                     </tr>
 
                     <tr style="font-weight: bold;">
@@ -187,9 +187,9 @@
 
                     <tr *ngFor="let vc of countryValueChart">
                         <td><a style="color: #2b6ea1; font-weight: lighter;"
-                               href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
+                                href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
                         </td>
-                        <td>USD {{vc.value.toPrecision(6)}} million</td>
+                        <td>USD {{vc.value|number:'.0-2'}} million</td>
                     </tr>
 
                     <tr style="font-weight: bold;">
@@ -209,9 +209,9 @@
 
                     <tr *ngFor="let vc of sourceCount">
                         <td><a style="color: #2b6ea1; font-weight: lighter;"
-                               href="#/project;search=principalSource:{{vc.name.trim()}}">{{vc.name}}</a>
+                                href="#/project;search=principalSource:{{vc.name.trim()}}">{{vc.name}}</a>
                         </td>
-                        <td>USD {{vc.value.toPrecision(6)}} million</td>
+                        <td>USD {{vc.value|number:'.0-2'}} million</td>
                     </tr>
 
                     <tr style="font-weight: bold;">

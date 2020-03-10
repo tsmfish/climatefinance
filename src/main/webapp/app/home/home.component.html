@@ -43,7 +43,7 @@
                         <td><a style="color: #2b6ea1; font-weight: lighter;"
                                href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
                         </td>
-                        <td>USD {{vc.value.toPrecision(6)}} million</td>
+                        <td>USD {{vc.value|number:'.0-2'}} million</td>
                     </tr>
 
                     <tr style="font-weight: bold;">
@@ -84,10 +84,13 @@
                 <hr/>
 
                 <p>
-                    <b>Implementing agencies:</b> The Pacific Community (SPC) in partnership with Secretariat of the
-                    Pacific Environment Programme (SPREP) and the Pacific Islands Forum Secretariat (PIFS).
-                    Further information is available at <a style="color: #0f6ab4"
-                                                           href="http://ccprojects.gsd.spc.int/isacc">ccprojects.gsd.spc.int</a>.
+                    <b>Implementing agencies:</b>
+                    The Pacific Community (SPC) in partnership with
+                    Secretariat of the Pacific Environment Programme
+                    (SPREP) and the Pacific Islands Forum Secretariat
+                    (PIFS). Further information is available at
+                    <a style="color: #0f6ab4" href="http://ccprojects.gsd.spc.int/isacc">ccprojects.gsd.spc.int</a>
+
                 </p>
 
 
@@ -95,19 +98,6 @@
 
             <hr/>
 
-            <div style="width: 840px;" align="left" class="img-thumbnail">
-
-                <img style="height: 78px;" src="../../content/images/usaid.png"/>
-                <img style="height: 80px" src="../../content/images/spc.png"/>
-                <img style="height: 80px" src="../../content/images/forum.png"/>
-
-                <img style="height: 80px" src="../../content/images/giz.png"/>
-                <img style="height: 80px" src="../../content/images/ausaid.png"/>
-                <img style="height: 80px" src="../../content/images/sprep.png"/>
-                <img style="height: 80px" src="../../content/images/usp.png"/>
-                <img style="height: 80px" src="../../content/images/pftac.png"/>
-
-            </div>
 
 
         </div>
