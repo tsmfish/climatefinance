@@ -5,7 +5,7 @@ const rxPaths = require('rxjs/_esm5/path-mapping');
 
 const utils = require('./utils.js');
 
-module.exports = (options) => ({
+module.exports = options => ({
     resolve: {
         extensions: ['.ts', '.js'],
         modules: ['node_modules'],
@@ -26,9 +26,9 @@ module.exports = (options) => ({
                 options: {
                     minimize: true,
                     caseSensitive: true,
-                    removeAttributeQuotes:false,
-                    minifyJS:false,
-                    minifyCSS:false
+                    removeAttributeQuotes: false,
+                    minifyJS: false,
+                    minifyCSS: false
                 },
                 exclude: ['./src/main/webapp/index.html']
             },
@@ -41,7 +41,7 @@ module.exports = (options) => ({
                 loader: 'file-loader?name=manifest.webapp'
             },
             // Ignore warnings about System.import in Angular
-            { test: /[\/\\]@angular[\/\\].+\.js$/, parser: { system: true } },
+            { test: /[\/\\]@angular[\/\\].+\.js$/, parser: { system: true } }
         ]
     },
     plugins: [
@@ -70,8 +70,8 @@ module.exports = (options) => ({
             { from: './src/main/webapp/robots.txt', to: 'robots.txt' }
         ]),
         new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
+            $: 'jquery',
+            jQuery: 'jquery'
         }),
         new HtmlWebpackPlugin({
             template: './src/main/webapp/index.html',

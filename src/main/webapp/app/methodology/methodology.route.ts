@@ -8,7 +8,7 @@ export const METHODOLOGY_ROUTE: Route = {
     component: MethodologyComponent,
     data: {
         authorities: [],
-        pageTitle: 'Charts and Analytics'
+        pageTitle: 'Methodology & Assumptions'
     },
     canActivate: [UserRouteAccessService]
 };
