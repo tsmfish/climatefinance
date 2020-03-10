@@ -1,7 +1,7 @@
 import { Route } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core';
-import { MethodologyComponent } from './';
+import { MethodologyComponent, MethodologyEditComponent } from './';
 
 export const METHODOLOGY_ROUTE: Route = {
     path: 'methodology',
@@ -9,6 +9,16 @@ export const METHODOLOGY_ROUTE: Route = {
     data: {
         authorities: [],
         pageTitle: 'Methodology & Assumptions'
+    },
+    canActivate: [UserRouteAccessService]
+};
+
+export const METHODOLOGY_EDIT_ROUTE: Route = {
+    path: 'methodology/edit',
+    component: MethodologyEditComponent,
+    data: {
+        authorities: ['ROLE_ADMIN'],
+        pageTitle: 'Edit | Methodology & Assumptions'
     },
     canActivate: [UserRouteAccessService]
 };

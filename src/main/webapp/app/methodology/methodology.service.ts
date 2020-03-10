@@ -7,11 +7,14 @@ import { SERVER_API_URL } from 'app/app.constants';
 
 @Injectable()
 export class MethodologyService {
-    private restUrl = SERVER_API_URL + 'api/methodology';
+    private restUrl = SERVER_API_URL + 'api/custom/methodology';
 
     constructor(private http: HttpClient) {}
 
     get(): Observable<MethodologyPageContent> {
         return this.http.get<MethodologyPageContent>(this.restUrl);
+    }
+    save(data): Observable<Object> {
+        return this.http.post(this.restUrl, data);
     }
 }

@@ -7,7 +7,6 @@ const initialMarkdown = require('text-loader!./methodology.component.md');
 const initialTitle = 'Methodology & Assumptions';
 
 @Component({
-    selector: 'jhi-methodology',
     templateUrl: 'methodology.component.html'
 })
 export class MethodologyComponent implements OnInit {
@@ -24,5 +23,33 @@ export class MethodologyComponent implements OnInit {
             },
             err => console.warn('Cannot fetch content for methodology: %o', err)
         );
+    }
+}
+
+@Component({
+    templateUrl: 'methodology-edit.component.html'
+})
+export class MethodologyEditComponent implements OnInit {
+    private markdown = initialMarkdown;
+    private title = initialTitle;
+
+    constructor(private methodologyService: MethodologyService) {}
+
+    ngOnInit() {
+        this.methodologyService.get().subscribe(
+            resp => {
+                this.markdown = resp.markdown;
+                this.title = resp.title;
+            },
+            err => console.warn('Cannot fetch content for methodology: %o', err)
+        );
+    }
+    saveChanges() {
+        this.methodologyService
+            .save({
+                title: this.title,
+                markdown: this.markdown
+            })
+            .subscribe(() => {}, err => console.warn('Cannot save methodology: %o', err));
     }
 }
