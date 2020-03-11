@@ -10,8 +10,8 @@ const initialTitle = 'Methodology & Assumptions';
     templateUrl: 'methodology.component.html'
 })
 export class MethodologyComponent implements OnInit {
-    private markdown = initialMarkdown;
-    private title = initialTitle;
+    markdown = initialMarkdown;
+    title = initialTitle;
 
     constructor(private methodologyService: MethodologyService) {}
 
@@ -30,8 +30,8 @@ export class MethodologyComponent implements OnInit {
     templateUrl: 'methodology-edit.component.html'
 })
 export class MethodologyEditComponent implements OnInit {
-    private markdown = initialMarkdown;
-    private title = initialTitle;
+    markdown = initialMarkdown;
+    title = initialTitle;
 
     constructor(private methodologyService: MethodologyService) {}
 

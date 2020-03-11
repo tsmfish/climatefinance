@@ -7,5 +7,5 @@ import { style } from '@angular/animations';
     styleUrls: ['./footer.css']
 })
 export class FooterComponent {
-    private partnerImages = ['usaid.png', 'spc.png', 'forum.png', 'giz.png', 'ausaid.png', 'sprep.svg'];
+    partnerImages = ['usaid.png', 'spc.png', 'forum.png', 'giz.png', 'ausaid.png', 'sprep.svg'];
 }
