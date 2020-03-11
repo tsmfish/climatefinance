@@ -1,61 +1,83 @@
 <div class="row">
-    <div class="col-md-3">
-        <img class="img-fluid" src="../../content/images/sb.png"/>
-        <br/><br/>
-        <span class="hipster img-fluid rounded"></span>
-
+    <div class="col-sm-3">
+        <div class="owner-logo">
+            <img class="img-fluid" src="../../content/images/spc.png"/>
+        </div>
     </div>
+    <div class="col-sm-9">
+        <div class="climate-change-bg">
+            <img class="img-fluid" src="../../content/images/climate2.png"/>
+            <span class="overlay">
+                Climate change
+            </span>
+        </div>
+    </div>
+</div>
 
-    <div class="col-md-9">
-        <h1 class="display-4" style="color: #2b6ea1; font-size: 40px;">SIG Climate Change Finance Tracking Tool</h1>
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">SIG Climate Change Finance Tracking Tool</h1>
         <hr/>
-
         <div [ngSwitch]="isAuthenticated()">
             <div *ngSwitchCase="true">
-                <span class="alert alert-success" *ngIf="account">
-                    Welcome, {{account.firstName}} {{account.lastName}}. </span>
+                <div class="welcome-block">
+                    <span class="welcome-text alert alert-success" *ngIf="account">
+                        Welcome, {{account.firstName}} {{account.lastName}}.
+                    </span>
+                    <a routerLink="/project" class="btn btn-primary">Browse Projects</a>
+                </div>
+
+                <div class="country-charts" *ngIf="countryCountChart">
+                    <ngx-charts-number-card *ngFor="let result of countryCountChart"
+                        [results]="[result]"
+                        [view]="viewNumber"
+                        cardColor="white"
+                        textColor="#000366"
+                        bandColor="white"
+                        (select)="onSelectCountry($event);"
+                        class="country-chart-card raised rounded-20"
+                    >
+                    </ngx-charts-number-card>
+                </div>
 
 
-                <a href="#/project" style="margin-left: 20px;" class="btn btn-primary">Browse Projects</a>
+                <div *ngIf="countryValueChart" class="country-table">
 
-                <br/><br/>
+                    <span class="h4">
+                        Projects
+                    </span>
+                    <table class="table raised rounded-20" >
+                        <tr>
+                            <th>Country</th>
+                            <th>Total Projects Value</th>
+                        </tr>
 
+                        <tr *ngFor="let vc of countryValueChart">
+                            <td>
+                                <a class="country-link"
+                                    href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">
+                                    <img class="img-fluid" [src]="'../../content/images/flags/' + vc.name + '.png'"/>
 
-                <ngx-charts-number-card *ngIf="countryCountChart"
-                                        [results]="countryCountChart"
-                                        [view]="viewNumber"
-                                        [scheme]="scheme"
-                                        [bandColor]="bandColor"
-                                        (select)="onSelectCountry($event);">
-                </ngx-charts-number-card>
+                                    {{vc.name}}
+                                </a>
+                            </td>
+                            <td>USD {{vc.value|number:'.0-2'}} million</td>
+                        </tr>
 
-                <br/>
-
-                <table style="width: 840px !important;" class="table" *ngIf="countryValueChart">
-                    <tr style="background-color: lightblue">
-                        <th>Country</th>
-                        <th>Total Projects Value</th>
-                    </tr>
-
-                    <tr *ngFor="let vc of countryValueChart">
-                        <td><a style="color: #2b6ea1; font-weight: lighter;"
-                               href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
-                        </td>
-                        <td>USD {{vc.value|number:'.0-2'}} million</td>
-                    </tr>
-
-                    <tr style="font-weight: bold;">
-                        <td>TOTAL PROJECTS</td>
-                        <td>{{count}}</td>
-                    </tr>
-                </table>
-
+                        <tr>
+                            <td>
+                                <strong>Total Projects</strong>
+                            </td>
+                            <td>
+                                <strong>{{count}}</strong>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
             </div>
 
-
             <div *ngSwitchCase="false">
-
                 <p style="text-align: justify">
                     Climate change funding to support developing countries tackle climate change has increased over the
                     past years and is projected to increase dramatically in the future. At the national level, tracking
@@ -87,14 +109,17 @@
                     Secretariat of the Pacific Environment Programme
                     (SPREP) and the Pacific Islands Forum Secretariat
                     (PIFS). Further information is available at
-                    <a style="color: #0f6ab4" href="http://ccprojects.gsd.spc.int/isacc">ccprojects.gsd.spc.int</a>
+                    <a href="http://ccprojects.gsd.spc.int/isacc">ccprojects.gsd.spc.int</a>
 
                 </p>
 
 
             </div>
 
-            <hr/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
 
 
 

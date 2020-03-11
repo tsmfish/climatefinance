@@ -13,7 +13,10 @@ h4 {
 body {
     background: #e4e5e6;
 }
-
+jhi-main {
+    color: #000;
+    font-weight: 300;
+}
 a {
     color: #533f03;
     font-weight: bold;
@@ -227,6 +230,16 @@ ui bootstrap tweaks
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/*****************************************************************************/
+/*                            Redesign components`                           */
+/*****************************************************************************/
+.raised {
+    box-shadow: 0px 4px 20px rgba(123, 163, 229, 0.26);
+}
+.rounded-20 {
+    border-radius: 20px;
 }
 
 /* jhipster-needle-css-add-main JHipster will add new css style */

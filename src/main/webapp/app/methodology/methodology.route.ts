@@ -17,7 +17,7 @@ export const METHODOLOGY_EDIT_ROUTE: Route = {
     path: 'methodology/edit',
     component: MethodologyEditComponent,
     data: {
-        authorities: ['ROLE_ADMIN'],
+        authorities: ['ROLE_USER'],
         pageTitle: 'Edit | Methodology & Assumptions'
     },
     canActivate: [UserRouteAccessService]
