@@ -1,46 +1,59 @@
-<div class="row">
-    <div class="col-md-10 offset-md-1">
-        <h6 class="text-right">{{message}}</h6>
-        <h1 class="text-capitalize text-center">Charts and Analytics</h1>
-        <h5 class="text-center">Climate Changes Projects in the Pacific</h5>
-        <hr/>
 
+<div class="row">
+    <div class="col-md-12">
+        <div class="h6 text-right">{{message}}</div>
+        <h1 class="text-capitalize text-center">Charts and Analytics</h1>
+        <div class="h5 text-center">Climate Changes Projects in the Pacific</div>
+        <hr/>
         <div class="text-justify">
             <p>
-                Consectetur a erat nam at lectus urna duis convallis convallis tellus, id. Amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim. Egestas sed sed risus pretium quam vulputate dignissim suspendisse in est. Aliquet risus feugiat in ante metus, dictum at tempor commodo, ullamcorper a lacus vestibulum sed arcu non odio euismod lacinia at quis risus sed. Sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla?
+                These analytics are based on the database of climate
+                change projects with clear national allocations
+                contained within the tool and the weighted totals of
+                those projects. The weighting system gives an
+                approximation of the climate change and disaster-risk
+                relevance of related expenditure. See the
+                <a routerLink="/methodology">methodology</a>
+                explanation for further information.
             </p>
-
-            <p>
-                <a routerLink="/methodology">Methodology</a>
+        </div>
+        <div class="text-center project-filter">
+            <div class="fiter">
+                <select style="font-weight: bolder;" class="form-control" (change)="filterCountry($event.target.value)">
+                    <option style="font-weight: bolder;" value="*">Filter By Country</option>
+                    <option value="*">---------------------------------------</option>
+                    <option value="*">Regional</option>
+                    <option style="font-weight: bolder;" *ngFor="let vc of validCountries" value={{vc.id}}>
+                        {{vc.country}}
+                    </option>
+                </select>
+            </div>
+            <p class="results">
+                {{count}} Projects Registered.
             </p>
-
         </div>
-        <div align="center">
-
-            <select style="font-weight: bolder;" class="form-control" (change)="filterCountry($event.target.value)">
-                <option style="font-weight: bolder;" value="*">Filter By Country</option>
-                <option value="*">---------------------------------------</option>
-                <option value="*">Regional</option>
-                <option style="font-weight: bolder;" *ngFor="let vc of validCountries" value={{vc.id}}>
-                    {{vc.country}}
-                </option>
-            </select>
-
-            <br/>
-
-            {{count}} Projects Registered.
-
-        </div>
-
-        <br/><br/><br/>
+    </div>
+</div>
 
 
-        <div class="row">
 
-            <div class="col-md-6">
-                <h2>Sectors</h2>
+<div class="row">
+    <div class="col-xl-6">
+        <div class=" p-3">
+            <h2>Sectors</h2>
+            <div class="text-justify">
+                <p>
+                    Sectors are aligned with national priority
+                    sectors as indicated in national climate
+                    change policies. Typical sectors include
+                    Energy, Transport/Infrastructure, Agriculture
+                    & Food Security, Water & Sanitation, Forestry,
+                    Disaster Risk Reduction/Management, Fisheries
+                    etc.
+                </p>
+            </div>
+            <div class="chart-holder">
                 <ngx-charts-pie-chart *ngIf="sectorCount"
-                    [view]="viewPie"
                     [scheme]="colorScheme"
                     [results]="sectorCount"
                     [legend]="showLegend"
@@ -51,12 +64,45 @@
                     (select)="onSelectSector($event);">
                 </ngx-charts-pie-chart>
             </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="p-3">
+            <h2>Project Types</h2>
+            <div class="chart-holder">
+                <ngx-charts-pie-chart *ngIf="projectTypeCount"
+                    [scheme]="colorScheme"
+                    [results]="projectTypeCount"
+                    [legend]="showLegend"
+                    [explodeSlices]="explodeSlices"
+                    [labels]="showLabels"
+                    [doughnut]="doughnut"
+                    [gradient]="gradient"
+                    (select)="onSelectProjectType($event);">
+                    <ng-template #tooltipTemplate let-model="model">
+                            <div class="h5">
+                                {{ formatProjectTypeTooltip(model.name).title }}
+                            </div>
+                            <p style="max-width:  300px">
+                                {{ formatProjectTypeTooltip(model.name).text }}
+                            </p>
+                            <div class="h6 mb-3">
+                                Number: {{ model.value }}
+                            </div>
+                    </ng-template>
+                </ngx-charts-pie-chart>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-            <div class="col-md-6">
-                <h2>Implementing Ministries</h2>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="p-3">
+            <h2>Implementing Ministries</h2>
+            <div class="chart-holder">
                 <ngx-charts-pie-chart *ngIf="ministryCount"
-                    [view]="viewPie"
                     [scheme]="colorScheme"
                     [results]="ministryCount"
                     [legend]="showLegend"
@@ -67,175 +113,122 @@
                     (select)="onSelectMinistry($event);">
                 </ngx-charts-pie-chart>
             </div>
-
-
         </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Project Types</h2>
-                <ngx-charts-pie-chart *ngIf="projectTypeCount"
-                    [view]="viewPie"
-                    [scheme]="colorScheme"
-                    [results]="projectTypeCount"
-                    [legend]="showLegend"
-                    [explodeSlices]="explodeSlices"
-                    [labels]="showLabels"
-                    [doughnut]="doughnut"
-                    [gradient]="gradient"
-                    (select)="onSelectProjectType($event);">
-                </ngx-charts-pie-chart>
-            </div>
+    </div>
+</div>
 
 
-            <div class="col-md-6">
-                <!--
-                     <h2>Detailed Sectors</h2>
-                     <ngx-charts-pie-chart *ngIf="detailedSectorCount"
-                     [view]="viewPie"
-                     [scheme]="colorScheme"
-                     [results]="detailedSectorCount"
-                     [legend]="showLegend"
-                     [explodeSlices]="explodeSlices"
-                     [labels]="showLabels"
-                     [doughnut]="doughnut"
-                     [gradient]="gradient"
-                     (select)="onSelectDetailedSector($event);">
-                     </ngx-charts-pie-chart>
-                -->
-
-            </div>
-
-
-        </div>
-
-        <div class="row">
-
-            <!--
-                 <div class="col-md-6">
-                 <h2>Project Status</h2>
-                 <ngx-charts-bar-horizontal *ngIf="projectStatusCount"
-                 [view]="viewPie"
-                 [xAxis]="showXAxis"
-                 [yAxis]="showYAxis"
-                 [legend]="showLegend"
-                 [results]="projectStatusCount"
-                 (select)="onSelectProjectStatus($event)">
-                 </ngx-charts-bar-horizontal>
-
-                 </div>
-            -->
-
-            <!--
-                 <div class="col-md-6">
-                 <h2>Countries</h2>
-                 <ngx-charts-bar-vertical *ngIf="countryCount"
-                 [results]="countryCount"
-                 [xAxis]="showXAxis"
-                 [yAxis]="showYAxis"
-                 [showXAxisLabel]="showXAxisLabel"
-                 [showYAxisLabel]="showYAxisLabel"
-                 [legend]="showLegend"
-                 (select)="onSelectCountry($event);">
-                 </ngx-charts-bar-vertical>
-
-                 </div>
-            -->
-
-        </div>
-
-        <div class="row">
+<div class="row">
+    <div class="col-sm-12">
+        <div class="p-3">
             <h2>Principal Funding Sources</h2>
-            <ngx-charts-bar-horizontal *ngIf="sourceCount"
-                [view]="viewBar"
-                [scheme]="colorScheme"
-                [results]="sourceCount"
-                [gradient]="gradient"
-                [xAxis]="showXAxis"
-                [yAxis]="showYAxis"
-                [legend]="showLegend"
-                [showXAxisLabel]="showXAxisLabel"
-                [showYAxisLabel]="showYAxisLabel"
-                [xAxisLabel]="xAxisLabel"
-                [yAxisLabel]="yAxisLabel"
-                (select)="onSelectSource($event)">
-            </ngx-charts-bar-horizontal>
-        </div>
+            <p class="text-justify">
+                The principal funding source is the stakeholder
+                (bilateral or multilateral partner) directly engaged
+                by the recipient country to provide the funding for
+                the specified project. Due to the complexity of the
+                climate finance environment, it is acknowledged that
+                these may be intermediaries for funding that has
+                originated elsewhere.
+            </p>
+            <div class="chart-holder">
+                <ngx-charts-bar-horizontal *ngIf="sourceCount"
 
-
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Total Value Per Sector</h2>
-                <table class="table" *ngIf="sectorValue">
-                    <tr style="background-color: lightblue">
-                        <th>Sector</th>
-                        <th>Total Projects Value</th>
-                    </tr>
-
-                    <tr *ngFor="let vc of sectorValue">
-                        <td><a style="color: #2b6ea1; font-weight: lighter;"
-                                href="#/project;search=sector.name:{{vc.name}}">{{vc.name}}</a>
-                        </td>
-                        <td>USD {{vc.value|number:'.0-2'}} million</td>
-                    </tr>
-
-                    <tr style="font-weight: bold;">
-                        <td>TOTAL PROJECTS</td>
-                        <td>{{count}}</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="col-md-6">
-                <h2>Total Value Per Country</h2>
-                <table class="table" *ngIf="countryValueChart">
-                    <tr style="background-color: lightblue">
-                        <th>Country</th>
-                        <th>Total Projects Value</th>
-                    </tr>
-
-                    <tr *ngFor="let vc of countryValueChart">
-                        <td><a style="color: #2b6ea1; font-weight: lighter;"
-                                href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
-                        </td>
-                        <td>USD {{vc.value|number:'.0-2'}} million</td>
-                    </tr>
-
-                    <tr style="font-weight: bold;">
-                        <td>TOTAL PROJECTS</td>
-                        <td>{{count}}</td>
-                    </tr>
-                </table>
-
-                <br/>
-
-                <h2>Total Value Per Principal Source</h2>
-                <table class="table" *ngIf="sourceCount">
-                    <tr style="background-color: lightblue">
-                        <th>Principal Source</th>
-                        <th>Total Projects Value</th>
-                    </tr>
-
-                    <tr *ngFor="let vc of sourceCount">
-                        <td><a style="color: #2b6ea1; font-weight: lighter;"
-                                href="#/project;search=principalSource:{{vc.name.trim()}}">{{vc.name}}</a>
-                        </td>
-                        <td>USD {{vc.value|number:'.0-2'}} million</td>
-                    </tr>
-
-                    <tr style="font-weight: bold;">
-                        <td>TOTAL PROJECTS</td>
-                        <td>{{count}}</td>
-                    </tr>
-                </table>
-
+                    [scheme]="colorScheme"
+                    [results]="sourceCount"
+                    [gradient]="gradient"
+                    [xAxis]="showXAxis"
+                    [yAxis]="showYAxis"
+                    [legend]="showLegend"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxisLabel]="xAxisLabel"
+                    [yAxisLabel]="yAxisLabel"
+                    (select)="onSelectSource($event)">
+                </ngx-charts-bar-horizontal>
 
             </div>
-
         </div>
+    </div>
+</div>
+
+
+
+<div class="alert alert-info">
+    <p class="text-center">
+        All total values shown below are weighted values,
+        providing an approximate value of climate change and
+        disaster risk-related expenditure
+    </p>
+
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <h2>Total Value Per Sector</h2>
+        <table class="table  raised rounded-20" *ngIf="sectorValue">
+            <tr>
+                <th>Sector</th>
+                <th>Total Projects Value</th>
+            </tr>
+
+            <tr *ngFor="let vc of sectorValue">
+                <td><a style="color: #2b6ea1; font-weight: lighter;"
+                        href="#/project;search=sector.name:{{vc.name}}">{{vc.name}}</a>
+                </td>
+                <td>USD {{vc.value|number:'.0-2'}} million</td>
+            </tr>
+
+            <tr style="font-weight: bold;">
+                <td>TOTAL PROJECTS</td>
+                <td>{{count}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-lg-6">
+        <h2>Total Value Per Country</h2>
+        <table class="table raised rounded-20" *ngIf="countryValueChart">
+            <tr>
+                <th>Country</th>
+                <th>Total Projects Value</th>
+            </tr>
+
+            <tr *ngFor="let vc of countryValueChart">
+                <td><a style="color: #2b6ea1; font-weight: lighter;"
+                        href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
+                </td>
+                <td>USD {{vc.value|number:'.0-2'}} million</td>
+            </tr>
+
+            <tr style="font-weight: bold;">
+                <td>TOTAL PROJECTS</td>
+                <td>{{count}}</td>
+            </tr>
+        </table>
+
+        <br/>
+
+        <h2>Total Value Per Principal Source</h2>
+        <table class="table  raised rounded-20" *ngIf="sourceCount">
+            <tr>
+                <th>Principal Source</th>
+                <th>Total Projects Value</th>
+            </tr>
+
+            <tr *ngFor="let vc of sourceCount">
+                <td><a style="color: #2b6ea1; font-weight: lighter;"
+                        href="#/project;search=principalSource:{{vc.name.trim()}}">{{vc.name}}</a>
+                </td>
+                <td>USD {{vc.value|number:'.0-2'}} million</td>
+            </tr>
+
+            <tr style="font-weight: bold;">
+                <td>TOTAL PROJECTS</td>
+                <td>{{count}}</td>
+            </tr>
+        </table>
 
 
     </div>
-
 
 </div>

@@ -232,6 +232,25 @@ ui bootstrap tweaks
     white-space: nowrap;
 }
 
+.table {
+    color: #000366;
+    font-weight: 300;
+}
+
+.table th {
+    text-align: center;
+}
+.table.table td,
+.table.table th {
+    border: none;
+}
+.table tr:nth-child(2n + 1) th:nth-child(2n + 1),
+.table tr:nth-child(2n + 1) td:nth-child(2n + 1),
+.table tr:nth-child(2n) th:nth-child(2n),
+.table tr:nth-child(2n) td:nth-child(2n) {
+    background: linear-gradient(270deg, #f2f7ff 0%, rgba(219, 233, 255, 0) 100%);
+}
+
 /*****************************************************************************/
 /*                            Redesign components`                           */
 /*****************************************************************************/

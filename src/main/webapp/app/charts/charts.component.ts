@@ -8,6 +8,40 @@ import { Observable } from '../../../../../node_modules/rxjs/Observable';
 import { catchError } from 'rxjs/operators';
 import { ValueCount } from 'app/home/valuecount';
 
+type ProjectTypeTooltip = {
+    title: string;
+    text: string;
+};
+
+const PROJECT_TYPES: { [key: string]: ProjectTypeTooltip } = {
+    CCA: {
+        title: 'Climate Change Adaptation',
+        text:
+            'Activities that respond to the adverse impacts of climate change on the environment, human wellbeing and survival, and culture – reducing vulnerability or increasing capacity to make change (resilience). For example coastal defences, food and water security, improving health etc.'
+    },
+    CCM: {
+        title: 'Climate Change Mitigation',
+        text:
+            'Activities that contribute to lowering the cause of climate change (greenhouse gas emissions). For example, installation of renewable energy sources, fuel efficiency, reducing energy use, carbon storage in vegetation (REDD+), etc.'
+    },
+
+    DRM: {
+        title: 'Disaster Risk Management',
+        text: 'Activities that respond to the damages and losses caused by a disaster on humans, environment and infrastructure'
+    },
+
+    DRR: {
+        title: 'Disaster Risk Reduction',
+        text: 'Activities that contribute to lowering the risks associated with disasters, on humans, environment and infrastructure '
+    },
+
+    ENABLING: {
+        title: 'Enabling',
+        text:
+            'This category indicates projects that target institutional and capacity strengthening, creating a more effective enabling environment for the delivery of climate change and disaster risk related activities.'
+    }
+};
+
 @Component({
     selector: 'jhi-charts',
     templateUrl: './charts.component.html',
@@ -29,8 +63,6 @@ export class ChartsComponent implements OnInit {
     countryValueChart: ValueCount[];
     ministryCount: GenericCount[];
 
-    //pie chart
-    viewPie: any[] = [800, 400];
     showLegend = true;
     colorScheme = {
         domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
@@ -39,7 +71,6 @@ export class ChartsComponent implements OnInit {
     explodeSlices = false;
     doughnut = false;
 
-    //bar chart
     viewBar: any[] = [1400, 700];
     showXAxis = true;
     showYAxis = true;
@@ -49,16 +80,13 @@ export class ChartsComponent implements OnInit {
     showYAxisLabel = true;
     yAxisLabel = 'Funding Source';
 
-    //number chart
     scheme = 'cool';
-
-    //viewNumber: any[] = [900, 300];
 
     constructor(private service: ChartService, private router: Router) {}
 
     ngOnInit() {
         this.message = 'Under Development';
-        //stats
+
         this.getCount();
         this.getCountryCountChart();
         this.getSectorCount();
@@ -73,8 +101,6 @@ export class ChartsComponent implements OnInit {
     }
 
     filterCountry(countryId: any) {
-        //alert(countryId);
-
         if (countryId == '*') {
             this.getCount();
             this.getCountryCountChart();
@@ -155,39 +181,35 @@ export class ChartsComponent implements OnInit {
         this.service.getValidCountries().subscribe(validCountries => (this.validCountries = validCountries));
     }
 
-    //events
     onSelectCountry(data) {
-        //alert(data.name);
         this.router.navigateByUrl('/project;search=country.name:' + data.name);
     }
 
     onSelectMinistry(data) {
-        //alert(data.name);
         this.router.navigateByUrl('/project;search=ministry:' + data.name);
     }
 
     onSelectSector(data) {
-        //alert(data.name);
         this.router.navigateByUrl('/project;search=sector.name:' + data.name);
     }
 
     onSelectDetailedSector(data) {
-        //alert(data.name);
         this.router.navigateByUrl('/project;search=detailedSector.name:' + data.name);
     }
 
     onSelectSource(data) {
-        //alert(data.name);
         this.router.navigateByUrl('/project;search=principalSource:' + data.name);
     }
 
     onSelectProjectType(data) {
-        //alert(data.name);
         this.router.navigateByUrl('/project;search=projectType:' + data.name);
     }
 
     onSelectProjectStatus(data) {
-        //alert(data.name);
         this.router.navigateByUrl('/project;search=status:' + data.name);
+    }
+
+    formatProjectTypeTooltip(name: string) {
+        return PROJECT_TYPES[name] || { title: 'Unknown', text: '' };
     }
 }
