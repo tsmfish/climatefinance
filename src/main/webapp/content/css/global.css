@@ -13,7 +13,10 @@ h4 {
 body {
     background: #e4e5e6;
 }
-
+jhi-main {
+    color: #000;
+    font-weight: 300;
+}
 a {
     color: #533f03;
     font-weight: bold;
@@ -227,6 +230,35 @@ ui bootstrap tweaks
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.table {
+    color: #000366;
+    font-weight: 300;
+}
+
+.table th {
+    text-align: center;
+}
+.table.table td,
+.table.table th {
+    border: none;
+}
+.table tr:nth-child(2n + 1) th:nth-child(2n + 1),
+.table tr:nth-child(2n + 1) td:nth-child(2n + 1),
+.table tr:nth-child(2n) th:nth-child(2n),
+.table tr:nth-child(2n) td:nth-child(2n) {
+    background: linear-gradient(270deg, #f2f7ff 0%, rgba(219, 233, 255, 0) 100%);
+}
+
+/*****************************************************************************/
+/*                            Redesign components`                           */
+/*****************************************************************************/
+.raised {
+    box-shadow: 0px 4px 20px rgba(123, 163, 229, 0.26);
+}
+.rounded-20 {
+    border-radius: 20px;
 }
 
 /* jhipster-needle-css-add-main JHipster will add new css style */

@@ -1,24 +1,91 @@
-/* ==========================================================================
-Main page styles
-========================================================================== */
-
-.hipster {
+/*****************************************************************************/
+/*                                   Logos                                   */
+/*****************************************************************************/
+.owner-logo {
+    text-align: center;
+    max-height: 180px;
+    margin: 20px 0px;
+}
+.owner-logo img {
+}
+.climate-change-bg {
+    text-align: right;
+    margin: 20px 0px;
+    position: relative;
     display: inline-block;
-    width: 447px;
-    height: 547px;
-    background: url('../../content/images/climate.jpg') no-repeat center top;
-    /*background-size: contain;*/
+    float: right;
 }
 
-/* wait autoprefixer update to allow simple generation of high pixel density media query */
-@media only screen and (-webkit-min-device-pixel-ratio: 2),
-    only screen and (min--moz-device-pixel-ratio: 2),
-    only screen and (-o-min-device-pixel-ratio: 2/1),
-    only screen and (min-device-pixel-ratio: 2),
-    only screen and (min-resolution: 192dpi),
-    only screen and (min-resolution: 2dppx) {
-    .hipster {
-        background: url('../../content/images/hipster2x.png') no-repeat center top;
-        background-size: contain;
+.climate-change-bg .overlay {
+    font-weight: bold;
+    font-size: 26px;
+    line-height: 50px;
+    color: #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+}
+
+@media screen and (min-width: 768px) {
+    .climate-change-bg .overlay {
+        font-size: 36px;
+    }
+}
+
+/*****************************************************************************/
+/*                                  Content                                  */
+/*****************************************************************************/
+
+.page-header {
+    color: #2b6eb6;
+    font-size: 36px;
+    font-weight: 300;
+    margin-top: 20px;
+}
+
+.welcome-block {
+    margin: 20px 0px;
+}
+.welcome-text {
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.country-charts {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 40px 0px;
+}
+.country-chart-card {
+    display: inline-block;
+    overflow: hidden;
+    margin: 10px 0px;
+}
+
+.country-table {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.country-table .table {
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.country-link,
+.country-link:hover {
+    font-weight: 100;
+    color: #000366;
+}
+
+@media screen and (min-width: 768px) {
+    .country-charts {
+        flex-direction: row;
+    }
+    .country-chart-card {
+        max-width: 48%;
     }
 }

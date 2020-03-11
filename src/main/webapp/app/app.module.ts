@@ -6,6 +6,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Ng2Webstorage, LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 import { JhiEventManager } from 'ng-jhipster';
 
+import { MarkdownModule } from 'ngx-markdown';
+
 import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 import { ErrorHandlerInterceptor } from './blocks/interceptor/errorhandler.interceptor';
@@ -18,10 +20,11 @@ import { ClimatefinanceAccountModule } from './account/account.module';
 import { ClimatefinanceEntityModule } from './entities/entity.module';
 import { ClimatefinanceAppAboutModule } from './about/about.module';
 import { ClimatefinanceAppChartsModule } from './charts/charts.module';
+import { ClimatefinanceAppMethodologyModule } from './methodology/methodology.module';
 import { ClimatefinanceAppReportsModule } from './reports/reports.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { JhiMainComponent, NavbarComponent, FooterComponent, ProfileService, PageRibbonComponent, ErrorComponent } from './layouts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -38,9 +41,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         ClimatefinanceEntityModule,
         ClimatefinanceAppAboutModule,
         ClimatefinanceAppChartsModule,
+        ClimatefinanceAppMethodologyModule,
         ClimatefinanceAppReportsModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
-        HttpClientModule
+        HttpClientModule,
+        MarkdownModule.forRoot({ loader: HttpClient })
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],
     providers: [

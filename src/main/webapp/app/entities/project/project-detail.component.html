@@ -1,7 +1,5 @@
-<div class="row justify-content-center">
-    <div class="col-8">
-
-
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
         <div *ngIf="project">
             <h2><span>Project</span> {{project.id}} : {{project.projectTitle}}</h2>
             <hr>
@@ -29,199 +27,134 @@
 
             <hr/>
 
-            <table class="row-md jh-entity-details">
-                <tr>
-                    <th style="width: 300px;"><span>Project Type</span></th>
-                    <td style="width: 300px;">
-                        <span>{{project.projectType}}</span>
-                    </td>
+            <div class="entity-details">
+                <div class="record">
+                    <div class="title">Country</div>
+                    <div class="value"><a *ngIf="project.country" [routerLink]="['/country', project.country?.id, 'view']">{{project.country?.name}}</a> </div>
+                </div>
 
-                    <th style="width: 300px;"><span>Country</span></th>
-                    <td style="width: 300px;">
-                        <div *ngIf="project.country">
-                            <a [routerLink]="['/country', project.country?.id, 'view']">{{project.country?.name}}</a>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Sector</span></th>
-                    <td>
+                <div class="record">
+                    <div class="title"> Project Type </div>
+                    <div class="value"> {{project.projectType}} </div>
+                </div>
+
+                <div class="record">
+                    <div class="title">Sector</div>
+                    <div class="value">
                         <div *ngIf="project.sector">
                             <a [routerLink]="['/sector', project.sector?.id, 'view']">{{project.sector?.name}}</a>
                         </div>
-                    </td>
+                    </div>
+                </div>
 
-                    <!--
-                    <th><span>Detailed Sector</span></th>
-                    <td>
-                        <div *ngIf="project.detailedSector">
-                            <a [routerLink]="['/detailed-sector', project.detailedSector?.id, 'view']">{{project.detailedSector?.name}}</a>
-                        </div>
-                    </td>
-                    -->
-                </tr>
+                <div class="record">
+                    <div class="title">Total Country Allocation</div>
+                    <div class="value">{{project.totalFundingAmount|number}}</div>
+                </div>
 
-                <tr>
-                    <th><span>Funding Basis</span></th>
-                    <td>
-                        <span>{{project.fundingBasis}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Weighted Country Allocation</div>
+                    <div class="value">{{project.estimatedCountryAllocation|number}}</div>
+                </div>
 
-                    <th><span>Total Funding Amount</span></th>
-                    <td>
-                        <span>{{project.totalFundingAmount}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Total Funding Currency</span></th>
-                    <td>
-                        <span>{{project.totalFundingCurrency}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Weighted Country Allocation USD</div>
+                    <div class="value">{{project.total|number}}</div>
+                </div>
 
-                    <th><span>Estimated Country Allocation</span></th>
-                    <td>
-                        <span>{{project.estimatedCountryAllocation}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Time Frame</span></th>
-                    <td>
-                        <span>{{project.timeFrame}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Principal Source</div>
+                    <div class="value">{{project.principalSource}}</div>
+                </div>
 
-                    <th><span>Principal Source</span></th>
-                    <td>
-                        <span>{{project.principalSource}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Additional Source</span></th>
-                    <td>
-                        <span>{{project.additionalSource}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Additional Source</div>
+                    <div class="value">{{project.additionalSource}}</div>
+                </div>
 
-                    <th><span>Ministry</span></th>
-                    <td>
-                        <span>{{project.ministry}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Other Stakeholders</span></th>
-                    <td>
-                        <span>{{project.otherStakeholders}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Laterality</div>
+                    <div class="value">{{project.laterality}}</div>
+                </div>
 
-                    <th><span>Laterality</span></th>
-                    <td>
-                        <span>{{project.laterality}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Appropriated</span></th>
-                    <td>
-                        <span>{{project.appropriated}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Funding Basis</div>
+                    <div class="value">{{project.fundingBasis}}</div>
+                </div>
 
-                    <th><span>Weighting Percentage</span></th>
-                    <td>
-                        <span>{{project.weightingPercentage}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Inkind Percentage</span></th>
-                    <td>
-                        <span>{{project.inkindPercentage}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Modality</div>
+                    <div class="value">{{project.modality}}</div>
+                </div>
 
-                    <th><span>Climate Change Adaptation</span></th>
-                    <td>
-                        <span>{{project.climateChangeAdaptation}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Climate Change Mitigation</span></th>
-                    <td>
-                        <span>{{project.climateChangeMitigation}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Appropriated</div>
+                    <div class="value">{{project.appropriated}}</div>
+                </div>
 
-                    <th><span>Disaster Risk Reduction</span></th>
-                    <td>
-                        <span>{{project.disasterRiskReduction}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Disaster Risk Mitigation</span></th>
-                    <td>
-                        <span>{{project.disasterRiskMitigation}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Weighting Percentage</div>
+                    <div class="value">{{project.weightingPercentage}}</div>
+                </div>
 
-                    <th><span>Total (USD)</span></th>
-                    <td>
-                        <span>{{project.total}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Status</span></th>
-                    <td>
-                        <span>{{project.status}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Implementing Agency</div>
+                    <div class="value">{{project.ministry}}</div>
+                </div>
 
-                    <th><span>Modality</span></th>
-                    <td>
-                        <span>{{project.modality}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Start Year</span></th>
-                    <td>
-                        <span>{{project.startYear | date:'mediumDate'}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Other Stakeholders</div>
+                    <div class="value">{{project.otherStakeholders}}</div>
+                </div>
 
-                    <th><span>End Year</span></th>
-                    <td>
-                        <span>{{project.endYear | date:'mediumDate'}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th><span>Active</span></th>
-                    <td>
-                        <span>{{project.active}}</span>
-                    </td>
+                <div class="record">
+                    <div class="title">Start Year</div>
+                    <div class="value">{{project.startYear | date:'mediumDate'}}</div>
+                </div>
 
-                    <th><span>*</span></th>
-                    <td>
-                        <span></span>
-                    </td>
-                </tr>
+                <div class="record">
+                    <div class="title">End Year</div>
+                    <div class="value">{{project.endYear | date:'mediumDate'}}</div>
+                </div>
+
+                <div class="record">
+                    <div class="title">Status</div>
+                    <div class="value">{{project.status}}</div>
+                </div>
 
 
-            </table>
+                <!-- <div class="record">
+                     <div class="title">Inkind Percentage</div>
+                     <div class="value">{{project.inkindPercentage}}</div>
+                     </div>
+                -->
 
+            </div>
             <hr/>
 
 
             <a type="button"
-                    href="#/disbursement;search=project.id:{{project.id}}"
-                    class="btn btn-danger">
+                href="#/disbursement;search=project.id:{{project.id}}"
+                class="btn btn-danger">
                 <b>Disbursements</b></span>
             </a>
 
             <button type="submit"
-                    (click)="previousState()"
-                    class="btn btn-info">
+                (click)="previousState()"
+                class="btn btn-info">
                 <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
             </button>
 
 
             <button type="button"
-                    [routerLink]="['/project', project.id, 'edit']"
-                    class="btn btn-primary">
+                [routerLink]="['/project', project.id, 'edit']"
+                class="btn btn-primary">
                 <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
             </button>
 
             <a type="button"
-               href="/report?id={{project.id}}"
-               class="btn btn-warning">
+                href="/report?id={{project.id}}"
+                class="btn btn-warning">
                 <b>Report</b></span>
             </a>
 

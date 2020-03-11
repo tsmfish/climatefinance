@@ -1,5 +1,5 @@
-<div class="row justify-content-center">
-    <div class="col-8">
+<div class="row">
+    <div class="col-md-8 offset-md-2">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
             <h2 id="jhi-project-heading">Create or edit a Project</h2>
             <div>
@@ -9,22 +9,33 @@
                     <input type="text" class="form-control" id="id" name="id"
                         [(ngModel)]="project.id" readonly />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_projectTitle">Project Title</label>
                     <input type="text" class="form-control" name="projectTitle" id="field_projectTitle"
                         [(ngModel)]="project.projectTitle" maxlength="1250"/>
                     <div [hidden]="!(editForm.controls.projectTitle?.dirty && editForm.controls.projectTitle?.invalid)">
                         <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.projectTitle?.errors?.maxlength">
-                        This field cannot be longer than 1250 characters.
+                            [hidden]="!editForm.controls.projectTitle?.errors?.maxlength">
+                            This field cannot be longer than 1250 characters.
                         </small>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_projectDescription">Project Description</label>
                     <textarea class="form-control" name="projectDescription" id="field_projectDescription"
                         [(ngModel)]="project.projectDescription" ></textarea>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_country">Country</label>
+                    <select class="form-control" id="field_country" name="country" [(ngModel)]="project.country" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="countryOption.id === project.country?.id ? project.country : countryOption" *ngFor="let countryOption of countries; trackBy: trackCountryById">{{countryOption.name}}</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_projectType">Project Type</label>
                     <select class="form-control" name="projectType" [(ngModel)]="project.projectType" id="field_projectType" >
@@ -35,19 +46,36 @@
                         <option value="ENABLING">ENABLING</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label class="form-control-label" for="field_fundingBasis">Funding Basis</label>
-                    <select class="form-control" name="fundingBasis" [(ngModel)]="project.fundingBasis" id="field_fundingBasis" >
-                        <option value="NATIONAL">NATIONAL</option>
-                        <option value="REGIONAL">REGIONAL</option>
+                    <label class="form-control-label" for="field_sector">Sector</label>
+                    <select class="form-control" id="field_sector" name="sector" [(ngModel)]="project.sector" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="sectorOption.id === project.sector?.id ? project.sector : sectorOption" *ngFor="let sectorOption of sectors; trackBy: trackSectorById">{{sectorOption.name}}</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label class="form-control-label" for="field_totalFundingAmount">Total Funding Amount</label>
+                    <label class="form-control-label" for="field_totalFundingAmount">Total Country Allocation</label>
                     <input type="number" class="form-control" name="totalFundingAmount" id="field_totalFundingAmount"
                         [(ngModel)]="project.totalFundingAmount" />
                 </div>
+
                 <div class="form-group">
+                    <label class="form-control-label" for="field_estimatedCountryAllocation">Weighted Country Allocation</label>
+                    <input type="number" class="form-control" name="estimatedCountryAllocation" id="field_estimatedCountryAllocation"
+                        [(ngModel)]="project.estimatedCountryAllocation" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_total">Weighted Country Allocation USD</label>
+                    <input type="number" class="form-control" name="total" id="field_total"
+                        [(ngModel)]="project.total" />
+                </div>
+
+
+
+                <div class="form-group d-none">
                     <label class="form-control-label" for="field_totalFundingCurrency">Total Funding Currency</label>
                     <select class="form-control" name="totalFundingCurrency" [(ngModel)]="project.totalFundingCurrency" id="field_totalFundingCurrency" >
                         <option value="USD">USD</option>
@@ -61,16 +89,13 @@
                         <option value="JPY">JPY</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_estimatedCountryAllocation">Estimated Country Allocation</label>
-                    <input type="number" class="form-control" name="estimatedCountryAllocation" id="field_estimatedCountryAllocation"
-                        [(ngModel)]="project.estimatedCountryAllocation" />
-                </div>
-                <div class="form-group">
+
+                <div class="form-group d-none">
                     <label class="form-control-label" for="field_timeFrame">Time Frame</label>
                     <input type="text" class="form-control" name="timeFrame" id="field_timeFrame"
                         [(ngModel)]="project.timeFrame" />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_principalSource">Principal Source</label>
                     <input type="text" class="form-control" name="principalSource" id="field_principalSource"
@@ -81,16 +106,7 @@
                     <input type="text" class="form-control" name="additionalSource" id="field_additionalSource"
                         [(ngModel)]="project.additionalSource" />
                 </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_ministry">Ministry</label>
-                    <input type="text" class="form-control" name="ministry" id="field_ministry"
-                        [(ngModel)]="project.ministry" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_otherStakeholders">Other Stakeholders</label>
-                    <input type="text" class="form-control" name="otherStakeholders" id="field_otherStakeholders"
-                        [(ngModel)]="project.otherStakeholders" />
-                </div>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_laterality">Laterality</label>
                     <select class="form-control" name="laterality" [(ngModel)]="project.laterality" id="field_laterality" >
@@ -99,54 +115,15 @@
                         <option value="OTHER">OTHER</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label class="form-control-label" for="field_appropriated">Appropriated</label>
-                    <input type="checkbox" class="form-control" name="appropriated" id="field_appropriated"
-                        [(ngModel)]="project.appropriated" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_weightingPercentage">Weighting Percentage</label>
-                    <input type="text" class="form-control" name="weightingPercentage" id="field_weightingPercentage"
-                        [(ngModel)]="project.weightingPercentage" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_inkindPercentage">Inkind Percentage</label>
-                    <input type="text" class="form-control" name="inkindPercentage" id="field_inkindPercentage"
-                        [(ngModel)]="project.inkindPercentage" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_climateChangeAdaptation">Climate Change Adaptation</label>
-                    <input type="number" class="form-control" name="climateChangeAdaptation" id="field_climateChangeAdaptation"
-                        [(ngModel)]="project.climateChangeAdaptation" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_climateChangeMitigation">Climate Change Mitigation</label>
-                    <input type="number" class="form-control" name="climateChangeMitigation" id="field_climateChangeMitigation"
-                        [(ngModel)]="project.climateChangeMitigation" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_disasterRiskReduction">Disaster Risk Reduction</label>
-                    <input type="number" class="form-control" name="disasterRiskReduction" id="field_disasterRiskReduction"
-                        [(ngModel)]="project.disasterRiskReduction" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_disasterRiskMitigation">Disaster Risk Mitigation</label>
-                    <input type="number" class="form-control" name="disasterRiskMitigation" id="field_disasterRiskMitigation"
-                        [(ngModel)]="project.disasterRiskMitigation" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_total">Total</label>
-                    <input type="number" class="form-control" name="total" id="field_total"
-                        [(ngModel)]="project.total" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_status">Status</label>
-                    <select class="form-control" name="status" [(ngModel)]="project.status" id="field_status" >
-                        <option value="PIPELINE">PIPELINE</option>
-                        <option value="CURRENT">CURRENT</option>
-                        <option value="COMPLETED">COMPLETED</option>
+                    <label class="form-control-label" for="field_fundingBasis">Funding Basis</label>
+                    <select class="form-control" name="fundingBasis" [(ngModel)]="project.fundingBasis" id="field_fundingBasis" >
+                        <option value="NATIONAL">NATIONAL</option>
+                        <option value="REGIONAL">REGIONAL</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_modality">Modality</label>
                     <select class="form-control" name="modality" [(ngModel)]="project.modality" id="field_modality" >
@@ -154,6 +131,32 @@
                         <option value="OFF_BUDGET">OFF_BUDGET</option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_appropriated">Appropriated</label>
+                    <input type="checkbox" class="form-control" name="appropriated" id="field_appropriated"
+                        [(ngModel)]="project.appropriated" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_weightingPercentage">Weighting Percentage</label>
+                    <input type="text" class="form-control" name="weightingPercentage" id="field_weightingPercentage"
+                        [(ngModel)]="project.weightingPercentage" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_ministry">Implementing Agency</label>
+                    <input type="text" class="form-control" name="ministry" id="field_ministry"
+                        [(ngModel)]="project.ministry" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_otherStakeholders">Other Stakeholders</label>
+                    <input type="text" class="form-control" name="otherStakeholders" id="field_otherStakeholders"
+                        [(ngModel)]="project.otherStakeholders" />
+                </div>
+
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_startYear">Start Year</label>
                     <div class="input-group">
@@ -174,40 +177,62 @@
                         </span>
                     </div>
                 </div>
+
                 <div class="form-group">
+                    <label class="form-control-label" for="field_status">Status</label>
+                    <select class="form-control" name="status" [(ngModel)]="project.status" id="field_status" >
+                        <option value="PIPELINE">PIPELINE</option>
+                        <option value="CURRENT">CURRENT</option>
+                        <option value="COMPLETED">COMPLETED</option>
+                    </select>
+                </div>
+
+
+
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_inkindPercentage">Inkind Percentage</label>
+                    <input type="text" class="form-control" name="inkindPercentage" id="field_inkindPercentage"
+                        [(ngModel)]="project.inkindPercentage" />
+                </div>
+
+                <div class="form-group d-none">
+                    <label class="form-control-label" for="field_climateChangeAdaptation">Climate Change Adaptation</label>
+                    <input type="number" class="form-control" name="climateChangeAdaptation" id="field_climateChangeAdaptation"
+                        [(ngModel)]="project.climateChangeAdaptation" />
+                </div>
+
+                <div class="form-group d-none">
+                    <label class="form-control-label" for="field_climateChangeMitigation">Climate Change Mitigation</label>
+                    <input type="number" class="form-control" name="climateChangeMitigation" id="field_climateChangeMitigation"
+                        [(ngModel)]="project.climateChangeMitigation" />
+                </div>
+
+                <div class="form-group d-none">
+                    <label class="form-control-label" for="field_disasterRiskReduction">Disaster Risk Reduction</label>
+                    <input type="number" class="form-control" name="disasterRiskReduction" id="field_disasterRiskReduction"
+                        [(ngModel)]="project.disasterRiskReduction" />
+                </div>
+
+                <div class="form-group d-none">
+                    <label class="form-control-label" for="field_disasterRiskMitigation">Disaster Risk Mitigation</label>
+                    <input type="number" class="form-control" name="disasterRiskMitigation" id="field_disasterRiskMitigation"
+                        [(ngModel)]="project.disasterRiskMitigation" />
+                </div>
+
+
+                <div class="form-group d-none">
                     <label class="form-control-label" for="field_active">Active</label>
                     <input type="checkbox" class="form-control" name="active" id="field_active"
                         [(ngModel)]="project.active" />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_notes">Notes</label>
                     <textarea class="form-control" name="notes" id="field_notes"
                         [(ngModel)]="project.notes" ></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-control-label" for="field_country">Country</label>
-                    <select class="form-control" id="field_country" name="country" [(ngModel)]="project.country" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="countryOption.id === project.country?.id ? project.country : countryOption" *ngFor="let countryOption of countries; trackBy: trackCountryById">{{countryOption.name}}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_sector">Sector</label>
-                    <select class="form-control" id="field_sector" name="sector" [(ngModel)]="project.sector" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="sectorOption.id === project.sector?.id ? project.sector : sectorOption" *ngFor="let sectorOption of sectors; trackBy: trackSectorById">{{sectorOption.name}}</option>
-                    </select>
-                </div>
-                <!--
-                <div class="form-group">
-                    <label class="form-control-label" for="field_detailedSector">Detailed Sector</label>
-                    <select class="form-control" id="field_detailedSector" name="detailedSector" [(ngModel)]="project.detailedSector" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="detailedSectorOption.id === project.detailedSector?.id ? project.detailedSector : detailedSectorOption" *ngFor="let detailedSectorOption of detailedsectors; trackBy: trackDetailedSectorById">{{detailedSectorOption.name}}</option>
-                    </select>
-                </div>
-                -->
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
