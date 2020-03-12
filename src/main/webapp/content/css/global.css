@@ -244,6 +244,7 @@ ui bootstrap tweaks
 
 .chart-holder .chart-legend .legend-label {
     margin-left: 3px;
+    color: #000;
 }
 .chart-holder .chart-legend .legend-label-text {
     white-space: normal;

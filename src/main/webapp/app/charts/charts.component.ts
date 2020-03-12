@@ -64,7 +64,7 @@ activities.`
     styleUrls: ['charts.css']
 })
 export class ChartsComponent implements OnInit {
-    docDefinition: any;
+    countryId = '*';
 
     message: string;
 
@@ -119,6 +119,7 @@ export class ChartsComponent implements OnInit {
     }
 
     filterCountry(countryId: any) {
+        this.countryId = countryId;
         if (countryId === '*') {
             this.getCount();
             this.getCountryCountChart();
@@ -202,37 +203,34 @@ export class ChartsComponent implements OnInit {
         this.service.getValidCountries().subscribe(validCountries => (this.validCountries = validCountries));
     }
 
-    onSelectCountry(data) {
-        this.router.navigateByUrl('/project;search=country.name:' + data.name);
-    }
-
     onSelectMinistry(data) {
-        this.router.navigateByUrl('/project;search=ministry:' + data.name);
+        const countryFilter = ` AND country.id:${this.countryId}`;
+        const value = data.name || data;
+        this.router.navigateByUrl('/project;search=ministry:' + value + countryFilter);
     }
 
     onSelectSector(data) {
-        this.router.navigateByUrl('/project;search=sector.name:' + data.name);
-    }
-
-    onSelectDetailedSector(data) {
-        this.router.navigateByUrl('/project;search=detailedSector.name:' + data.name);
+        const countryFilter = ` AND country.id:${this.countryId}`;
+        const value = data.name || data;
+        this.router.navigateByUrl('/project;search=sector.name:' + value + countryFilter);
     }
 
     onSelectSource(data) {
-        this.router.navigateByUrl('/project;search=principalSource:' + data.name);
+        const countryFilter = ` AND country.id:${this.countryId}`;
+        const value = data.name || data;
+        this.router.navigateByUrl('/project;search=principalSource:' + value + countryFilter);
     }
 
     onSelectProjectType(data) {
-        this.router.navigateByUrl('/project;search=projectType:' + data.name);
-    }
-
-    onSelectProjectStatus(data) {
-        this.router.navigateByUrl('/project;search=status:' + data.name);
+        const countryFilter = ` AND country.id:${this.countryId}`;
+        const value = data.name || data;
+        this.router.navigateByUrl('/project;search=projectType:' + value + countryFilter);
     }
 
     formatProjectTypeTooltip(name: string) {
         return PROJECT_TYPES[name] || { title: 'Unknown', text: '' };
     }
+
     exportPdf(element: HTMLElement) {
         this.pdfService.exportPdf(element);
     }
