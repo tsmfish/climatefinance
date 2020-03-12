@@ -5,8 +5,15 @@ import { Validcountry } from '../home/validcountry';
 import { ChartService } from 'app/charts/charts.service';
 import { Router } from '@angular/router';
 import { Observable } from '../../../../../node_modules/rxjs/Observable';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { ValueCount } from 'app/home/valuecount';
+import { PdfExportService } from '../shared';
+
+type CombinedCount = {
+    name: string;
+    number: number;
+    total: number;
+};
 
 type ProjectTypeTooltip = {
     title: string;
@@ -16,29 +23,38 @@ type ProjectTypeTooltip = {
 const PROJECT_TYPES: { [key: string]: ProjectTypeTooltip } = {
     CCA: {
         title: 'Climate Change Adaptation',
-        text:
-            'Activities that respond to the adverse impacts of climate change on the environment, human wellbeing and survival, and culture – reducing vulnerability or increasing capacity to make change (resilience). For example coastal defences, food and water security, improving health etc.'
+        text: `Activities that respond to the adverse impacts of climate change on
+the environment, human wellbeing and survival, and culture – reducing
+vulnerability or increasing capacity to make change (resilience). For
+example coastal defences, food and water security, improving health
+etc.`
     },
     CCM: {
         title: 'Climate Change Mitigation',
-        text:
-            'Activities that contribute to lowering the cause of climate change (greenhouse gas emissions). For example, installation of renewable energy sources, fuel efficiency, reducing energy use, carbon storage in vegetation (REDD+), etc.'
+        text: `Activities that contribute to lowering the cause of climate change
+(greenhouse gas emissions). For example, installation of renewable
+energy sources, fuel efficiency, reducing energy use, carbon storage
+in vegetation (REDD+), etc.`
     },
 
     DRM: {
         title: 'Disaster Risk Management',
-        text: 'Activities that respond to the damages and losses caused by a disaster on humans, environment and infrastructure'
+        text: `Activities that respond to the damages and losses caused by a disaster
+on humans, environment and infrastructure`
     },
 
     DRR: {
         title: 'Disaster Risk Reduction',
-        text: 'Activities that contribute to lowering the risks associated with disasters, on humans, environment and infrastructure '
+        text: `Activities that contribute to lowering the risks associated with
+disasters, on humans, environment and infrastructure`
     },
 
     ENABLING: {
         title: 'Enabling',
-        text:
-            'This category indicates projects that target institutional and capacity strengthening, creating a more effective enabling environment for the delivery of climate change and disaster risk related activities.'
+        text: `This category indicates projects that target institutional and
+capacity strengthening, creating a more effective enabling environment
+for the delivery of climate change and disaster risk related
+activities.`
     }
 };
 
@@ -48,6 +64,8 @@ const PROJECT_TYPES: { [key: string]: ProjectTypeTooltip } = {
     styleUrls: ['charts.css']
 })
 export class ChartsComponent implements OnInit {
+    docDefinition: any;
+
     message: string;
 
     count: String;
@@ -64,9 +82,9 @@ export class ChartsComponent implements OnInit {
     ministryCount: GenericCount[];
 
     showLegend = true;
-    colorScheme = {
-        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-    };
+    // colorScheme = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'] };
+    colorScheme = 'picnic';
+
     showLabels = true;
     explodeSlices = false;
     doughnut = false;
@@ -82,7 +100,7 @@ export class ChartsComponent implements OnInit {
 
     scheme = 'cool';
 
-    constructor(private service: ChartService, private router: Router) {}
+    constructor(private service: ChartService, private router: Router, private pdfService: PdfExportService) {}
 
     ngOnInit() {
         this.message = 'Under Development';
@@ -101,7 +119,7 @@ export class ChartsComponent implements OnInit {
     }
 
     filterCountry(countryId: any) {
-        if (countryId == '*') {
+        if (countryId === '*') {
             this.getCount();
             this.getCountryCountChart();
             this.getSectorCount();
@@ -146,7 +164,10 @@ export class ChartsComponent implements OnInit {
     }
 
     getSectorCount(): void {
-        this.service.getSectorCount().subscribe(sectorCount => (this.sectorCount = sectorCount));
+        this.service
+            .getSectorCount()
+
+            .subscribe(sectorCount => (this.sectorCount = sectorCount));
     }
 
     getMinistryCount(): void {
@@ -211,5 +232,8 @@ export class ChartsComponent implements OnInit {
 
     formatProjectTypeTooltip(name: string) {
         return PROJECT_TYPES[name] || { title: 'Unknown', text: '' };
+    }
+    exportPdf(element: HTMLElement) {
+        this.pdfService.exportPdf(element);
     }
 }

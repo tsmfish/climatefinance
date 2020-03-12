@@ -10,3 +10,9 @@
         min-height: 400px;
     }
 }
+
+@media print {
+    .btn-export-pdf {
+        display: none;
+    }
+}

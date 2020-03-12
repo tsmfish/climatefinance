@@ -1,9 +1,11 @@
 <div class="row">
-    <div class="col-md-10 offset-md-1">
+    <div class="col-md-10 offset-md-1" #content>
         <h1 class="text-capitalize text-center">{{ title }}</h1>
         <hr/>
         <div class="text-justify">
-            <a target="_blank" href="/api/custom/methodology-as-pdf" title="Export as pdf" class="float-right">
+
+            <a (click)="exportPdf(content)" title="Export as pdf" class="float-right" >
+                <!-- <a target="_blank" href="/api/custom/methodology-as-pdf" title="Export as pdf" class="float-right" > -->
                 <fa-icon icon="file-pdf" class="text-danger"></fa-icon>
                 <span>Export as pdf</span>
             </a>

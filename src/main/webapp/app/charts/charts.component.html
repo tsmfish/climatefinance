@@ -3,7 +3,6 @@
     <div class="col-md-12">
         <div class="h6 text-right">{{message}}</div>
         <h1 class="text-capitalize text-center">Charts and Analytics</h1>
-        <div class="h5 text-center">Climate Changes Projects in the Pacific</div>
         <hr/>
         <div class="text-justify">
             <p>
@@ -20,8 +19,6 @@
         <div class="text-center project-filter">
             <div class="fiter">
                 <select style="font-weight: bolder;" class="form-control" (change)="filterCountry($event.target.value)">
-                    <option style="font-weight: bolder;" value="*">Filter By Country</option>
-                    <option value="*">---------------------------------------</option>
                     <option value="*">Regional</option>
                     <option style="font-weight: bolder;" *ngFor="let vc of validCountries" value={{vc.id}}>
                         {{vc.country}}
@@ -36,122 +33,239 @@
 </div>
 
 
-
-<div class="row">
-    <div class="col-xl-6">
-        <div class=" p-3">
+<div #chartSectors>
+    <div class="row">
+        <div class="col-sm-12">
             <h2>Sectors</h2>
-            <div class="text-justify">
-                <p>
-                    Sectors are aligned with national priority
-                    sectors as indicated in national climate
-                    change policies. Typical sectors include
-                    Energy, Transport/Infrastructure, Agriculture
-                    & Food Security, Water & Sanitation, Forestry,
-                    Disaster Risk Reduction/Management, Fisheries
-                    etc.
-                </p>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-9">
+            <div class=" p-3">
+                <div class="text-justify">
+                    <p>
+                        Sectors are aligned with national priority
+                        sectors as indicated in national climate
+                        change policies. Typical sectors include
+                        Energy, Transport/Infrastructure, Agriculture
+                        & Food Security, Water & Sanitation, Forestry,
+                        Disaster Risk Reduction/Management, Fisheries
+                        etc.
+                    </p>
+                </div>
+                <div class="chart-holder" >
+                    <ngx-charts-pie-chart *ngIf="sectorCount"
+                        [scheme]="colorScheme"
+                        [results]="sectorCount"
+                        [legend]="showLegend"
+                        legendPosition="left"
+                        [explodeSlices]="explodeSlices"
+                        [labels]="showLabels"
+                        [doughnut]="doughnut"
+                        [gradient]="gradient"
+                        (select)="onSelectSector($event);">
+                        <ng-template #tooltipTemplate let-model="model">
+                            <p style="max-width:  300px">
+                                {{ model.name }}
+                            </p>
+                            <div class="my-3">
+                                Number: {{ model.value }}
+                            </div>
+                            <div class="my-3" *ngIf="model.total">
+                                Total: ${{ model.total|number }}
+                            </div>
+                        </ng-template>
+                    </ngx-charts-pie-chart>
+                </div>
             </div>
-            <div class="chart-holder">
-                <ngx-charts-pie-chart *ngIf="sectorCount"
-                    [scheme]="colorScheme"
-                    [results]="sectorCount"
-                    [legend]="showLegend"
-                    [explodeSlices]="explodeSlices"
-                    [labels]="showLabels"
-                    [doughnut]="doughnut"
-                    [gradient]="gradient"
-                    (select)="onSelectSector($event);">
-                </ngx-charts-pie-chart>
+        </div>
+        <div class="col-xl-3">
+            <div class="p-3 border rounded-20 mb-4">
+                <div class="text-center mb-2">
+                    <button class="btn btn-default btn-export-pdf" (click)="exportPdf(chartSectors)">
+                        PDF Version
+                    </button>
+                </div>
+                <p>
+                    Sit amet justo donec enim diam, vulputate ut pharetra sit? Feugiat sed lectus vestibulum mattis ullamcorper velit sed ullamcorper morbi tincidunt ornare massa, eget egestas purus viverra accumsan in nisl.
+                </p>
+                <p>
+                    Ante metus, dictum at tempor commodo, ullamcorper a. Urna cursus eget nunc scelerisque viverra mauris, in aliquam sem fringilla ut morbi tincidunt augue interdum velit euismod in pellentesque massa placerat.
+                </p>
             </div>
         </div>
     </div>
-    <div class="col-xl-6">
-        <div class="p-3">
+</div>
+
+<div #chartProjectTypes>
+
+    <div class="row">
+        <div class="col-sm-12">
             <h2>Project Types</h2>
-            <div class="chart-holder">
-                <ngx-charts-pie-chart *ngIf="projectTypeCount"
-                    [scheme]="colorScheme"
-                    [results]="projectTypeCount"
-                    [legend]="showLegend"
-                    [explodeSlices]="explodeSlices"
-                    [labels]="showLabels"
-                    [doughnut]="doughnut"
-                    [gradient]="gradient"
-                    (select)="onSelectProjectType($event);">
-                    <ng-template #tooltipTemplate let-model="model">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-9">
+            <div class="p-3">
+                <div class="chart-holder" >
+                    <ngx-charts-pie-chart *ngIf="projectTypeCount"
+                        [scheme]="colorScheme"
+                        [results]="projectTypeCount"
+                        [legend]="showLegend"
+                        [explodeSlices]="explodeSlices"
+                        [labels]="showLabels"
+                        [doughnut]="doughnut"
+                        [gradient]="gradient"
+                        (select)="onSelectProjectType($event);">
+                        <ng-template #tooltipTemplate let-model="model">
                             <div class="h5">
                                 {{ formatProjectTypeTooltip(model.name).title }}
                             </div>
                             <p style="max-width:  300px">
                                 {{ formatProjectTypeTooltip(model.name).text }}
                             </p>
-                            <div class="h6 mb-3">
+                            <div class="my-3">
                                 Number: {{ model.value }}
                             </div>
-                    </ng-template>
-                </ngx-charts-pie-chart>
+                            <div class="my-3" *ngIf="model.total">
+                                Total: ${{ model.total|number }}
+                            </div>
+                        </ng-template>
+                    </ngx-charts-pie-chart>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3">
+            <div class="p-3 border rounded-20 mb-4">
+                <div class="text-center mb-2">
+                    <button class="btn btn-default" (click)="exportPdf(chartProjectTypes)">
+                        PDF Version
+                    </button>
+                </div>
+
+                <p>
+                    Odio morbi quis commodo odio aenean sed adipiscing diam donec adipiscing tristique risus nec? Sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna.
+                </p>
+                <p>
+                    Arcu vitae elementum curabitur vitae nunc sed velit dignissim sodales ut eu sem integer vitae justo eget magna fermentum iaculis eu non diam phasellus vestibulum? Orci eu lobortis elementum, nibh!
+                </p>
+                <p>
+                    Sapien et ligula ullamcorper malesuada proin libero nunc, consequat interdum varius sit amet? Tincidunt arcu, non sodales neque sodales ut etiam sit amet nisl purus, in mollis nunc sed id?
+                </p>
             </div>
         </div>
     </div>
 </div>
 
-
-<div class="row">
-    <div class="col-sm-12">
-        <div class="p-3">
+<div #chartMinistries>
+    <div class="row">
+        <div class="col-sm-12">
             <h2>Implementing Ministries</h2>
-            <div class="chart-holder">
-                <ngx-charts-pie-chart *ngIf="ministryCount"
-                    [scheme]="colorScheme"
-                    [results]="ministryCount"
-                    [legend]="showLegend"
-                    [explodeSlices]="explodeSlices"
-                    [labels]="showLabels"
-                    [doughnut]="doughnut"
-                    [gradient]="gradient"
-                    (select)="onSelectMinistry($event);">
-                </ngx-charts-pie-chart>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-9">
+            <div class="p-3">
+                <div class="chart-holder" >
+                    <ngx-charts-pie-chart *ngIf="ministryCount"
+                        [scheme]="colorScheme"
+                        [results]="ministryCount"
+                        [legend]="showLegend"
+                        [explodeSlices]="explodeSlices"
+                        [labels]="showLabels"
+                        [doughnut]="doughnut"
+                        [gradient]="gradient"
+                        (select)="onSelectMinistry($event);">
+                        <ng-template #tooltipTemplate let-model="model">
+                            <p style="max-width:  300px">
+                                {{ model.name }}
+                            </p>
+                            <div class="my-3">
+                                Number: {{ model.value }}
+                            </div>
+                            <div class="my-3" *ngIf="model.total">
+                                Total: ${{ model.total|number }}
+                            </div>
+                        </ng-template>
+                    </ngx-charts-pie-chart>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3">
+            <div class="p-3 border rounded-20 mb-4">
+                <div class="text-center mb-2">
+                    <button class="btn btn-default" (click)="exportPdf(chartMinistries)">
+                        PDF Version
+                    </button>
+                </div>
+                <p>
+                    Convallis aenean et tortor at risus viverra adipiscing at in tellus. Aliquet lectus proin nibh nisl, condimentum id venenatis a, condimentum vitae sapien pellentesque habitant morbi tristique senectus et netus.
+                </p>
+                <p>
+                    Justo donec enim diam, vulputate ut pharetra sit amet, aliquam id diam maecenas ultricies mi eget mauris pharetra et! Sit amet venenatis urna cursus eget nunc scelerisque viverra mauris, in?
+                </p>
+
             </div>
         </div>
     </div>
 </div>
 
-
-<div class="row">
-    <div class="col-sm-12">
-        <div class="p-3">
+<div #chartSources>
+    <div class="row">
+        <div class="col-sm-12">
             <h2>Principal Funding Sources</h2>
-            <p class="text-justify">
-                The principal funding source is the stakeholder
-                (bilateral or multilateral partner) directly engaged
-                by the recipient country to provide the funding for
-                the specified project. Due to the complexity of the
-                climate finance environment, it is acknowledged that
-                these may be intermediaries for funding that has
-                originated elsewhere.
-            </p>
-            <div class="chart-holder">
-                <ngx-charts-bar-horizontal *ngIf="sourceCount"
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-9">
+            <div class="p-3">
 
-                    [scheme]="colorScheme"
-                    [results]="sourceCount"
-                    [gradient]="gradient"
-                    [xAxis]="showXAxis"
-                    [yAxis]="showYAxis"
-                    [legend]="showLegend"
-                    [showXAxisLabel]="showXAxisLabel"
-                    [showYAxisLabel]="showYAxisLabel"
-                    [xAxisLabel]="xAxisLabel"
-                    [yAxisLabel]="yAxisLabel"
-                    (select)="onSelectSource($event)">
-                </ngx-charts-bar-horizontal>
+                <p class="text-justify">
+                    The principal funding source is the stakeholder
+                    (bilateral or multilateral partner) directly engaged
+                    by the recipient country to provide the funding for
+                    the specified project. Due to the complexity of the
+                    climate finance environment, it is acknowledged that
+                    these may be intermediaries for funding that has
+                    originated elsewhere.
+                </p>
+                <div class="chart-holder" >
+                    <ngx-charts-bar-horizontal *ngIf="sourceCount"
 
+                        [scheme]="colorScheme"
+                        [results]="sourceCount"
+                        [gradient]="gradient"
+                        [xAxis]="showXAxis"
+                        [yAxis]="showYAxis"
+                        [legend]="showLegend"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel"
+                        (select)="onSelectSource($event)">
+                    </ngx-charts-bar-horizontal>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3">
+            <div class="p-3 border rounded-20 mb-4">
+                <div class="text-center mb-2">
+                    <button class="btn btn-default" (click)="exportPdf(chartSources)">
+                        PDF Version
+                    </button>
+                </div>
+                <p>
+                    Feugiat nisl pretium fusce id velit ut tortor pretium viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare suspendisse sed nisi lacus! Libero justo, laoreet sit amet cursus sit.
+                </p>
+                <p>
+                    Diam phasellus vestibulum lorem sed risus ultricies tristique nulla aliquet enim tortor, at. Lacus vel facilisis volutpat, est velit egestas dui, id ornare arcu odio ut sem nulla pharetra diam.
+                </p>
             </div>
         </div>
     </div>
 </div>
-
 
 
 <div class="alert alert-info">
@@ -186,47 +300,50 @@
     </div>
 
     <div class="col-lg-6">
-        <h2>Total Value Per Country</h2>
-        <table class="table raised rounded-20" *ngIf="countryValueChart">
-            <tr>
-                <th>Country</th>
-                <th>Total Projects Value</th>
-            </tr>
+        <div *ngIf="countryValueChart" class="mb-3">
+            <h2>Total Value Per Country</h2>
+            <table class="table raised rounded-20" >
+                <tr>
+                    <th>Country</th>
+                    <th>Total Projects Value</th>
+                </tr>
 
-            <tr *ngFor="let vc of countryValueChart">
-                <td><a style="color: #2b6ea1; font-weight: lighter;"
-                        href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
-                </td>
-                <td>USD {{vc.value|number:'.0-2'}} million</td>
-            </tr>
+                <tr *ngFor="let vc of countryValueChart">
+                    <td><a style="color: #2b6ea1; font-weight: lighter;"
+                            href="#/project;search=country.name:{{vc.name.replace('Islands', '').trim()}}">{{vc.name}}</a>
+                    </td>
+                    <td>USD {{vc.value|number:'.0-2'}} million</td>
+                </tr>
 
-            <tr style="font-weight: bold;">
-                <td>TOTAL PROJECTS</td>
-                <td>{{count}}</td>
-            </tr>
-        </table>
+                <tr style="font-weight: bold;">
+                    <td>TOTAL PROJECTS</td>
+                    <td>{{count}}</td>
+                </tr>
+            </table>
+        </div>
 
-        <br/>
+        <div *ngIf="sourceCount">
 
-        <h2>Total Value Per Principal Source</h2>
-        <table class="table  raised rounded-20" *ngIf="sourceCount">
-            <tr>
-                <th>Principal Source</th>
-                <th>Total Projects Value</th>
-            </tr>
+            <h2>Total Value Per Principal Source</h2>
+            <table class="table  raised rounded-20">
+                <tr>
+                    <th>Principal Source</th>
+                    <th>Total Projects Value</th>
+                </tr>
 
-            <tr *ngFor="let vc of sourceCount">
-                <td><a style="color: #2b6ea1; font-weight: lighter;"
-                        href="#/project;search=principalSource:{{vc.name.trim()}}">{{vc.name}}</a>
-                </td>
-                <td>USD {{vc.value|number:'.0-2'}} million</td>
-            </tr>
+                <tr *ngFor="let vc of sourceCount">
+                    <td><a style="color: #2b6ea1; font-weight: lighter;"
+                            href="#/project;search=principalSource:{{vc.name.trim()}}">{{vc.name}}</a>
+                    </td>
+                    <td>USD {{vc.value|number:'.0-2'}} million</td>
+                </tr>
 
-            <tr style="font-weight: bold;">
-                <td>TOTAL PROJECTS</td>
-                <td>{{count}}</td>
-            </tr>
-        </table>
+                <tr style="font-weight: bold;">
+                    <td>TOTAL PROJECTS</td>
+                    <td>{{count}}</td>
+                </tr>
+            </table>
+        </div>
 
 
     </div>
