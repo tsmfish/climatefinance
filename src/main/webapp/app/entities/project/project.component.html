@@ -69,12 +69,12 @@
 
                 <td>{{project.laterality}}</td>
 
-                <td>{{project.total / 1000000}} million</td>
+                <td>{{(project.total / 1000000)|number:'.0-4'}} million</td>
                 <td>{{project.status}}</td>
 
 
-                <td class="text-right">
-                    <div class="btn-group flex-btn-group-container">
+                <td class="">
+                    <div class="btn-group-vertical flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['/project', project.id, 'view' ]"
                                 class="btn btn-info btn-sm">
