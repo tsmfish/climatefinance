@@ -1,4 +1,3 @@
-## Methodology & Assumptions
 
 There is currently no internationally recognised definition of ‘climate change financing’. A common understanding of climate change financing is that it refers to financial flows for ‘mitigation’ and ‘adaptation’ related activities. Furthermore, specific, country-focussed definitions have been utilised where they exist in national policies.
 
