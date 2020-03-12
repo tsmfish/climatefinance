@@ -73,7 +73,7 @@
                                 Number: {{ model.value }}
                             </div>
                             <div class="my-3" *ngIf="model.total">
-                                Total: ${{ model.total|number }}
+                                Total: ${{ model.total|number:'.0' }}
                             </div>
                         </ng-template>
                     </ngx-charts-pie-chart>
@@ -129,7 +129,7 @@
                                 Number: {{ model.value }}
                             </div>
                             <div class="my-3" *ngIf="model.total">
-                                Total: ${{ model.total|number }}
+                                Total: ${{ model.total|number:'.0' }}
                             </div>
                         </ng-template>
                     </ngx-charts-pie-chart>
@@ -185,7 +185,7 @@
                                 Number: {{ model.value }}
                             </div>
                             <div class="my-3" *ngIf="model.total">
-                                Total: ${{ model.total|number }}
+                                Total: ${{ model.total|number:'.0' }}
                             </div>
                         </ng-template>
                     </ngx-charts-pie-chart>

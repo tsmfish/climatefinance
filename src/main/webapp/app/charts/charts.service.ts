@@ -73,7 +73,6 @@ export class ChartService {
         return this.http.get<ValueCount[]>(this.restUrl + '/sourcevalue').pipe(catchError(this.handleError('getSourceValue', [])));
     }
 
-    //by country
     getSectorCountByCountry(countryId): Observable<GenericCount[]> {
         return this.http
             .get<GenericCount[]>(this.restUrl + '/sectorcountbycountry?countryId=' + countryId)
@@ -144,7 +143,7 @@ export class ChartService {
             console.error(error); // log to console instead
 
             // TODO: better job of transforming error for user consumption
-            //this.log(`${operation} failed: ${error.message}`);
+            // this.log(`${operation} failed: ${error.message}`);
 
             // Let the app keep running by returning an empty result.
             return of(result as T);
