@@ -46,7 +46,6 @@ activities.`
 @Pipe({ name: 'projectType' })
 export class ProjectTypePipe implements PipeTransform {
     transform(name: string) {
-        console.log('Pipe called:', name);
         return PROJECT_TYPES[name] || { title: 'Unknown', text: '' };
     }
 }

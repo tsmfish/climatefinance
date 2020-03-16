@@ -43,6 +43,15 @@ export class ChartService {
         return this.http.get<ValueCount[]>(this.restUrl + '/sectorvalue').pipe(catchError(this.handleError('getSectorValue', [])));
     }
 
+    getProjectTypeValue(): Observable<ValueCount[]> {
+        return this.http
+            .get<ValueCount[]>(this.restUrl + '/projecttypevalue')
+            .pipe(catchError(this.handleError('getProjectTypeValue', [])));
+    }
+    getMinistryValue(): Observable<ValueCount[]> {
+        return this.http.get<ValueCount[]>(this.restUrl + '/ministryvalue').pipe(catchError(this.handleError('getMinistryValue', [])));
+    }
+
     getProjectStatusCount(): Observable<GenericCount[]> {
         return this.http.get<GenericCount[]>(this.restUrl + '/projectstatuscount').pipe(catchError(this.handleError('getSectorCount', [])));
     }

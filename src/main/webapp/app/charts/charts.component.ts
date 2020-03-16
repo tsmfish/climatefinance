@@ -23,47 +23,44 @@ type CombinedCount = {
 export class ChartsComponent implements OnInit {
     countryId = '*';
 
-    message: string;
-
     count: String;
     countryCount: GenericCount[];
+
     sectorCount: GenericCount[];
+    sectorValue: ValueCount[];
+    sectorInfo = {};
+
     detailedSectorCount: GenericCount[];
+
     sourceCount: GenericCount[];
+    sourceValue: ValueCount[];
+    sourceInfo = {};
+
     projectTypeCount: GenericCount[];
+    projectTypeValue: ValueCount[];
+    projectTypeInfo = {};
+
     projectStatusCount: GenericCount[];
     validCountries: Validcountry[];
-    sectorValue: ValueCount[];
-    sourceValue: ValueCount[];
-    countryValueChart: ValueCount[];
-    ministryCount: GenericCount[];
 
-    showLegend = true;
-    // colorScheme = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'] };
+    countryValueChart: ValueCount[];
+
+    ministryCount: GenericCount[];
+    ministryValue: ValueCount[];
+    ministryInfo = {};
+
     colorScheme = 'picnic';
 
+    showLegend = true;
     showLabels = true;
     explodeSlices = false;
-    doughnut = false;
     trimLables = false;
-    viewBar: any[] = [1400, 700];
-    showXAxis = true;
-    showYAxis = true;
-    gradient = false;
-    showXAxisLabel = true;
-    xAxisLabel = 'Number Of Projects';
-    showYAxisLabel = true;
-    yAxisLabel = 'Funding Source';
 
     constructor(private service: ChartService, private router: Router, private pdfService: PdfExportService) {}
 
     ngOnInit() {
-        this.message = 'Under Development';
         this.getValidCountries();
         this.filterCountry('*');
-    }
-    labelFormatting(data) {
-        return data;
     }
 
     filterCountry(countryId: any) {
@@ -99,6 +96,14 @@ export class ChartsComponent implements OnInit {
     getSectorCount(): void {
         this._selectMethod('SectorCount').subscribe(sectorCount => (this.sectorCount = sectorCount));
     }
+    getSectorValue(): void {
+        this._selectMethod('SectorValue').subscribe(sectorValue => {
+            this.sectorValue = sectorValue;
+            for (const { name, value } of sectorValue) {
+                this.sectorInfo[name] = { total: value * 10e6 };
+            }
+        });
+    }
 
     getCountryValueChart(): void {
         this._selectMethod('CountryValueChart').subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
@@ -107,13 +112,13 @@ export class ChartsComponent implements OnInit {
     getMinistryCount(): void {
         this._selectMethod('MinistryCount').subscribe(ministryCount => (this.ministryCount = ministryCount));
     }
-
-    getSectorValue(): void {
-        this._selectMethod('SectorValue').subscribe(sectorValue => (this.sectorValue = sectorValue));
-    }
-
-    getSourceValue(): void {
-        this._selectMethod('SourceValue').subscribe(sourceValue => (this.sourceValue = sourceValue));
+    getMinistryValue(): void {
+        this._selectMethod('MinistryValue').subscribe(ministryValue => {
+            this.ministryValue = ministryValue;
+            for (const { name, value } of ministryValue) {
+                this.ministryInfo[name] = { total: value * 10e6 };
+            }
+        });
     }
 
     getDetailedSectorCount(): void {
@@ -130,9 +135,28 @@ export class ChartsComponent implements OnInit {
             });
         });
     }
+    getSourceValue(): void {
+        this._selectMethod('SourceValue').subscribe(sourceValue => {
+            this.sourceValue = sourceValue;
+            for (let { name, value } of sourceValue) {
+                if (!name) {
+                    name = 'Source not specified';
+                }
+                this.sourceInfo[name] = { total: value * 10e6 };
+            }
+        });
+    }
 
     getProjectTypeCount(): void {
         this._selectMethod('ProjectTypeCount').subscribe(projectTypeCount => (this.projectTypeCount = projectTypeCount));
+    }
+    getProjectTypeValue(): void {
+        this._selectMethod('ProjectTypeValue').subscribe(projectTypeValue => {
+            this.projectTypeValue = projectTypeValue;
+            for (const { name, value } of projectTypeValue) {
+                this.projectTypeInfo[name] = { total: value * 10e6 };
+            }
+        });
     }
 
     getProjectStatusCount(): void {

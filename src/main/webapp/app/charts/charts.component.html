@@ -1,7 +1,6 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="h6 text-right">{{message}}</div>
         <h1 class="text-capitalize text-center">Charts and Analytics</h1>
         <hr/>
         <div class="text-justify">
@@ -52,16 +51,12 @@
 
                 <div class="chart-holder" >
                     <ngx-charts-pie-chart *ngIf="sectorCount"
-                        [labelFormatting]="labelFormatting"
-                        [legendFormatting]="labelFormatting"
                         [trimLabels]="trimLabels"
                         [scheme]="colorScheme"
                         [results]="sectorCount"
                         [legend]="showLegend"
                         [explodeSlices]="explodeSlices"
                         [labels]="showLabels"
-                        [doughnut]="doughnut"
-                        [gradient]="gradient"
                         (select)="onSelectChartItem($event, 'sector.name');">
                         <ng-template #tooltipTemplate let-model="model">
                             <p style="max-width:  300px">
@@ -70,8 +65,8 @@
                             <div class="my-3">
                                 Projects: {{ model.value }}
                             </div>
-                            <div class="my-3" *ngIf="model.total">
-                                Total: ${{ model.total|number:'.0' }}
+                            <div class="my-3" *ngIf="sectorInfo[model.name]?.total !== null">
+                                Total: ${{ sectorInfo[model.name].total|number:'.0-0' }}
                             </div>
                         </ng-template>
                     </ngx-charts-pie-chart>
@@ -118,8 +113,6 @@
                         [legend]="showLegend"
                         [explodeSlices]="explodeSlices"
                         [labels]="showLabels"
-                        [doughnut]="doughnut"
-                        [gradient]="gradient"
                         (select)="onSelectChartItem($event, 'projectType');">
                         <ng-template #tooltipTemplate let-model="model">
                             <div class="h5">
@@ -131,8 +124,8 @@
                             <div class="my-3">
                                 Projects: {{ model.value }}
                             </div>
-                            <div class="my-3" *ngIf="model.total">
-                                Total: ${{ model.total|number:'.0' }}
+                            <div class="my-3" *ngIf="projectTypeInfo[model.name]?.total !== null">
+                                Total: ${{ projectTypeInfo[model.name].total|number:'.0-0' }}
                             </div>
                         </ng-template>
                     </ngx-charts-pie-chart>
@@ -166,8 +159,6 @@
                         [legend]="showLegend"
                         [explodeSlices]="explodeSlices"
                         [labels]="showLabels"
-                        [doughnut]="doughnut"
-                        [gradient]="gradient"
                         (select)="onSelectChartItem($event, 'ministry');">
                         <ng-template #tooltipTemplate let-model="model">
                             <p style="max-width:  300px">
@@ -176,8 +167,8 @@
                             <div class="my-3">
                                 Projects: {{ model.value }}
                             </div>
-                            <div class="my-3" *ngIf="model.total">
-                                Total: ${{ model.total|number:'.0' }}
+                            <div class="my-3" *ngIf="ministryInfo[model.name]?.total !== null">
+                                Total: ${{ ministryInfo[model.name].total|number:'.0-0' }}
                             </div>
                         </ng-template>
                     </ngx-charts-pie-chart>
@@ -206,14 +197,13 @@
                         [trimYAxisTicks]="false"
                         [scheme]="colorScheme"
                         [results]="sourceCount"
-                        [gradient]="gradient"
-                        [xAxis]="showXAxis"
-                        [yAxis]="showYAxis"
+                        [xAxis]="true"
+                        [yAxis]="true"
                         [legend]="showLegend"
-                        [showXAxisLabel]="showXAxisLabel"
-                        [showYAxisLabel]="showYAxisLabel"
-                        [xAxisLabel]="xAxisLabel"
-                        [yAxisLabel]="yAxisLabel"
+                        [showXAxisLabel]="true"
+                        [showYAxisLabel]="true"
+                        xAxisLabel="Number Of Projects"
+                        yAxisLabel="Funding Source"
                         (select)="onSelectChartItem($event, 'principalSource')">
 
                         <ng-template #tooltipTemplate let-model="model">
@@ -223,8 +213,8 @@
                             <div class="my-3">
                                 Projects: {{ model.value }}
                             </div>
-                            <div class="my-3" *ngIf="model.total">
-                                Total: ${{ model.total|number:'.0' }}
+                            <div class="my-3" *ngIf="sourceInfo[model.name]?.total !== null">
+                                Total: ${{ sourceInfo[model.name].total|number:'.0-0' }}
                             </div>
                         </ng-template>
                     </ngx-charts-bar-horizontal>

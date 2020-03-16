@@ -9,8 +9,9 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 @Injectable()
 export class PdfExportService {
     constructor() {
-        pdfMake.vfs = pdfFonts.pdfMake.vfs;
+        Object.assign(pdfMake, { vfs: pdfFonts.pdfMake.vfs });
     }
+
     private canvasExport(el: HTMLElement) {
         return html2canvas(el, {
             height: el.clientHeight + 40,

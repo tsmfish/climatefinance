@@ -49,7 +49,7 @@
 
                 <div class="record">
                     <div class="title">Total Country Allocation</div>
-                    <div class="value">{{project.totalFundingAmount|number}}</div>
+                    <div class="value">{{ project.totalFundingCurrency || 'USD' }}{{project.totalFundingAmount|number}}</div>
                 </div>
 
                 <div class="record">
