@@ -15,49 +15,6 @@ type CombinedCount = {
     total: number;
 };
 
-type ProjectTypeTooltip = {
-    title: string;
-    text: string;
-};
-
-const PROJECT_TYPES: { [key: string]: ProjectTypeTooltip } = {
-    CCA: {
-        title: 'Climate Change Adaptation',
-        text: `Activities that respond to the adverse impacts of climate change on
-the environment, human wellbeing and survival, and culture – reducing
-vulnerability or increasing capacity to make change (resilience). For
-example coastal defences, food and water security, improving health
-etc.`
-    },
-    CCM: {
-        title: 'Climate Change Mitigation',
-        text: `Activities that contribute to lowering the cause of climate change
-(greenhouse gas emissions). For example, installation of renewable
-energy sources, fuel efficiency, reducing energy use, carbon storage
-in vegetation (REDD+), etc.`
-    },
-
-    DRM: {
-        title: 'Disaster Risk Management',
-        text: `Activities that respond to the damages and losses caused by a disaster
-on humans, environment and infrastructure`
-    },
-
-    DRR: {
-        title: 'Disaster Risk Reduction',
-        text: `Activities that contribute to lowering the risks associated with
-disasters, on humans, environment and infrastructure`
-    },
-
-    ENABLING: {
-        title: 'Enabling',
-        text: `This category indicates projects that target institutional and
-capacity strengthening, creating a more effective enabling environment
-for the delivery of climate change and disaster risk related
-activities.`
-    }
-};
-
 @Component({
     selector: 'jhi-charts',
     templateUrl: './charts.component.html',
@@ -88,7 +45,7 @@ export class ChartsComponent implements OnInit {
     showLabels = true;
     explodeSlices = false;
     doughnut = false;
-
+    trimLables = false;
     viewBar: any[] = [1400, 700];
     showXAxis = true;
     showYAxis = true;
@@ -98,137 +55,97 @@ export class ChartsComponent implements OnInit {
     showYAxisLabel = true;
     yAxisLabel = 'Funding Source';
 
-    scheme = 'cool';
-
     constructor(private service: ChartService, private router: Router, private pdfService: PdfExportService) {}
 
     ngOnInit() {
         this.message = 'Under Development';
-
-        this.getCount();
-        this.getCountryCountChart();
-        this.getSectorCount();
-        this.getSourceCount();
-        this.getProjectTypeCount();
         this.getValidCountries();
-        this.getDetailedSectorCount();
-        this.getProjectStatusCount();
-        this.getSectorValue();
-        this.getCountryValueChart();
-        this.getMinistryCount();
+        this.filterCountry('*');
     }
 
     filterCountry(countryId: any) {
         this.countryId = countryId;
-        if (countryId === '*') {
-            this.getCount();
-            this.getCountryCountChart();
-            this.getSectorCount();
-            this.getSourceCount();
-            this.getProjectTypeCount();
-            this.getDetailedSectorCount();
-            this.getProjectStatusCount();
-            this.getSectorValue();
-            this.getCountryValueChart();
-            this.getMinistryCount();
-        } else {
-            this.service.getCountByCountry(countryId).subscribe(count => (this.count = count));
-            this.service.getCountryCountChartByCountry(countryId).subscribe(countryCount => (this.countryCount = countryCount));
-            this.service.getSectorCountByCountry(countryId).subscribe(sectorCount => (this.sectorCount = sectorCount));
-            this.service.getMinistryCountByCountry(countryId).subscribe(ministryCount => (this.ministryCount = ministryCount));
-            this.service
-                .getDetailedSectorCountByCountry(countryId)
-                .subscribe(detailedSectorCount => (this.detailedSectorCount = detailedSectorCount));
-            this.service.getSourceCountByCountry(countryId).subscribe(sourceCount => (this.sourceCount = sourceCount));
-            this.service.getProjectTypeCountByCountry(countryId).subscribe(projectTypeCount => (this.projectTypeCount = projectTypeCount));
-            this.service
-                .getProjectStatusCountByCountry(countryId)
-                .subscribe(projectStatusCount => (this.projectStatusCount = projectStatusCount));
-            this.service.getSectorValueByCountry(countryId).subscribe(sectorValue => (this.sectorValue = sectorValue));
-            this.service.getSourceValueByCountry(countryId).subscribe(sourceValue => (this.sourceValue = sourceValue));
-            this.service
-                .getCountryValueChartByCountry(countryId)
-                .subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
-        }
+
+        this.getCount();
+        this.getCountryCountChart();
+        this.getSectorCount();
+        this.getMinistryCount();
+        this.getCountryValueChart();
+        this.getSectorValue();
+        this.getDetailedSectorCount();
+        this.getSourceCount();
+        this.getSourceValue();
+        this.getProjectTypeCount();
+        this.getProjectStatusCount();
+    }
+
+    private _selectMethod(name: string): Observable<GenericCount[]> {
+        const withCountry = this.countryId !== '*';
+        const method = `get${name}${withCountry ? 'ByCountry' : ''}`;
+        return this.service[method](withCountry ? this.countryId : undefined);
     }
 
     getCount(): void {
-        this.service.getCount().subscribe(count => (this.count = count));
+        ((this._selectMethod('Count') as any) as Observable<String>).subscribe(count => (this.count = count));
     }
 
     getCountryCountChart(): void {
-        this.service.getCountryCountChart().subscribe(countryCount => (this.countryCount = countryCount));
-    }
-
-    getCountryValueChart(): void {
-        this.service.getCountryValueChart().subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
+        this._selectMethod('CountryCountChart').subscribe(countryCount => (this.countryCount = countryCount));
     }
 
     getSectorCount(): void {
-        this.service
-            .getSectorCount()
+        this._selectMethod('SectorCount').subscribe(sectorCount => (this.sectorCount = sectorCount));
+    }
 
-            .subscribe(sectorCount => (this.sectorCount = sectorCount));
+    getCountryValueChart(): void {
+        this._selectMethod('CountryValueChart').subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
     }
 
     getMinistryCount(): void {
-        this.service.getMinistryCount().subscribe(ministryCount => (this.ministryCount = ministryCount));
+        this._selectMethod('MinistryCount').subscribe(ministryCount => (this.ministryCount = ministryCount));
     }
 
     getSectorValue(): void {
-        this.service.getSectorValue().subscribe(sectorValue => (this.sectorValue = sectorValue));
+        this._selectMethod('SectorValue').subscribe(sectorValue => (this.sectorValue = sectorValue));
     }
 
     getSourceValue(): void {
-        this.service.getSourceValue().subscribe(sourceValue => (this.sourceValue = sourceValue));
+        this._selectMethod('SourceValue').subscribe(sourceValue => (this.sourceValue = sourceValue));
     }
 
     getDetailedSectorCount(): void {
-        this.service.getDetailedSectorCount().subscribe(detailedSectorCount => (this.detailedSectorCount = detailedSectorCount));
+        this._selectMethod('DetailedSectorCount').subscribe(detailedSectorCount => (this.detailedSectorCount = detailedSectorCount));
     }
 
     getSourceCount(): void {
-        this.service.getSourceCount().subscribe(sourceCount => (this.sourceCount = sourceCount));
+        this._selectMethod('SourceCount').subscribe(sourceCount => {
+            this.sourceCount = sourceCount.map(item => {
+                if (!item.name) {
+                    return Object.assign({}, item, { name: 'Source not specified' });
+                }
+                return item;
+            });
+        });
     }
 
     getProjectTypeCount(): void {
-        this.service.getProjectTypeCount().subscribe(projectTypeCount => (this.projectTypeCount = projectTypeCount));
+        this._selectMethod('ProjectTypeCount').subscribe(projectTypeCount => (this.projectTypeCount = projectTypeCount));
     }
 
     getProjectStatusCount(): void {
-        this.service.getProjectStatusCount().subscribe(projectStatusCount => (this.projectStatusCount = projectStatusCount));
+        this._selectMethod('ProjectStatusCount').subscribe(projectStatusCount => (this.projectStatusCount = projectStatusCount));
     }
 
     getValidCountries(): void {
         this.service.getValidCountries().subscribe(validCountries => (this.validCountries = validCountries));
     }
 
-    onSelectMinistry(data) {
+    onSelectChartItem(data, type_) {
         const countryFilter = ` AND country.id:${this.countryId}`;
         const value = data.name || data;
-        this.router.navigateByUrl('/project;search=ministry:' + value + countryFilter);
-    }
-
-    onSelectSector(data) {
-        const countryFilter = ` AND country.id:${this.countryId}`;
-        const value = data.name || data;
-        this.router.navigateByUrl('/project;search=sector.name:' + value + countryFilter);
-    }
-
-    onSelectSource(data) {
-        const countryFilter = ` AND country.id:${this.countryId}`;
-        const value = data.name || data;
-        this.router.navigateByUrl('/project;search=principalSource:' + value + countryFilter);
-    }
-
-    onSelectProjectType(data) {
-        const countryFilter = ` AND country.id:${this.countryId}`;
-        const value = data.name || data;
-        this.router.navigateByUrl('/project;search=projectType:' + value + countryFilter);
-    }
-
-    formatProjectTypeTooltip(name: string) {
-        return PROJECT_TYPES[name] || { title: 'Unknown', text: '' };
+        const params = new URLSearchParams();
+        params.append('search', `${type_}:"${value}"`);
+        this.router.navigateByUrl(`/project;${params}${countryFilter}`);
     }
 
     exportPdf(element: HTMLElement) {

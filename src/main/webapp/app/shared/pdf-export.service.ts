@@ -12,7 +12,7 @@ export class PdfExportService {
         pdfMake.vfs = pdfFonts.pdfMake.vfs;
     }
     private canvasExport(el: HTMLElement) {
-        html2canvas(el, {
+        return html2canvas(el, {
             height: el.clientHeight + 40,
             width: el.clientWidth + 20,
             backgroundColor: null,
@@ -58,21 +58,18 @@ export class PdfExportService {
         });
     }
     private htmlExport(el: HTMLElement) {
-        html2pdf()
+        return html2pdf()
             .from(el)
             .save('document.pdf');
     }
 
-    exportPdf(el: HTMLElement, exportType = 'canvas') {
+    exportPdf(el: HTMLElement, exportType = 'canvas'): Promise<void> {
         switch (exportType) {
             case 'html':
-                this.htmlExport(el);
-                break;
-
+                return this.htmlExport(el);
             case 'canvas':
             default:
-                this.canvasExport(el);
-                break;
+                return this.canvasExport(el) as Promise<void>;
         }
     }
 }
