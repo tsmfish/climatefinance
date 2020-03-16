@@ -52,6 +52,8 @@
 
                 <div class="chart-holder" >
                     <ngx-charts-pie-chart *ngIf="sectorCount"
+                        [labelFormatting]="labelFormatting"
+                        [legendFormatting]="labelFormatting"
                         [trimLabels]="trimLabels"
                         [scheme]="colorScheme"
                         [results]="sectorCount"
@@ -201,12 +203,7 @@
             <div class="p-3">
                 <div class="chart-holder" >
                     <ngx-charts-bar-horizontal *ngIf="sourceCount"
-
-
                         [trimYAxisTicks]="false"
-                        [trimXAxisTicks]="false"
-                        [maxTickLength]="40"
-                        [trimTicks]="false"
                         [scheme]="colorScheme"
                         [results]="sourceCount"
                         [gradient]="gradient"

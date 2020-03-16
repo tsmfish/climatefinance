@@ -62,6 +62,9 @@ export class ChartsComponent implements OnInit {
         this.getValidCountries();
         this.filterCountry('*');
     }
+    labelFormatting(data) {
+        return data;
+    }
 
     filterCountry(countryId: any) {
         this.countryId = countryId;

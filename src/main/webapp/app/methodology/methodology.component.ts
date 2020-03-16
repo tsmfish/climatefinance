@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { MethodologyService } from './';
 import { PdfExportService } from '../shared';
 
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+
 const initialMarkdown = require('text-loader!./methodology.component.md');
 const initialTitle = 'Methodology & Assumptions';
 
@@ -35,9 +38,28 @@ export class MethodologyComponent implements OnInit {
     templateUrl: 'methodology-edit.component.html'
 })
 export class MethodologyEditComponent implements OnInit {
+    Editor = ClassicEditor;
     markdown = initialMarkdown;
     title = initialTitle;
 
+    config = {
+        toolbar: [
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            '|',
+            'imageUpload',
+            'blockQuote',
+            'insertTable',
+            'mediaEmbed',
+            'undo',
+            'redo'
+        ]
+    };
     constructor(private methodologyService: MethodologyService) {}
 
     ngOnInit() {

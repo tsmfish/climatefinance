@@ -9,9 +9,13 @@
                     <input [(ngModel)]="title" name="title" id="field-title" type="text" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label for="field-title">Title</label>
-                    <textarea [(ngModel)]="markdown" name="markdown" id="field-markdown" type="text" class="form-control" rows="20">
-                    </textarea>
+                    <label for="field-title">Body</label>
+                    <ckeditor
+                        [(ngModel)]="markdown"
+                        [ngModelOptions]="{standalone: true}"
+                        [editor]="Editor"
+                        [config]="config"
+                    ></ckeditor>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-dark" (click)="saveChanges()">Save changes</button>
@@ -19,14 +23,5 @@
             </form>
         </div>
 
-        <h2 class="text-center alert alert-secondary">Preview</h2>
-        <div class="preview img-thumbnail">
-            <h1 class="text-capitalize text-center">{{ title }}</h1>
-            <hr/>
-            <div class="text-justify">
-                <markdown [data]="markdown"></markdown>
-            </div>
-
-        </div>
     </div>
 </div>
