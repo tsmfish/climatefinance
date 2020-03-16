@@ -68,14 +68,22 @@ export class ChartsComponent implements OnInit {
 
         this.getCount();
         this.getCountryCountChart();
+
         this.getSectorCount();
-        this.getMinistryCount();
-        this.getCountryValueChart();
         this.getSectorValue();
+
+        this.getMinistryCount();
+        this.getMinistryValue();
+
+        this.getCountryValueChart();
         this.getDetailedSectorCount();
+
         this.getSourceCount();
         this.getSourceValue();
+
         this.getProjectTypeCount();
+        this.getProjectTypeValue();
+
         this.getProjectStatusCount();
     }
 
