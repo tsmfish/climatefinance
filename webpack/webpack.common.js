@@ -1,3 +1,4 @@
+const path = require('path')
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -30,7 +31,7 @@ module.exports = options => ({
                     minifyJS: false,
                     minifyCSS: false
                 },
-                exclude: ['./src/main/webapp/index.html']
+                exclude: [path.resolve('./src/main/webapp/index.html')]
             },
             {
                 test: /\.(jpe?g|png|gif|svg|woff2?|ttf|eot)$/i,
@@ -74,7 +75,7 @@ module.exports = options => ({
             jQuery: 'jquery'
         }),
         new HtmlWebpackPlugin({
-            template: './src/main/webapp/index.html',
+            template: path.resolve('./src/main/webapp/index.html'),
             chunks: ['vendors', 'polyfills', 'global', 'main'],
             chunksSortMode: 'manual',
             inject: 'body'

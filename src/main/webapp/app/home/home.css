@@ -64,6 +64,27 @@
     display: inline-block;
     overflow: hidden;
     margin: 10px 0px;
+    padding: 40px 16px 16px;
+    color: #000366;
+    font-size: 18px;
+    line-height: 24px;
+    width: 100%;
+    font-weight: 500;
+}
+.country-chart-card .country-label img {
+    margin: 4px 5px;
+    vertical-align: middle;
+}
+.country-chart-card .country-label .country-name {
+    vertical-align: middle;
+    vertical-align: text-top;
+}
+.country-chart-card .country-label {
+    margin-bottom: 4px;
+}
+.country-chart-card .country-qty {
+    font-size: 56px;
+    line-height: 66px;
 }
 
 .country-table {
