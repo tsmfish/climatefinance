@@ -6,8 +6,6 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Ng2Webstorage, LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MarkdownModule } from 'ngx-markdown';
-
 import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 import { ErrorHandlerInterceptor } from './blocks/interceptor/errorhandler.interceptor';
@@ -44,8 +42,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         ClimatefinanceAppMethodologyModule,
         ClimatefinanceAppReportsModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
-        HttpClientModule,
-        MarkdownModule.forRoot({ loader: HttpClient })
+        HttpClientModule
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],
     providers: [

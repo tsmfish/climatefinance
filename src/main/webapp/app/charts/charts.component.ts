@@ -5,41 +5,14 @@ import { Validcountry } from '../home/validcountry';
 import { ChartService } from 'app/charts/charts.service';
 import { Router } from '@angular/router';
 import { Observable } from '../../../../../node_modules/rxjs/Observable';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { ValueCount } from 'app/home/valuecount';
+import { PdfExportService } from '../shared';
 
-type ProjectTypeTooltip = {
-    title: string;
-    text: string;
-};
-
-const PROJECT_TYPES: { [key: string]: ProjectTypeTooltip } = {
-    CCA: {
-        title: 'Climate Change Adaptation',
-        text:
-            'Activities that respond to the adverse impacts of climate change on the environment, human wellbeing and survival, and culture – reducing vulnerability or increasing capacity to make change (resilience). For example coastal defences, food and water security, improving health etc.'
-    },
-    CCM: {
-        title: 'Climate Change Mitigation',
-        text:
-            'Activities that contribute to lowering the cause of climate change (greenhouse gas emissions). For example, installation of renewable energy sources, fuel efficiency, reducing energy use, carbon storage in vegetation (REDD+), etc.'
-    },
-
-    DRM: {
-        title: 'Disaster Risk Management',
-        text: 'Activities that respond to the damages and losses caused by a disaster on humans, environment and infrastructure'
-    },
-
-    DRR: {
-        title: 'Disaster Risk Reduction',
-        text: 'Activities that contribute to lowering the risks associated with disasters, on humans, environment and infrastructure '
-    },
-
-    ENABLING: {
-        title: 'Enabling',
-        text:
-            'This category indicates projects that target institutional and capacity strengthening, creating a more effective enabling environment for the delivery of climate change and disaster risk related activities.'
-    }
+type CombinedCount = {
+    name: string;
+    number: number;
+    total: number;
 };
 
 @Component({
@@ -48,168 +21,169 @@ const PROJECT_TYPES: { [key: string]: ProjectTypeTooltip } = {
     styleUrls: ['charts.css']
 })
 export class ChartsComponent implements OnInit {
-    message: string;
+    countryId = '*';
 
     count: String;
     countryCount: GenericCount[];
+
     sectorCount: GenericCount[];
+    sectorValue: ValueCount[];
+    sectorInfo = {};
+
     detailedSectorCount: GenericCount[];
+
     sourceCount: GenericCount[];
+    sourceValue: ValueCount[];
+    sourceInfo = {};
+
     projectTypeCount: GenericCount[];
+    projectTypeValue: ValueCount[];
+    projectTypeInfo = {};
+
     projectStatusCount: GenericCount[];
     validCountries: Validcountry[];
-    sectorValue: ValueCount[];
-    sourceValue: ValueCount[];
+
     countryValueChart: ValueCount[];
+
     ministryCount: GenericCount[];
+    ministryValue: ValueCount[];
+    ministryInfo = {};
+
+    colorScheme = 'picnic';
 
     showLegend = true;
-    colorScheme = {
-        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-    };
     showLabels = true;
     explodeSlices = false;
-    doughnut = false;
+    trimLabels = false;
 
-    viewBar: any[] = [1400, 700];
-    showXAxis = true;
-    showYAxis = true;
-    gradient = false;
-    showXAxisLabel = true;
-    xAxisLabel = 'Number Of Projects';
-    showYAxisLabel = true;
-    yAxisLabel = 'Funding Source';
-
-    scheme = 'cool';
-
-    constructor(private service: ChartService, private router: Router) {}
+    constructor(private service: ChartService, private router: Router, private pdfService: PdfExportService) {}
 
     ngOnInit() {
-        this.message = 'Under Development';
-
-        this.getCount();
-        this.getCountryCountChart();
-        this.getSectorCount();
-        this.getSourceCount();
-        this.getProjectTypeCount();
         this.getValidCountries();
-        this.getDetailedSectorCount();
-        this.getProjectStatusCount();
-        this.getSectorValue();
-        this.getCountryValueChart();
-        this.getMinistryCount();
+        this.filterCountry('*');
     }
 
     filterCountry(countryId: any) {
-        if (countryId == '*') {
-            this.getCount();
-            this.getCountryCountChart();
-            this.getSectorCount();
-            this.getSourceCount();
-            this.getProjectTypeCount();
-            this.getDetailedSectorCount();
-            this.getProjectStatusCount();
-            this.getSectorValue();
-            this.getCountryValueChart();
-            this.getMinistryCount();
-        } else {
-            this.service.getCountByCountry(countryId).subscribe(count => (this.count = count));
-            this.service.getCountryCountChartByCountry(countryId).subscribe(countryCount => (this.countryCount = countryCount));
-            this.service.getSectorCountByCountry(countryId).subscribe(sectorCount => (this.sectorCount = sectorCount));
-            this.service.getMinistryCountByCountry(countryId).subscribe(ministryCount => (this.ministryCount = ministryCount));
-            this.service
-                .getDetailedSectorCountByCountry(countryId)
-                .subscribe(detailedSectorCount => (this.detailedSectorCount = detailedSectorCount));
-            this.service.getSourceCountByCountry(countryId).subscribe(sourceCount => (this.sourceCount = sourceCount));
-            this.service.getProjectTypeCountByCountry(countryId).subscribe(projectTypeCount => (this.projectTypeCount = projectTypeCount));
-            this.service
-                .getProjectStatusCountByCountry(countryId)
-                .subscribe(projectStatusCount => (this.projectStatusCount = projectStatusCount));
-            this.service.getSectorValueByCountry(countryId).subscribe(sectorValue => (this.sectorValue = sectorValue));
-            this.service.getSourceValueByCountry(countryId).subscribe(sourceValue => (this.sourceValue = sourceValue));
-            this.service
-                .getCountryValueChartByCountry(countryId)
-                .subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
-        }
+        this.countryId = countryId;
+
+        this.getCount();
+        this.getCountryCountChart();
+
+        this.getSectorCount();
+        this.getSectorValue();
+
+        this.getMinistryCount();
+        this.getMinistryValue();
+
+        this.getCountryValueChart();
+        this.getDetailedSectorCount();
+
+        this.getSourceCount();
+        this.getSourceValue();
+
+        this.getProjectTypeCount();
+        this.getProjectTypeValue();
+
+        this.getProjectStatusCount();
+    }
+
+    private _selectMethod(name: string): Observable<GenericCount[]> {
+        const withCountry = this.countryId !== '*';
+        const method = `get${name}${withCountry ? 'ByCountry' : ''}`;
+        return this.service[method](withCountry ? this.countryId : undefined);
     }
 
     getCount(): void {
-        this.service.getCount().subscribe(count => (this.count = count));
+        ((this._selectMethod('Count') as any) as Observable<String>).subscribe(count => (this.count = count));
     }
 
     getCountryCountChart(): void {
-        this.service.getCountryCountChart().subscribe(countryCount => (this.countryCount = countryCount));
-    }
-
-    getCountryValueChart(): void {
-        this.service.getCountryValueChart().subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
+        this._selectMethod('CountryCountChart').subscribe(countryCount => (this.countryCount = countryCount));
     }
 
     getSectorCount(): void {
-        this.service.getSectorCount().subscribe(sectorCount => (this.sectorCount = sectorCount));
+        this._selectMethod('SectorCount').subscribe(sectorCount => (this.sectorCount = sectorCount));
+    }
+    getSectorValue(): void {
+        this._selectMethod('SectorValue').subscribe(sectorValue => {
+            this.sectorValue = sectorValue;
+            for (const { name, value } of sectorValue) {
+                this.sectorInfo[name] = { total: value * 10e6 };
+            }
+        });
+    }
+
+    getCountryValueChart(): void {
+        this._selectMethod('CountryValueChart').subscribe(countryValueChart => (this.countryValueChart = countryValueChart));
     }
 
     getMinistryCount(): void {
-        this.service.getMinistryCount().subscribe(ministryCount => (this.ministryCount = ministryCount));
+        this._selectMethod('MinistryCount').subscribe(ministryCount => (this.ministryCount = ministryCount));
     }
-
-    getSectorValue(): void {
-        this.service.getSectorValue().subscribe(sectorValue => (this.sectorValue = sectorValue));
-    }
-
-    getSourceValue(): void {
-        this.service.getSourceValue().subscribe(sourceValue => (this.sourceValue = sourceValue));
+    getMinistryValue(): void {
+        this._selectMethod('MinistryValue').subscribe(ministryValue => {
+            this.ministryValue = ministryValue;
+            for (const { name, value } of ministryValue) {
+                this.ministryInfo[name] = { total: value * 10e6 };
+            }
+        });
     }
 
     getDetailedSectorCount(): void {
-        this.service.getDetailedSectorCount().subscribe(detailedSectorCount => (this.detailedSectorCount = detailedSectorCount));
+        this._selectMethod('DetailedSectorCount').subscribe(detailedSectorCount => (this.detailedSectorCount = detailedSectorCount));
     }
 
     getSourceCount(): void {
-        this.service.getSourceCount().subscribe(sourceCount => (this.sourceCount = sourceCount));
+        this._selectMethod('SourceCount').subscribe(sourceCount => {
+            this.sourceCount = sourceCount.map(item => {
+                if (!item.name) {
+                    return Object.assign({}, item, { name: 'Source not specified' });
+                }
+                return item;
+            });
+        });
+    }
+    getSourceValue(): void {
+        this._selectMethod('SourceValue').subscribe(sourceValue => {
+            this.sourceValue = sourceValue;
+            for (let { name, value } of sourceValue) {
+                if (!name) {
+                    name = 'Source not specified';
+                }
+                this.sourceInfo[name] = { total: value * 10e6 };
+            }
+        });
     }
 
     getProjectTypeCount(): void {
-        this.service.getProjectTypeCount().subscribe(projectTypeCount => (this.projectTypeCount = projectTypeCount));
+        this._selectMethod('ProjectTypeCount').subscribe(projectTypeCount => (this.projectTypeCount = projectTypeCount));
+    }
+    getProjectTypeValue(): void {
+        this._selectMethod('ProjectTypeValue').subscribe(projectTypeValue => {
+            this.projectTypeValue = projectTypeValue;
+            for (const { name, value } of projectTypeValue) {
+                this.projectTypeInfo[name] = { total: value * 10e6 };
+            }
+        });
     }
 
     getProjectStatusCount(): void {
-        this.service.getProjectStatusCount().subscribe(projectStatusCount => (this.projectStatusCount = projectStatusCount));
+        this._selectMethod('ProjectStatusCount').subscribe(projectStatusCount => (this.projectStatusCount = projectStatusCount));
     }
 
     getValidCountries(): void {
         this.service.getValidCountries().subscribe(validCountries => (this.validCountries = validCountries));
     }
 
-    onSelectCountry(data) {
-        this.router.navigateByUrl('/project;search=country.name:' + data.name);
+    onSelectChartItem(data, type_) {
+        const countryFilter = ` AND country.id:${this.countryId}`;
+        const value = data.name || data;
+        const params = new URLSearchParams();
+        params.append('search', `${type_}:"${value}"`);
+        this.router.navigateByUrl(`/project;${params}${countryFilter}`);
     }
 
-    onSelectMinistry(data) {
-        this.router.navigateByUrl('/project;search=ministry:' + data.name);
-    }
-
-    onSelectSector(data) {
-        this.router.navigateByUrl('/project;search=sector.name:' + data.name);
-    }
-
-    onSelectDetailedSector(data) {
-        this.router.navigateByUrl('/project;search=detailedSector.name:' + data.name);
-    }
-
-    onSelectSource(data) {
-        this.router.navigateByUrl('/project;search=principalSource:' + data.name);
-    }
-
-    onSelectProjectType(data) {
-        this.router.navigateByUrl('/project;search=projectType:' + data.name);
-    }
-
-    onSelectProjectStatus(data) {
-        this.router.navigateByUrl('/project;search=status:' + data.name);
-    }
-
-    formatProjectTypeTooltip(name: string) {
-        return PROJECT_TYPES[name] || { title: 'Unknown', text: '' };
+    exportPdf(element: HTMLElement) {
+        this.pdfService.exportPdf(element);
     }
 }

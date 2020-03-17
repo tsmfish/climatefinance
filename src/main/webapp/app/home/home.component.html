@@ -6,10 +6,10 @@
     </div>
     <div class="col-sm-9">
         <div class="climate-change-bg">
-            <img class="img-fluid" src="../../content/images/climate2.png"/>
-            <span class="overlay">
-                Climate change
-            </span>
+            <!-- <img class="img-fluid" src="../../content/images/climate2.png"/> -->
+            <!-- <span class="overlay"> -->
+            <!-- Climate change -->
+            <!-- </span> -->
         </div>
     </div>
 </div>
@@ -27,17 +27,17 @@
                     <a routerLink="/project" class="btn btn-primary">Browse Projects</a>
                 </div>
 
-                <div class="country-charts" *ngIf="countryCountChart">
-                    <ngx-charts-number-card *ngFor="let result of countryCountChart"
-                        [results]="[result]"
-                        [view]="viewNumber"
-                        cardColor="white"
-                        textColor="#000366"
-                        bandColor="white"
-                        (select)="onSelectCountry($event);"
-                        class="country-chart-card raised rounded-20"
-                    >
-                    </ngx-charts-number-card>
+                <div class="country-charts" *ngIf="countryCountChart" >
+                    <div class="country-chart-card raised rounded-20" *ngFor="let item of countryCountChart" (click)="onSelectCountry(item)">
+                        <p class="text-center country-label">
+                            <img class="img-fluid" [src]="'../../content/images/flags/' + item.name + '.png'"/>
+                            <span class="country-name">{{ item.name }}</span>
+                        </p>
+                        <p class="h2 text-center country-qty">
+                            {{ item.value }}
+                        </p>
+                    </div>
+
                 </div>
 
 

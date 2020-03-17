@@ -9,12 +9,11 @@ import { ChartService } from 'app/charts/charts.service';
 })
 export class ReportsComponent implements OnInit {
     message: string;
+    validCountries: Validcountry[];
 
     constructor(private service: ChartService) {
         this.message = 'Under Development';
     }
-
-    validCountries: Validcountry[];
 
     ngOnInit() {
         this.getValidCountries();

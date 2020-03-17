@@ -12,7 +12,8 @@ import { ProjectService } from './project.service';
 
 @Component({
     selector: 'jhi-project',
-    templateUrl: './project.component.html'
+    templateUrl: './project.component.html',
+    styleUrls: ['./project.css']
 })
 export class ProjectComponent implements OnInit, OnDestroy {
     currentAccount: any;
