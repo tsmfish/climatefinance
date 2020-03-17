@@ -54,7 +54,7 @@ export class ChartsComponent implements OnInit {
     showLegend = true;
     showLabels = true;
     explodeSlices = false;
-    trimLables = false;
+    trimLabels = false;
 
     constructor(private service: ChartService, private router: Router, private pdfService: PdfExportService) {}
 
