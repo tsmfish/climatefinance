@@ -1,5 +1,4 @@
-
 export class GenericCount {
-    name: string
-    value: number
+    name: string;
+    value: number;
 }

@@ -1,49 +1,55 @@
 <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
+    <div class="col-md-12">
         <h6 class="text-right">{{message}}</h6>
         <h1 class="text-capitalize text-center">Reporting</h1>
-        <h5 class="text-center">Climate Changes Projects in the Pacific</h5>
-
         <hr/>
+        <!-- <div class="form-group well" style="background-color: lightblue;">
+             <br/>
+             <div align="center">
 
-
-        <div class="form-group well" style="background-color: lightblue;">
-
-            <br/>
-
-            <div align="center">
-
-                <select style="font-weight: bolder;" class="form-control" (change)="filterCountry($event.target.value)">
-                    <option style="font-weight: bolder;" value="*">Filter By Country</option>
-                    <option value="*">---------------------------------------</option>
-                    <option value="*">Regional</option>
-                    <option style="font-weight: bolder;" *ngFor="let vc of validCountries" value={{vc.id}}>
-                        {{vc.country}}
-                    </option>
-                </select>
-
-                <br/>
-
-
-            </div>
-
-
-        </div>
-
-
+             <select style="font-weight: bolder;" class="form-control" (change)="filterCountry($event.target.value)">
+             <option style="font-weight: bolder;" value="*">Filter By Country</option>
+             <option value="*">---------------------------------------</option>
+             <option value="*">Regional</option>
+             <option style="font-weight: bolder;" *ngFor="let vc of validCountries" value={{vc.id}}>
+             {{vc.country}}
+             </option>
+             </select>
+             <br/>
+             </div>
+             </div> -->
         <ul class="list-group">
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
-                Sector</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
-                Principal Funding Source</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
-                Type</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
-                Status</a></li>
-            <li class="list-group-item"><a style="font-weight: normal !important;" href="#">Export Projects Grouped By
-                Funding Modality</a></li>
+            <li class="list-group-item">
+                <a target="_blank" href="http://climatefinance.gem.spc.int:8080/birt/frameset?__report=project.rptdesign">
+                    Export Projects
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a target="_blank" href="http://climatefinance.gem.spc.int:8080/birt/frameset?__report=project_by_country.rptdesign">
+                    Export Projects By Country
+                </a>
+            </li>
+
+            <li class="list-group-item">
+                <a target="_blank" href="http://climatefinance.gem.spc.int:8080/birt/frameset?__report=project_by_country_sector.rptdesign">
+                    Export Projects Grouped By Sector
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a target="_blank" href="http://climatefinance.gem.spc.int:8080/birt/frameset?__report=project_by_country_source.rptdesign">
+                    Export Projects Grouped By Principal Funding Source
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a target="_blank" href="http://climatefinance.gem.spc.int:8080/birt/frameset?__report=project_by_country_type.rptdesign">
+                    Export Projects Grouped By Type
+                </a>
+            </li>
+            <li class="list-group-item">
+                <a target="_blank" href="http://climatefinance.gem.spc.int:8080/birt/frameset?__report=project_by_status.rptdesign">
+                    Export Projects Grouped By Status
+                </a>
+            </li>
         </ul>
 
     </div>

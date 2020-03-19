@@ -1,0 +1,30 @@
+.entity-details {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.record {
+    width: 100%;
+    line-height: 2rem;
+}
+.record .title,
+.record .value {
+    display: inline-block;
+}
+.record .title {
+    font-weight: 600;
+}
+.record .title:after {
+    content: ': ';
+}
+
+@media (min-width: 768px) {
+    .entity-details {
+        flex-direction: row;
+    }
+    .record {
+        width: 45%;
+    }
+}

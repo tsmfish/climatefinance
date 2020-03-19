@@ -37,10 +37,14 @@ import {
     faTrashAlt,
     faAsterisk,
     faTasks,
-    faHome
+    faHome,
+    faChartPie,
+    faFilePdf
 } from '@fortawesome/free-solid-svg-icons';
 
 // Adds the SVG icon to the library so you can use it in your page
+library.add(faFilePdf);
+library.add(faChartPie);
 library.add(faUser);
 library.add(faSort);
 library.add(faSync);

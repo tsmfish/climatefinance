@@ -23,10 +23,8 @@ export class HomeComponent implements OnInit {
     countryCountChart: GenericCount[];
     countryValueChart: ValueCount[];
 
-    //number chart
-    scheme = 'cool';
-    viewNumber: any[] = [860, 200];
-    bandColor = 'lightgreen';
+    // number chart
+    viewNumber: any[] = [undefined, 160];
 
     constructor(
         private principal: Principal,
@@ -41,7 +39,7 @@ export class HomeComponent implements OnInit {
             this.account = account;
         });
         this.registerAuthenticationSuccess();
-        //stats
+
         this.getCount();
         this.getCountryCount();
         this.getCountryCountChart();
@@ -68,7 +66,7 @@ export class HomeComponent implements OnInit {
         this.eventManager.subscribe('authenticationSuccess', message => {
             this.principal.identity().then(account => {
                 this.account = account;
-                //stats
+
                 this.getCount();
                 this.getCountryCount();
                 this.getCountryCountChart();
@@ -85,10 +83,7 @@ export class HomeComponent implements OnInit {
         this.modalRef = this.loginModalService.open();
     }
 
-    //events
-    //events
     onSelectCountry(data) {
-        //alert(data.name);
         this.router.navigateByUrl('/project;search=country.name:' + data.name.replace('Islands', '').trim());
     }
 }

@@ -30,45 +30,34 @@
     </div>
     <br/>
     <div class="table-responsive" *ngIf="projects">
-        <table class="table table-striped">
+        <table class="table  table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
 
                 <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="projectTitle"><span>Project Title</span> <span class="fa fa-sort"></span></th>
-                <th jhiSortBy="projectDescription"><span>Project Description</span> <span class="fa fa-sort"></span>
-                </th>
-                <th jhiSortBy="projectType"><span>Project Type</span> <span class="fa fa-sort"></span></th>
-
                 <th jhiSortBy="country.name"><span>Country</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="projectType"><span>Project Type</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="sector.name"><span>Sector</span> <span class="fa fa-sort"></span></th>
-
                 <th jhiSortBy="principalSource"><span>Principal Source</span> <span class="fa fa-sort"></span></th>
-
                 <th jhiSortBy="laterality"><span>Laterality</span> <span class="fa fa-sort"></span></th>
 
-                <th jhiSortBy="total"><span>Total (USD)</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="total"><span>Total Weighted (USD)</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="status"><span>Status</span> <span class="fa fa-sort"></span></th>
 
-
-                <th></th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let project of projects ;trackBy: trackId">
                 <td><a [routerLink]="['/project', project.id, 'view' ]">{{project.id}}</a></td>
-                <td><a style="color: #0f6ab4;" [routerLink]="['/project', project.id, 'view' ]">{{project.projectTitle}}</a>
-                </td>
-
-
-                <td>{{project.projectDescription}}</td>
-                <td>{{project.projectType}}</td>
-
+                <td><a style="color: #0f6ab4;" [routerLink]="['/project', project.id, 'view' ]">{{project.projectTitle}}</a></td>
                 <td>
                     <div *ngIf="project.country">
                         <a [routerLink]="['../country', project.country?.id, 'view' ]">{{project.country?.name}}</a>
                     </div>
                 </td>
+                <td>{{project.projectType}}</td>
                 <td>
                     <div *ngIf="project.sector">
                         <a [routerLink]="['../sector', project.sector?.id, 'view' ]">{{project.sector?.name}}</a>
@@ -80,12 +69,12 @@
 
                 <td>{{project.laterality}}</td>
 
-                <td>{{project.total / 1000000}} million</td>
+                <td>{{(project.total / 1000000)|number:'.0-4'}} million</td>
                 <td>{{project.status}}</td>
 
 
-                <td class="text-right">
-                    <div class="btn-group flex-btn-group-container">
+                <td class="">
+                    <div class="btn-group-vertical flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['/project', project.id, 'view' ]"
                                 class="btn btn-info btn-sm">

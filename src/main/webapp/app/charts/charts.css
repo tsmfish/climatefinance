@@ -1,1 +1,22 @@
 /* charts.css */
+.results {
+    margin: 20px;
+}
+.chart-holder {
+    min-height: 200px;
+}
+@media screen and (min-width: 768px) {
+    .chart-holder {
+        min-height: 400px;
+    }
+}
+
+@media print {
+    .btn-export-pdf {
+        display: none;
+    }
+}
+
+.table th {
+    border-top: none;
+}

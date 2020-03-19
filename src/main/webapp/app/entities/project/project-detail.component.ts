@@ -6,7 +6,8 @@ import { IProject } from 'app/shared/model/project.model';
 
 @Component({
     selector: 'jhi-project-detail',
-    templateUrl: './project-detail.component.html'
+    templateUrl: './project-detail.component.html',
+    styleUrls: ['./project-detail.css']
 })
 export class ProjectDetailComponent implements OnInit {
     project: IProject;
