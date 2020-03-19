@@ -1,0 +1,22 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "title",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "markdown",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20200316172356",
+    "dto": "no",
+    "searchEngine": "elasticsearch",
+    "service": "no",
+    "entityTableName": "metodology",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}
