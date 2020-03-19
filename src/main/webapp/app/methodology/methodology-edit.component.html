@@ -18,8 +18,22 @@
                     ></ckeditor>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-dark" (click)="saveChanges()">Save changes</button>
+                    <div class="float-right alert alert-success" *ngIf="showSaveCompleted||saveInProgress">
+                        <div class="spinner-border spinner-border-sm text-secondary" *ngIf="saveInProgress">
+                        </div>
+                        <span class="heading" *ngIf="showSaveCompleted">
+                            Methodology was updated
+                        </span>
+                    </div>
+
+
+                    <button class="btn btn-dark" (click)="saveChanges()">
+                        Save changes
+
+                    </button>
+
                 </div>
+
             </form>
         </div>
 

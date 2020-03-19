@@ -42,6 +42,9 @@ export class MethodologyEditComponent implements OnInit {
     markdown = initialMarkdown;
     title = initialTitle;
 
+    showSaveCompleted = false;
+    saveInProgress = false;
+
     config = {
         toolbar: [
             'heading',
@@ -72,11 +75,19 @@ export class MethodologyEditComponent implements OnInit {
         );
     }
     saveChanges() {
+        this.showSaveCompleted = false;
+        this.saveInProgress = true;
         this.methodologyService
             .save({
                 title: this.title,
                 markdown: this.markdown
             })
-            .subscribe(() => {}, err => console.warn('Cannot save methodology: %o', err));
+            .subscribe(
+                () => {
+                    this.showSaveCompleted = true;
+                    this.saveInProgress = false;
+                },
+                err => console.warn('Cannot save methodology: %o', err)
+            );
     }
 }
