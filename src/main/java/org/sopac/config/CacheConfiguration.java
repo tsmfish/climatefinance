@@ -49,6 +49,7 @@ public class CacheConfiguration {
             cm.createCache(org.sopac.domain.Country.class.getName() + ".projects", jcacheConfiguration);
             cm.createCache(org.sopac.domain.Country.class.getName() + ".integrations", jcacheConfiguration);
             cm.createCache(org.sopac.domain.Integration.class.getName(), jcacheConfiguration);
+            cm.createCache(org.sopac.domain.Metodology.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }
