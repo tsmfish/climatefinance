@@ -12,7 +12,11 @@ export class PdfExportService {
         Object.assign(pdfMake, { vfs: pdfFonts.pdfMake.vfs });
     }
 
-    private canvasExport(el: HTMLElement) {
+    private canvasExport(el: HTMLElement, options) {
+        const exportBtn = el.querySelector('.btn-export-pdf') as any;
+        if (exportBtn) {
+            exportBtn.hidden = true;
+        }
         return html2canvas(el, {
             height: el.clientHeight + 40,
             width: el.clientWidth + 20,
@@ -21,56 +25,38 @@ export class PdfExportService {
             x: el.getBoundingClientRect().left - 10,
             y: window.scrollY + el.getBoundingClientRect().top,
             onclone: document => {
-                el.style.visibility = 'visible';
+                if (exportBtn) {
+                    exportBtn.hidden = false;
+                }
             }
         }).then(canvas => {
             // Get chart data so we can append to the pdf
             const chartData = canvas.toDataURL();
             // Prepare pdf structure
-            const docDefinition = {
-                content: [],
-                styles: {
-                    subheader: {
-                        fontSize: 16,
-                        bold: true,
-                        margin: [0, 10, 0, 5],
-                        alignment: 'left'
-                    },
-                    subsubheader: {
-                        fontSize: 12,
-                        italics: true,
-                        margin: [0, 10, 0, 25],
-                        alignment: 'left'
-                    }
-                },
+            const docDefinition = Object.assign({}, options.docDefinition || {}, {
+                content: [{ image: chartData, width: 500 }],
+                pageOrientation: 'landscape',
                 defaultStyle: {
-                    // alignment: 'justify'
+                    alignment: 'center'
                 }
-            };
+            });
 
-            // Add some content to the pdf
-            // const title = { text: 'Here is the export of charts to the PDF', style: 'subheader' };
-            // const description = { text: 'Some description', style: 'subsubheader' };
-            // docDefinition.content.push(title);
-            // docDefinition.content.push(description);
-            // Push image of the chart
-            docDefinition.content.push({ image: chartData, width: 500 });
             pdfMake.createPdf(docDefinition).download('chartToPdf' + '.pdf');
         });
     }
-    private htmlExport(el: HTMLElement) {
+    private htmlExport(el: HTMLElement, options: any) {
         return html2pdf()
             .from(el)
             .save('document.pdf');
     }
 
-    exportPdf(el: HTMLElement, exportType = 'canvas'): Promise<void> {
+    exportPdf(el: HTMLElement, exportType = 'canvas', options = {}): Promise<void> {
         switch (exportType) {
             case 'html':
-                return this.htmlExport(el);
+                return this.htmlExport(el, options);
             case 'canvas':
             default:
-                return this.canvasExport(el) as Promise<void>;
+                return this.canvasExport(el, options) as Promise<void>;
         }
     }
 }

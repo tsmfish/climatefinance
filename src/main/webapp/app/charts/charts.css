@@ -5,6 +5,17 @@
 .chart-holder {
     min-height: 200px;
 }
+.pdf-exportable {
+    font-family: Helvetica, 'Helvetica Neue', Roboto, Arialxo, sans-serif;
+    font-size: 16px;
+}
+p {
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+h2 {
+    font-size: 32px;
+}
 @media screen and (min-width: 768px) {
     .chart-holder {
         min-height: 400px;
