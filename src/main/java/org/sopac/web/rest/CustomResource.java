@@ -16,14 +16,26 @@ import org.sopac.repository.*;
 import org.sopac.repository.search.DisbursementSearchRepository;
 import org.sopac.repository.search.ProjectSearchRepository;
 import org.sopac.security.AuthoritiesConstants;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.IntStream;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Response;
 
 /**
  * Custom controller
@@ -32,6 +44,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 @Secured({AuthoritiesConstants.ANONYMOUS, AuthoritiesConstants.USER, AuthoritiesConstants.ADMIN})
 @RequestMapping("/api/custom")
 public class CustomResource {
+    private final String METHODOLOGY_FILE_NAME = "methodology.pdf";
 
     private final Logger log = LoggerFactory.getLogger(CustomResource.class);
 
@@ -1856,7 +1869,7 @@ public class CustomResource {
             ObjectMapper mapper = new ObjectMapper();
             Metodology result = metodologyRepository.save(metodology);
 
-            savePdf("methodology.pdf", metodology.getMarkdown());
+            savePdf(METHODOLOGY_FILE_NAME, metodology.getMarkdown());
 
             return mapper.writeValueAsString(result);
         } catch (Exception e) { e.printStackTrace(); }
@@ -1886,20 +1899,41 @@ public class CustomResource {
 
     @GetMapping("/methodologypdf")
 //    @GetMapping("/methodology")
-    public String getMethodologyPdf() {
+    public ResponseEntity<?> getMethodologyPdf() {
+//        try {
+//            List<Metodology> queryResult = metodologyRepository.findAll(new Sort(Sort.Direction.DESC, "id"));
+//            if (queryResult.size() > 0) {
+//                    savePdf("methodology.pdf", queryResult.get(0).getMarkdown());
+//                return String.format("{\"file\": \"%s\"}", "methodology.pdf");
+//            } else {
+//                return String.format("{\"error\": \"%s\"}", "DB is empty");
+//            }
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return "Error";
+
         try {
-            List<Metodology> queryResult = metodologyRepository.findAll(new Sort(Sort.Direction.DESC, "id"));
-            if (queryResult.size() > 0) {
-                    savePdf("methodology.pdf", queryResult.get(0).getMarkdown());
-                return String.format("{\"file\": \"%s\"}", "methodology.pdf");
-            } else {
-                return String.format("{\"error\": \"%s\"}", "DB is empty");
+            File methodologyFile = new File("methodology.pdf");
+            if (!methodologyFile.canRead() && methodologyFile.length() == 0) {
+                List<Metodology> queryResult = metodologyRepository.findAll(new Sort(Sort.Direction.DESC, "id"));
+                if (queryResult.size() > 0) {
+                    if (!savePdf(METHODOLOGY_FILE_NAME, queryResult.get(0).getMarkdown())){
+                        return new ResponseEntity<>("{\"error\":\"Cant generate pdf\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                } else {
+                    return new ResponseEntity<>("{\"error\":\"DB is empty\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
-        }
-        catch (Exception e) {
+
+            Resource file = getFileAsResource(METHODOLOGY_FILE_NAME);
+            HttpHeaders headers = prepareHeaderForFileReturn(METHODOLOGY_FILE_NAME);
+            return new ResponseEntity<>(file, headers, HttpStatus.OK);
+        } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity<>("{\"error\":\""+e.getLocalizedMessage()+"\"}", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return "Error";
     }
 
     private final boolean savePdf(String filename, String markdown) {
@@ -1960,6 +1994,36 @@ public class CustomResource {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private HttpHeaders prepareHeaderForFileReturn(String fileName) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE, "application/pdf");
+        headers.add("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        return headers;
+    }
+
+
+    public Resource getFileAsResource(String filename) throws FileNotFoundException {
+        String filePath = filename;
+        Resource file = loadAsResource(filePath);
+        return file;
+    }
+
+    private Resource loadAsResource(String filename) throws FileNotFoundException {
+        try {
+            Path file = Paths.get(filename);
+            org.springframework.core.io.Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                log.error("Could not read file: " + filename);
+                throw new FileNotFoundException();
+            }
+        } catch (MalformedURLException e) {
+            log.error("Could not read file: " + filename, e);
+            throw new FileNotFoundException();
         }
     }
 }
