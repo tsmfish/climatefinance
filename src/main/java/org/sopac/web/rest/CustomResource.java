@@ -1869,7 +1869,7 @@ public class CustomResource {
             ObjectMapper mapper = new ObjectMapper();
             Metodology result = metodologyRepository.save(metodology);
 
-            savePdf(METHODOLOGY_FILE_NAME, metodology.getMarkdown());
+//            savePdf(METHODOLOGY_FILE_NAME, metodology.getMarkdown());
 
             return mapper.writeValueAsString(result);
         } catch (Exception e) { e.printStackTrace(); }
